@@ -1,25 +1,13 @@
 # Machine Learning Operations
 
-AI 231 — machine exercises repository. All machine exercises for the course live here.
+Repository for machine learning exercises. Each exercise lives in its own
+folder (`ME1/`, `ME2/`, ...).
 
 ## Environment
 
-Dedicated conda environment: **`ai231`**, located on the shared filesystem so it
-is visible from every DGX cluster node:
-
-```
-/mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/ai231-env
-```
-
-Activate it with:
-
-```bash
-conda activate /mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/ai231-env
-```
-
-Installed from the requirements of
-[roatienza/Deep-Learning-Experiments](https://github.com/roatienza/Deep-Learning-Experiments)
-(see `requirements.txt` in this repo):
+A dedicated conda environment is used for all exercises. It is built from
+`requirements.txt` in this repo, which mirrors the requirements of
+[roatienza/Deep-Learning-Experiments](https://github.com/roatienza/Deep-Learning-Experiments):
 
 - PyTorch stack: `torch`, `torchvision`, `torchaudio`, `accelerate`
 - Data/viz: `numpy`, `scipy`, `Pillow`, `matplotlib`, `scikit-image`
@@ -31,6 +19,20 @@ To rebuild the environment from scratch:
 
 ```bash
 bash setup_env.sh
+```
+
+By default the environment is created in `./env` inside this repo. To place
+it elsewhere (e.g. on a shared filesystem in a cluster setup), override the
+location:
+
+```bash
+MLOPS_ENV_DIR=/path/to/env bash setup_env.sh
+```
+
+Then activate it:
+
+```bash
+conda activate /path/to/env
 ```
 
 ## Hardware
