@@ -1,0 +1,17 @@
+torch
+torchvision
+torchaudio
+numpy
+scipy
+Pillow
+matplotlib
+scikit-image
+librosa
+timm
+einops
+lightning
+gradio
+transformers
+sentencepiece
+accelerate
+wandb

@@ -1,0 +1,25 @@
+# data
+data/
+*.csv
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.bin
+
+# checkpoints & logs
+checkpoints/
+logs/
+wandb/
+runs/
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.env
+
+# os
+.DS_Store
