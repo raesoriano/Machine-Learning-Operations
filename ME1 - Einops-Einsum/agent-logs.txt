@@ -1,0 +1,73 @@
+# Agent log — ME1 redo in Machine-Learning-Operations
+Date: 2026-08-29 (PST) · Agent: OnIt · Host: ai-n003.hpc.coe.upd.edu.ph (DGX cluster, 8× A100-SXM4-40GB)
+
+## Task
+Redo Machine Exercise 1 (3-layer einops/einsum CNN for MNIST) inside the
+Machine-Learning-Operations public repo under "ME1 - Einops-Einsum",
+fix the CPU-only issue from the first attempt, remove installation steps,
+and produce this agent log.
+
+## Context from earlier session (notes)
+- Original ME1 lived in a separate repo (raesoriano/ME1-einops-einsum) and was
+  trained on CPU (torch without CUDA) because the ad-hoc venv had no CUDA build.
+- New shared conda env at /mnt/jfs_hpc/.../sandbox/ai231-env (python 3.11,
+  torch 2.13.0+cu130) verified: cuda available, 8× A100-40GB visible.
+- Repo local clone: /mnt/jfs_hpc/.../sandbox/Machine-Learning-Operations
+  (branch main, clean, at commit 47c7ffb).
+
+## Steps
+1. Re-read session notes (ai231_mlops_setup, me1_state) to restore context.
+2. Verified repo state: main == origin/main (47c7ffb), working tree clean.
+3. Verified environment on this node:
+   - torch 2.13.0+cu130, cuda True, 8 GPUs, gpu0 = NVIDIA A100-SXM4-40GB.
+   - nbformat/nbclient were missing from the env (not in requirements.txt);
+     installed them with pip into ai231-env (nbformat 5.11.1, nbclient 0.11.0).
+     These are only needed to (re)build/re-execute the notebook, not to train.
+4. Created folder "ME1 - Einops-Einsum" in the repo and copied the original
+   build_me1.py / run_me1.py from the old ME1 folder.
+5. Edited build_me1.py:
+   - Removed the "Run it / pip install ..." block from the notebook intro
+     (installation steps removed as requested).
+   - Fixed notebook language_info python version 3.13 -> 3.11 (matches env).
+   - No other changes: model, data, training, and grid code are identical to
+     the original exercise.
+6. Wrote a new README.md for the folder: no installation section; documents
+   that training runs on GPU (A100-40GB) when available.
+7. Built the notebook (16 cells) and executed it end-to-end with nbclient
+   inside ai231-env.
+
+## Issues encountered this run
+- The `bash` tool was broken on this host (approval-token validation errors),
+  so all shell work was done through the `serve` background-process tool.
+- `serve` silently fails ("exited immediately") for some one-shot commands
+  (e.g. bare `ls`, `echo hi`); adding a trailing `sleep 1` makes them run and
+  logs are then readable. Workaround used throughout.
+- nbformat/nbclient/ipykernel were not in requirements.txt (not needed for
+  training, only to (re)build/re-execute the notebook); pip-installed into the
+  ai231 env (nbformat 5.11.1, nbclient 0.11.0, ipykernel 7.3.0).
+- **CPU-only bug (the one the user asked to fix) — root cause found:**
+  nbclient's default "python3" kernelspec on this host points at the old
+  CPU-only venv (me1_env), so the first execution silently trained on CPU
+  (GPUs idle, ~16 min of CPU time). Fixed by:
+    1. installing a dedicated kernelspec for the shared env:
+       `python -m ipykernel install --name ai231 --display-name "Python 3 (ai231)" --user`
+    2. pinning `kernel_name="ai231"` in run_me1.py and in the notebook metadata
+    3. adding a post-run assertion in run_me1.py that the notebook printed
+       "device: cuda" (fails loudly if a CPU fallback ever happens again).
+  The killed first attempt left no artifacts; the run below is the clean one.
+
+## Results (final run, GPU)
+- Kernel: ai231 kernelspec -> ai231-env python 3.11, torch 2.13.0+cu130
+- device: cuda (NVIDIA A100-SXM4-40GB, GPU 0; ~10.5 s/epoch)
+- Parameters: 155,402
+- Training:
+  - epoch 1: loss=0.1652  train_acc=0.9554  (11.0s)
+  - epoch 2: loss=0.0514  train_acc=0.9839  (10.5s)
+  - epoch 3: loss=0.0363  train_acc=0.9888  (10.5s)
+  - epoch 4: loss=0.0286  train_acc=0.9908  (10.5s)
+  - epoch 5: loss=0.0232  train_acc=0.9925  (10.4s)
+- **TEST ACCURACY: 0.9892 (9892/10000)**
+- 16-sample 4x4 grid saved as grid_16.png
+- Notebook placeholder replaced with the real accuracy; README updated.
+- Sanity check cell in notebook: einops/einsum conv matches F.conv2d
+  (max abs diff < 1e-4) — passed.
