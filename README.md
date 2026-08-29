@@ -4,10 +4,17 @@ AI 231 — machine exercises repository. All machine exercises for the course li
 
 ## Environment
 
-Dedicated conda environment: **`ai231`** (Python 3.11)
+Dedicated conda environment: **`ai231`**, located on the shared filesystem so it
+is visible from every DGX cluster node:
+
+```
+/mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/ai231-env
+```
+
+Activate it with:
 
 ```bash
-conda activate ai231
+conda activate /mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/ai231-env
 ```
 
 Installed from the requirements of
@@ -19,6 +26,12 @@ Installed from the requirements of
 - Audio: `librosa`
 - Models: `timm`, `einops`, `lightning`, `transformers`, `sentencepiece`
 - Serving/logging: `gradio`, `wandb`
+
+To rebuild the environment from scratch:
+
+```bash
+bash setup_env.sh
+```
 
 ## Hardware
 
@@ -33,5 +46,6 @@ Machine-Learning-Operations/
 ├── ME1/            # Machine Exercise 1
 ├── ME2/            # Machine Exercise 2
 ├── ...
-└── requirements.txt
+├── requirements.txt
+└── setup_env.sh
 ```
