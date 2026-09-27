@@ -1,0 +1,15 @@
+batch_size: 64
+blocks: 4
+channels: 128
+device: cuda
+dropout: 0.1
+epochs: 300
+eval_every: 1
+eval_n: 500
+lr: 0.0003
+lr_factor: 0.5
+lr_patience: 6
+min_lr: 1.0e-05
+n_mels: 40
+patience: 24
+weight_decay: 0.0001

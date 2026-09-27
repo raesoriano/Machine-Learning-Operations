@@ -1,6 +1,8 @@
-# ME2 model code: ignore python caches, precomputed features, and
-# intermediate/experimental checkpoints. The final model artifacts are
-# committed under model/checkpoints/me2_v5/.
+# ME2 model code.
+# NOTE: the repo-root .gitignore already ignores checkpoints/, *.pt, *.npz
+# globally. The final model is force-tracked (git add -f) under
+# model/checkpoints/me2_v5/ so the repo is self-contained and the benchmark
+# is reproducible; experimental checkpoints stay ignored.
 
 __pycache__/
 *.pyc
@@ -8,13 +10,3 @@ __pycache__/
 # Precomputed log-mel features (~1.6 GB; regenerate with
 # python3 scripts/build_train_features.py)
 data/features/
-
-# Checkpoints: keep only the final model (me2_v5) + its ONNX exports.
-# last.pt is a duplicate of best.pt; the other dirs are experiments
-# (me2 = pre-Plan-A target-based run, me2_big = capacity test,
-# me2_v4 = LR-schedule test, slurp = SLURP-only debug run).
-model/checkpoints/*/last.pt
-model/checkpoints/me2/
-model/checkpoints/me2_big/
-model/checkpoints/me2_v4/
-model/checkpoints/slurp/

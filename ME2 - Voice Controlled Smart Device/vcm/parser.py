@@ -98,13 +98,20 @@ def _first_of(text, phrases):
 # --------------------------------------------------------------------------- #
 # per-intent rules
 # --------------------------------------------------------------------------- #
+_MUSIC_STOPWORDS = {"the", "a", "an", "and", "of", "to", "for", "my", "me",
+                    "some", "with", "in", "on", "up"}
+
+
 def _play_music(t):
     # A music command: a music noun (music/song/playlist/genre/artist) with a
     # music verb (play/start/resume/...), or a bare "resume"/"play"/"music".
-    music_words = (ss.phrases_to_words(ss.MUSIC_GENRES)
-                   | ss.phrases_to_words(ss.MUSIC_ARTISTS)
-                   | {"music", "song", "songs", "playlist", "track", "album",
-                      "tune"})
+    # Stopwords are excluded from the music-word set: artist names like
+    # "The Weeknd" must not let "the" match "turn on the television".
+    music_words = ((ss.phrases_to_words(ss.MUSIC_GENRES)
+                    | ss.phrases_to_words(ss.MUSIC_ARTISTS)
+                    | {"music", "song", "songs", "playlist", "track", "album",
+                       "tune"})
+                   - _MUSIC_STOPWORDS)
     has_music = any(re.search(r"\b" + re.escape(w) + r"\b", t)
                     for w in music_words)
     has_verb = re.search(
@@ -112,7 +119,11 @@ def _play_music(t):
     bare = t in ("resume", "play", "music", "start")
     if not (bare or (has_music and has_verb)):
         return None
-    rest = re.sub(r"^(some|the|a|an|my|me)\s+", "", t).strip()
+    # Strip the leading verb + articles so the query is what to play, not
+    # "play jazz music" -> "jazz music".
+    rest = re.sub(r"^(play|start|put|resume|continue|keep|find|listen|hear|"
+                  r"bring)\s+", "", t).strip()
+    rest = re.sub(r"^(some|the|a|an|my|me)\s+", "", rest).strip()
     query = rest or None
     if query in ("music", "some music", "the music"):
         query = None
@@ -174,11 +185,13 @@ def _set_alarm(t):
     if not re.search(r"\b(alarm|wake|get me up|get up)\b", t):
         return None
     hour = _extract_int(t, ["am", "pm"])
-    slots = {}
-    if hour is not None:
-        mer = "pm" if re.search(r"\bpm\b", t) else "am"
-        slots["time"] = f"{hour}{mer}"
-    return Command("set_alarm", slots)
+    if hour is None:
+        # An alarm without a time is not a valid command (all 31 alarm
+        # commands carry a time), so reject it ("wake me up gently").
+        return None
+    mer = "PM" if re.search(r"\bpm\b", t) else "AM"
+    # Canonical slot format matches the manifest gold: "6:00 AM".
+    return Command("set_alarm", {"time": f"{hour}:00 {mer}"})
 
 
 def _set_timer(t):
@@ -189,10 +202,11 @@ def _set_timer(t):
     mins = _extract_int(t, ["minutes", "minute", "mins", "min"])
     hrs = _extract_int(t, ["hours", "hour", "hrs", "hr"])
     secs = _extract_int(t, ["seconds", "second", "secs", "sec"])
+    # Canonical slot format matches the manifest gold: "1m", "30s", "10s".
     if mins is not None:
-        slots["duration"] = f"{mins}min"
+        slots["duration"] = f"{mins}m"
     if hrs is not None:
-        slots["duration"] = f"{hrs}hr"
+        slots["duration"] = f"{hrs}h"
     if secs is not None:
         slots["duration"] = f"{secs}s"
     return Command("set_timer", slots)

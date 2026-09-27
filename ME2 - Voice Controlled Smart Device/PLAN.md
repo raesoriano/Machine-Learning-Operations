@@ -236,6 +236,11 @@ compared under identical conditions.
 
 ## 9. Repo layout
 
+> **Note (2026-09-27):** the project now lives in this folder
+> (`Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/`); the
+> tree below is the original plan. The *actual* layout — including the model,
+> benchmark, and deploy code — is documented in `README.md`.
+
 ```
 Voice-Controlled-Smart-Device/
 ├── PLAN.md                 # this document

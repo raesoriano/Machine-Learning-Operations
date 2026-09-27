@@ -1,0 +1,133 @@
+model params: 422,282  device=cuda
+train rows: 37992  val rows: 5315
+  saved best.pt (val_ctc 4.6927)
+ep 01 loss 14.3528 (13s)  val_ctc 4.6927  val_word_acc 0.0%
+  saved best.pt (val_ctc 4.1087)
+ep 02 loss 4.2353 (6s)  val_ctc 4.1087  val_word_acc 0.0%
+  saved best.pt (val_ctc 3.5209)
+ep 03 loss 3.5755 (6s)  val_ctc 3.5209  val_word_acc 5.0%
+  saved best.pt (val_ctc 3.3797)
+ep 04 loss 3.1313 (6s)  val_ctc 3.3797  val_word_acc 2.4%
+  saved best.pt (val_ctc 3.0841)
+ep 05 loss 2.8720 (6s)  val_ctc 3.0841  val_word_acc 4.2%
+  saved best.pt (val_ctc 2.9438)
+ep 06 loss 2.6441 (6s)  val_ctc 2.9438  val_word_acc 6.0%
+  saved best.pt (val_ctc 2.8059)
+ep 07 loss 2.4617 (6s)  val_ctc 2.8059  val_word_acc 8.6%
+  saved best.pt (val_ctc 2.6871)
+ep 08 loss 2.2935 (6s)  val_ctc 2.6871  val_word_acc 11.8%
+  saved best.pt (val_ctc 2.5478)
+ep 09 loss 2.1723 (6s)  val_ctc 2.5478  val_word_acc 13.4%
+  saved best.pt (val_ctc 2.5063)
+ep 10 loss 2.0494 (6s)  val_ctc 2.5063  val_word_acc 14.2%
+  saved best.pt (val_ctc 2.4370)
+ep 11 loss 1.9558 (6s)  val_ctc 2.4370  val_word_acc 15.2%
+  saved best.pt (val_ctc 2.3849)
+ep 12 loss 1.8824 (6s)  val_ctc 2.3849  val_word_acc 15.6%
+ep 13 loss 1.8178 (6s)  val_ctc 2.4066  val_word_acc 18.6%
+  saved best.pt (val_ctc 2.3484)
+ep 14 loss 1.7581 (6s)  val_ctc 2.3484  val_word_acc 17.8%
+  saved best.pt (val_ctc 2.2672)
+ep 15 loss 1.7068 (6s)  val_ctc 2.2672  val_word_acc 18.4%
+ep 16 loss 1.6555 (6s)  val_ctc 2.2813  val_word_acc 20.0%
+  saved best.pt (val_ctc 2.2128)
+ep 17 loss 1.6118 (6s)  val_ctc 2.2128  val_word_acc 22.0%
+  saved best.pt (val_ctc 2.2017)
+ep 18 loss 1.5713 (6s)  val_ctc 2.2017  val_word_acc 20.4%
+ep 19 loss 1.5439 (6s)  val_ctc 2.2409  val_word_acc 23.8%
+ep 20 loss 1.5106 (6s)  val_ctc 2.2045  val_word_acc 24.8%
+ep 21 loss 1.4849 (6s)  val_ctc 2.2457  val_word_acc 24.0%
+  saved best.pt (val_ctc 2.1657)
+ep 22 loss 1.4537 (6s)  val_ctc 2.1657  val_word_acc 27.0%
+  saved best.pt (val_ctc 2.1498)
+ep 23 loss 1.4299 (6s)  val_ctc 2.1498  val_word_acc 24.2%
+ep 24 loss 1.4095 (6s)  val_ctc 2.1509  val_word_acc 26.0%
+  saved best.pt (val_ctc 2.1248)
+ep 25 loss 1.3878 (6s)  val_ctc 2.1248  val_word_acc 25.4%
+ep 26 loss 1.3630 (6s)  val_ctc 2.1317  val_word_acc 27.2%
+ep 27 loss 1.3449 (6s)  val_ctc 2.1478  val_word_acc 27.2%
+ep 28 loss 1.3266 (6s)  val_ctc 2.1269  val_word_acc 27.8%
+ep 29 loss 1.3071 (6s)  val_ctc 2.1737  val_word_acc 28.8%
+ep 30 loss 1.2942 (6s)  val_ctc 2.1457  val_word_acc 28.2%
+ep 31 loss 1.2767 (6s)  val_ctc 2.1282  val_word_acc 27.4%
+  saved best.pt (val_ctc 2.1168)
+ep 32 loss 1.2630 (6s)  val_ctc 2.1168  val_word_acc 27.6%
+  saved best.pt (val_ctc 2.1147)
+ep 33 loss 1.2465 (6s)  val_ctc 2.1147  val_word_acc 28.0%
+ep 34 loss 1.2314 (6s)  val_ctc 2.1383  val_word_acc 28.4%
+  saved best.pt (val_ctc 2.0788)
+ep 35 loss 1.2171 (6s)  val_ctc 2.0788  val_word_acc 26.8%
+ep 36 loss 1.2068 (6s)  val_ctc 2.0845  val_word_acc 29.0%
+ep 37 loss 1.1941 (6s)  val_ctc 2.1008  val_word_acc 29.0%
+  saved best.pt (val_ctc 2.0561)
+ep 38 loss 1.1842 (6s)  val_ctc 2.0561  val_word_acc 30.0%
+  saved best.pt (val_ctc 2.0461)
+ep 39 loss 1.1720 (6s)  val_ctc 2.0461  val_word_acc 29.8%
+ep 40 loss 1.1607 (6s)  val_ctc 2.0903  val_word_acc 28.6%
+ep 41 loss 1.1500 (6s)  val_ctc 2.0485  val_word_acc 28.8%
+ep 42 loss 1.1422 (6s)  val_ctc 2.0893  val_word_acc 28.2%
+ep 43 loss 1.1333 (6s)  val_ctc 2.0533  val_word_acc 29.0%
+ep 44 loss 1.1219 (6s)  val_ctc 2.0792  val_word_acc 29.6%
+  saved best.pt (val_ctc 2.0185)
+ep 45 loss 1.1179 (6s)  val_ctc 2.0185  val_word_acc 29.8%
+ep 46 loss 1.1053 (6s)  val_ctc 2.0885  val_word_acc 29.8%
+ep 47 loss 1.1018 (6s)  val_ctc 2.0742  val_word_acc 29.2%
+ep 48 loss 1.0891 (6s)  val_ctc 2.0804  val_word_acc 30.4%
+ep 49 loss 1.0850 (6s)  val_ctc 2.0355  val_word_acc 31.0%
+ep 50 loss 1.0776 (6s)  val_ctc 2.0959  val_word_acc 29.8%
+ep 51 loss 1.0682 (6s)  val_ctc 2.0317  val_word_acc 30.8%
+ep 52 loss 1.0618 (6s)  val_ctc 2.0700  val_word_acc 29.4%
+ep 53 loss 1.0180 (6s)  val_ctc 2.0229  val_word_acc 30.8%
+ep 54 loss 1.0101 (6s)  val_ctc 2.0453  val_word_acc 30.4%
+ep 55 loss 0.9999 (6s)  val_ctc 2.0379  val_word_acc 31.2%
+ep 56 loss 0.9979 (6s)  val_ctc 2.0249  val_word_acc 30.4%
+ep 57 loss 0.9944 (6s)  val_ctc 2.0680  val_word_acc 31.6%
+ep 58 loss 0.9885 (6s)  val_ctc 2.0305  val_word_acc 31.0%
+ep 59 loss 0.9846 (6s)  val_ctc 2.0743  val_word_acc 32.2%
+ep 60 loss 0.9651 (6s)  val_ctc 2.0439  val_word_acc 31.6%
+ep 61 loss 0.9602 (6s)  val_ctc 2.0280  val_word_acc 31.6%
+ep 62 loss 0.9562 (6s)  val_ctc 2.0597  val_word_acc 31.8%
+ep 63 loss 0.9494 (6s)  val_ctc 2.0423  val_word_acc 32.2%
+ep 64 loss 0.9519 (6s)  val_ctc 2.0242  val_word_acc 33.6%
+ep 65 loss 0.9502 (6s)  val_ctc 2.0455  val_word_acc 32.2%
+  saved best.pt (val_ctc 2.0130)
+ep 66 loss 0.9485 (6s)  val_ctc 2.0130  val_word_acc 32.2%
+ep 67 loss 0.9470 (6s)  val_ctc 2.0259  val_word_acc 32.8%
+ep 68 loss 0.9432 (6s)  val_ctc 2.0442  val_word_acc 31.2%
+  saved best.pt (val_ctc 2.0089)
+ep 69 loss 0.9451 (6s)  val_ctc 2.0089  val_word_acc 31.4%
+ep 70 loss 0.9420 (6s)  val_ctc 2.0520  val_word_acc 31.4%
+ep 71 loss 0.9380 (6s)  val_ctc 2.0117  val_word_acc 32.0%
+ep 72 loss 0.9359 (6s)  val_ctc 2.0129  val_word_acc 32.4%
+  saved best.pt (val_ctc 2.0079)
+ep 73 loss 0.9351 (6s)  val_ctc 2.0079  val_word_acc 32.0%
+ep 74 loss 0.9360 (6s)  val_ctc 2.0585  val_word_acc 32.4%
+ep 75 loss 0.9316 (6s)  val_ctc 2.0590  val_word_acc 33.2%
+ep 76 loss 0.9329 (6s)  val_ctc 2.0108  val_word_acc 33.6%
+  saved best.pt (val_ctc 1.9972)
+ep 77 loss 0.9284 (6s)  val_ctc 1.9972  val_word_acc 32.0%
+ep 78 loss 0.9278 (6s)  val_ctc 2.0161  val_word_acc 32.2%
+ep 79 loss 0.9277 (6s)  val_ctc 2.0252  val_word_acc 32.6%
+ep 80 loss 0.9247 (6s)  val_ctc 2.0378  val_word_acc 32.8%
+ep 81 loss 0.9195 (6s)  val_ctc 2.0365  val_word_acc 32.6%
+ep 82 loss 0.9243 (6s)  val_ctc 2.0359  val_word_acc 33.0%
+ep 83 loss 0.9201 (6s)  val_ctc 2.0370  val_word_acc 32.8%
+ep 84 loss 0.9185 (6s)  val_ctc 1.9981  val_word_acc 33.0%
+ep 85 loss 0.9084 (6s)  val_ctc 2.0112  val_word_acc 32.2%
+ep 86 loss 0.9065 (6s)  val_ctc 2.0365  val_word_acc 33.2%
+ep 87 loss 0.9048 (6s)  val_ctc 2.0381  val_word_acc 32.8%
+ep 88 loss 0.9029 (6s)  val_ctc 2.0214  val_word_acc 34.0%
+ep 89 loss 0.9017 (6s)  val_ctc 2.0362  val_word_acc 33.2%
+ep 90 loss 0.8983 (6s)  val_ctc 2.0147  val_word_acc 32.2%
+ep 91 loss 0.8991 (6s)  val_ctc 2.0246  val_word_acc 33.0%
+ep 92 loss 0.8956 (6s)  val_ctc 2.0162  val_word_acc 33.0%
+ep 93 loss 0.8933 (6s)  val_ctc 2.0228  val_word_acc 33.4%
+ep 94 loss 0.8921 (6s)  val_ctc 2.0315  val_word_acc 33.0%
+ep 95 loss 0.8932 (6s)  val_ctc 2.0208  val_word_acc 33.2%
+ep 96 loss 0.8914 (6s)  val_ctc 2.0138  val_word_acc 33.6%
+ep 97 loss 0.8943 (6s)  val_ctc 2.0109  val_word_acc 33.2%
+ep 98 loss 0.8905 (6s)  val_ctc 2.0237  val_word_acc 33.4%
+ep 99 loss 0.8866 (6s)  val_ctc 2.0222  val_word_acc 33.4%
+ep 100 loss 0.8893 (6s)  val_ctc 2.0226  val_word_acc 33.0%
+  early stop @ ep 101 (no val improvement for 24 eps)
+done -> model/checkpoints/me2_v5
