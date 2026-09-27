@@ -1,0 +1,214 @@
+{
+  "generated": "2026-09-21",
+  "policy": [
+    "Semantic mapping: every source label/utterance was judged by its actual meaning; no blind word matching.",
+    "UNKNOWN = in-domain command that cannot be confidently assigned to a canonical class (directional brightness/temperature, mute, bare control words, non-canonical slot values).",
+    "EXCLUDE = out of the project's command domain (change language, bring items, email, taxi, QA, greetings, calendar events, shopping lists, ...).",
+    "Slot values are extracted from the dataset's own entity annotations (SLURP time/color_type spans) and verified against the sentence text; directional commands without a value are UNKNOWN, never forced to the nearest value.",
+    "Speaker IDs preserved as metadata only (never a class)."
+  ],
+  "fluent_speech_commands": {
+    "method": "all 248 unique transcripts reviewed; mapping keyed on the dataset's (action, object) slots with explicit phrase overrides",
+    "mappings": {
+      "activate|lights / activate|lamp": [
+        "LIGHT_ON",
+        0.95
+      ],
+      "deactivate|lights / deactivate|lamp": [
+        "LIGHT_OFF",
+        0.95
+      ],
+      "increase|heat / decrease|heat / *|temperature": [
+        "UNKNOWN",
+        0.8,
+        "directional heating command, no canonical level value (18/22/26 degrees)"
+      ],
+      "increase|volume": [
+        "VOLUME_UP",
+        0.95,
+        "incl. 'Turn the sound up', 'Volume max', 'Far too quiet'"
+      ],
+      "decrease|volume": [
+        "VOLUME_DOWN",
+        0.95,
+        "incl. 'Quieter', 'Far too loud'"
+      ],
+      "other|volume (Volume mute)": [
+        "UNKNOWN",
+        0.8,
+        "mute has no canonical class"
+      ],
+      "activate|music": [
+        "PLAY_MUSIC",
+        0.95,
+        "incl. Play / Resume / Put on the music"
+      ],
+      "deactivate|music": [
+        "PAUSE",
+        0.9,
+        "Pause / Pause the music"
+      ],
+      "phrase 'Turn off the music' / 'Stop the music' / 'Stop music' / 'Stop'": [
+        "STOP",
+        0.9,
+        "stopping music = stop playback"
+      ],
+      "change language|*": [
+        "EXCLUDE",
+        0.9,
+        "device language setting: not in ontology"
+      ],
+      "bring|*": [
+        "EXCLUDE",
+        0.9,
+        "fetch-item intent (juice/shoes/socks/newspaper): not in ontology"
+      ]
+    }
+  },
+  "slurp": {
+    "method": "intent-keyed (intent is the dataset's semantic annotation); slot values extracted from entity spans (time, color_type) and cross-checked against sentence text; sentence-level cues used for ambiguous intents",
+    "mappings": {
+      "play_music": [
+        "PLAY_MUSIC",
+        0.9
+      ],
+      "music": [
+        "PLAY_MUSIC",
+        0.85
+      ],
+      "weather_query": [
+        "WEATHER",
+        0.85,
+        "incl. indirect questions ('do i need an umbrella today'); non-weather sentences excluded"
+      ],
+      "datetime_query": [
+        "TIME",
+        0.85,
+        "only when the sentence asks for the time (time/clock/hour/am/pm words, no date words); date queries excluded"
+      ],
+      "iot_hue_lighton / hue_lighton": [
+        "LIGHT_ON",
+        0.85,
+        "light words or darkness cue ('it's too dark here')"
+      ],
+      "iot_hue_lightoff / hue_lightoff": [
+        "LIGHT_OFF",
+        0.85,
+        "light words or sleep cue ('time to sleep')"
+      ],
+      "iot_hue_lightdim / hue_lightdim / iot_hue_lightup / hue_lightup": [
+        "UNKNOWN",
+        0.85,
+        "directional brightness command without a canonical level value"
+      ],
+      "iot_hue_lightchange": [
+        "COLOR_RED / COLOR_BLUE / COLOR_GREEN",
+        0.95,
+        "exact color entity; other colors (yellow, orange, white, ...) excluded"
+      ],
+      "iot_wemo_on / wemo_on": [
+        "LIGHT_ON",
+        0.8,
+        "only when the sentence targets a light; plug/socket on excluded (no generic-plug class)"
+      ],
+      "iot_wemo_off / wemo_off": [
+        "LIGHT_OFF",
+        0.8,
+        "only when the sentence targets a light; plug/socket off excluded"
+      ],
+      "audio_volume_up": [
+        "VOLUME_UP",
+        0.95
+      ],
+      "audio_volume_down": [
+        "VOLUME_DOWN",
+        0.95
+      ],
+      "audio_volume_mute / audio_volume_other / volume_other": [
+        "UNKNOWN",
+        0.7,
+        "no canonical class for mute/adjust"
+      ],
+      "music_settings": [
+        "NEXT / STOP",
+        0.9,
+        "skip/next -> NEXT; stop -> STOP; repeat/shuffle/equalizer excluded"
+      ],
+      "alarm_set": [
+        "ALARM_6_AM / ALARM_8_AM / ALARM_9_PM",
+        0.9,
+        "time entity in {six am, eight am, nine pm}; other times -> UNKNOWN"
+      ],
+      "calendar_set with 'remind'": [
+        "UNKNOWN",
+        0.75,
+        "reminder command with non-canonical reminder value"
+      ],
+      "calendar_set (events)": [
+        "EXCLUDE",
+        0.9,
+        "calendar event scheduling is not a reminder"
+      ],
+      "lists_query / lists_createoradd with to-do/reminder words": [
+        "LIST_REMINDERS",
+        0.65
+      ],
+      "lists_query / lists_createoradd (shopping/generic)": [
+        "EXCLUDE",
+        0.85
+      ],
+      "direct 'call <person>' (non-taxi/takeaway/social/email)": [
+        "CALL",
+        0.8
+      ],
+      "direct 'text/message <person>' (non-email/social)": [
+        "MESSAGE",
+        0.7
+      ],
+      "all other intents": [
+        "EXCLUDE",
+        0.9,
+        "not in ontology (email, transport, news, QA, social, cooking, ...)"
+      ]
+    }
+  },
+  "google_speech_commands_v2": {
+    "method": "single-word labels (no transcripts); only words whose meaning is unambiguous in the ontology are mapped",
+    "mappings": {
+      "stop": [
+        "STOP",
+        0.9
+      ],
+      "on / off / up / down": [
+        "UNKNOWN",
+        0.6,
+        "bare control words: in-domain but the target is ambiguous (lights? music? volume?) - not confidently a canonical class"
+      ],
+      "left / right / forward / backward / follow / visual / go / learn": [
+        "EXCLUDE",
+        0.9,
+        "directional/action words: no matching canonical class"
+      ],
+      "yes / no": [
+        "EXCLUDE",
+        0.9,
+        "confirmation words: not commands in this ontology"
+      ],
+      "zero..nine": [
+        "EXCLUDE",
+        0.9,
+        "number words: not commands"
+      ],
+      "bed / bird / cat / dog / happy / house / marvin / sheila / tree / wow": [
+        "EXCLUDE",
+        0.9,
+        "keyword words: not commands"
+      ],
+      "_background_noise_": [
+        "EXCLUDE",
+        0.95,
+        "non-speech noise files (augmentation only)"
+      ]
+    }
+  }
+}

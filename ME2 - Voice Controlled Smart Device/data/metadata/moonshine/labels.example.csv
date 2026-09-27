@@ -1,0 +1,8 @@
+file,intent,slot_name,slot_value
+play_music_0001.wav,PLAY_MUSIC,,,
+timer_0007.wav,TIMER,duration,30s
+alarm_0002.wav,ALARM,time,06:00
+temperature_0003.wav,TEMPERATURE,degrees,22deg
+brightness_0001.wav,BRIGHTNESS,percent,60%
+color_0002.wav,COLOR,color,blue
+create_reminder_0001.wav,CREATE_REMINDERS,task,drink water

@@ -1,0 +1,601 @@
+{
+  "generated": "2026-09-22T05:48:30+00:00",
+  "mapping_file": "data/metadata/dataset_mapping.csv",
+  "ontology": "configs/commands.yaml",
+  "included_rows_in_mapping": 67189,
+  "canonical_rows": 67189,
+  "dropped_bad_class": {},
+  "dropped_missing_header": 0,
+  "total_duration_sec": 134533.6,
+  "total_duration_hours": 37.37,
+  "per_class": {
+    "PLAY_MUSIC": {
+      "total": 6572,
+      "by_source": {
+        "fluent": 912,
+        "gsc": 0,
+        "slurp_real": 4036,
+        "slurp_synth": 1624
+      },
+      "real_human_total": 4948,
+      "speakers": 228,
+      "duration_sec": {
+        "total": 16023.5,
+        "min": 0.512,
+        "p50": 2.211,
+        "p90": 3.712,
+        "max": 18.685
+      },
+      "flags": []
+    },
+    "WEATHER": {
+      "total": 4855,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 3400,
+        "slurp_synth": 1455
+      },
+      "real_human_total": 3400,
+      "speakers": 140,
+      "duration_sec": {
+        "total": 12256.8,
+        "min": 0.64,
+        "p50": 2.304,
+        "p90": 3.84,
+        "max": 13.166
+      },
+      "flags": []
+    },
+    "TIME": {
+      "total": 1849,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 1407,
+        "slurp_synth": 442
+      },
+      "real_human_total": 1407,
+      "speakers": 121,
+      "duration_sec": {
+        "total": 4214.6,
+        "min": 0.512,
+        "p50": 2.176,
+        "p90": 3.328,
+        "max": 8.447
+      },
+      "flags": []
+    },
+    "LIGHT_ON": {
+      "total": 4310,
+      "by_source": {
+        "fluent": 4135,
+        "gsc": 0,
+        "slurp_real": 118,
+        "slurp_synth": 57
+      },
+      "real_human_total": 4253,
+      "speakers": 142,
+      "duration_sec": {
+        "total": 9911.0,
+        "min": 0.64,
+        "p50": 2.219,
+        "p90": 2.987,
+        "max": 10.217
+      },
+      "flags": []
+    },
+    "LIGHT_OFF": {
+      "total": 4583,
+      "by_source": {
+        "fluent": 3236,
+        "gsc": 0,
+        "slurp_real": 1055,
+        "slurp_synth": 292
+      },
+      "real_human_total": 4291,
+      "speakers": 210,
+      "duration_sec": {
+        "total": 10465.0,
+        "min": 0.512,
+        "p50": 2.219,
+        "p90": 3.072,
+        "max": 6.72
+      },
+      "flags": []
+    },
+    "PAUSE": {
+      "total": 315,
+      "by_source": {
+        "fluent": 315,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 315,
+      "speakers": 87,
+      "duration_sec": {
+        "total": 600.2,
+        "min": 0.939,
+        "p50": 1.792,
+        "p90": 2.508,
+        "max": 4.437
+      },
+      "flags": []
+    },
+    "STOP": {
+      "total": 4392,
+      "by_source": {
+        "fluent": 510,
+        "gsc": 3872,
+        "slurp_real": 7,
+        "slurp_synth": 3
+      },
+      "real_human_total": 4389,
+      "speakers": 92,
+      "duration_sec": {
+        "total": 4787.9,
+        "min": 0.363,
+        "p50": 1.0,
+        "p90": 1.451,
+        "max": 4.949
+      },
+      "flags": []
+    },
+    "NEXT": {
+      "total": 28,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 19,
+        "slurp_synth": 9
+      },
+      "real_human_total": 19,
+      "speakers": 10,
+      "duration_sec": {
+        "total": 58.6,
+        "min": 1.244,
+        "p50": 1.998,
+        "p90": 2.759,
+        "max": 3.904
+      },
+      "flags": []
+    },
+    "VOLUME_UP": {
+      "total": 4167,
+      "by_source": {
+        "fluent": 3010,
+        "gsc": 0,
+        "slurp_real": 1059,
+        "slurp_synth": 98
+      },
+      "real_human_total": 4069,
+      "speakers": 198,
+      "duration_sec": {
+        "total": 9032.2,
+        "min": 0.65,
+        "p50": 2.043,
+        "p90": 3.072,
+        "max": 9.343
+      },
+      "flags": []
+    },
+    "VOLUME_DOWN": {
+      "total": 3366,
+      "by_source": {
+        "fluent": 2731,
+        "gsc": 0,
+        "slurp_real": 587,
+        "slurp_synth": 48
+      },
+      "real_human_total": 3318,
+      "speakers": 184,
+      "duration_sec": {
+        "total": 7183.3,
+        "min": 0.64,
+        "p50": 2.048,
+        "p90": 2.88,
+        "max": 13.227
+      },
+      "flags": []
+    },
+    "CALL": {
+      "total": 8,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 8
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": {
+        "total": 9.2,
+        "min": 1.039,
+        "p50": 1.167,
+        "p90": 1.236,
+        "max": 1.261
+      },
+      "flags": [
+        "SYNTHETIC_ONLY"
+      ]
+    },
+    "MESSAGE": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "LIST_REMINDERS": {
+      "total": 273,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 209,
+        "slurp_synth": 64
+      },
+      "real_human_total": 209,
+      "speakers": 65,
+      "duration_sec": {
+        "total": 740.6,
+        "min": 0.896,
+        "p50": 2.559,
+        "p90": 4.084,
+        "max": 6.016
+      },
+      "flags": []
+    },
+    "TIMER_10_SEC": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "TIMER_30_SEC": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "TIMER_1_MIN": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "ALARM_6_AM": {
+      "total": 216,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 197,
+        "slurp_synth": 19
+      },
+      "real_human_total": 197,
+      "speakers": 52,
+      "duration_sec": {
+        "total": 592.2,
+        "min": 1.024,
+        "p50": 2.56,
+        "p90": 3.872,
+        "max": 5.73
+      },
+      "flags": []
+    },
+    "ALARM_8_AM": {
+      "total": 157,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 140,
+        "slurp_synth": 17
+      },
+      "real_human_total": 140,
+      "speakers": 40,
+      "duration_sec": {
+        "total": 491.7,
+        "min": 1.152,
+        "p50": 2.816,
+        "p90": 4.927,
+        "max": 7.296
+      },
+      "flags": []
+    },
+    "ALARM_9_PM": {
+      "total": 21,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 15,
+        "slurp_synth": 6
+      },
+      "real_human_total": 15,
+      "speakers": 6,
+      "duration_sec": {
+        "total": 65.7,
+        "min": 1.817,
+        "p50": 2.944,
+        "p90": 4.096,
+        "max": 4.352
+      },
+      "flags": []
+    },
+    "TEMPERATURE_18": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "TEMPERATURE_22": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "TEMPERATURE_26": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "BRIGHTNESS_20": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "BRIGHTNESS_60": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "BRIGHTNESS_100": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "COLOR_RED": {
+      "total": 148,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 114,
+        "slurp_synth": 34
+      },
+      "real_human_total": 114,
+      "speakers": 48,
+      "duration_sec": {
+        "total": 368.4,
+        "min": 1.088,
+        "p50": 2.237,
+        "p90": 3.924,
+        "max": 5.224
+      },
+      "flags": []
+    },
+    "COLOR_BLUE": {
+      "total": 225,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 135,
+        "slurp_synth": 90
+      },
+      "real_human_total": 135,
+      "speakers": 50,
+      "duration_sec": {
+        "total": 539.5,
+        "min": 0.896,
+        "p50": 2.176,
+        "p90": 3.712,
+        "max": 6.207
+      },
+      "flags": []
+    },
+    "COLOR_GREEN": {
+      "total": 73,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 39,
+        "slurp_synth": 34
+      },
+      "real_human_total": 39,
+      "speakers": 21,
+      "duration_sec": {
+        "total": 165.1,
+        "min": 1.0,
+        "p50": 2.176,
+        "p90": 3.252,
+        "max": 3.904
+      },
+      "flags": []
+    },
+    "REMINDER_DRINK_WATER": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "REMINDER_STUDY": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "REMINDER_EXERCISE": {
+      "total": 0,
+      "by_source": {
+        "fluent": 0,
+        "gsc": 0,
+        "slurp_real": 0,
+        "slurp_synth": 0
+      },
+      "real_human_total": 0,
+      "speakers": 0,
+      "duration_sec": null,
+      "flags": [
+        "NO_REAL_RECORDINGS"
+      ]
+    },
+    "UNKNOWN": {
+      "total": 31631,
+      "by_source": {
+        "fluent": 9374,
+        "gsc": 15230,
+        "slurp_real": 5552,
+        "slurp_synth": 1475
+      },
+      "real_human_total": 30156,
+      "speakers": 230,
+      "duration_sec": {
+        "total": 57028.2,
+        "min": 0.299,
+        "p50": 1.28,
+        "p90": 3.12,
+        "max": 13.182
+      },
+      "flags": []
+    }
+  },
+  "per_dataset": {
+    "fluent_speech_commands": 24223,
+    "slurp": 23864,
+    "google_speech_commands_v2": 19102
+  },
+  "sample_rate_distribution": {
+    "16000": 67189
+  },
+  "channel_distribution": {
+    "1": 67189
+  },
+  "bits_per_sample_distribution": {
+    "16": 67189
+  },
+  "original_split_distribution": {
+    "fluent_speech_commands:test": 3069,
+    "fluent_speech_commands:train": 18562,
+    "fluent_speech_commands:valid": 2592,
+    "google_speech_commands_v2:testing": 2040,
+    "google_speech_commands_v2:train": 15249,
+    "google_speech_commands_v2:validation": 1813,
+    "slurp:devel": 2046,
+    "slurp:test": 3473,
+    "slurp:train": 12570,
+    "slurp:train_synthetic": 5775
+  },
+  "flag_policy": {
+    "MIN_REC_SECONDS": 0.25,
+    "SPEAKER_MIN_RECORDINGS": 5
+  }
+}

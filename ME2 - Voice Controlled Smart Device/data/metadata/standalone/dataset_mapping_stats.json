@@ -1,0 +1,370 @@
+{
+  "generated": "2026-09-21",
+  "ontology_version": 2,
+  "num_classes": 32,
+  "total_utterances": 277528,
+  "included_utterances": 67189,
+  "excluded_utterances": 210339,
+  "unknown_utterances": 31631,
+  "per_source_dataset": {
+    "fluent_speech_commands": {
+      "total": 30043,
+      "included": 24223,
+      "excluded": 5820
+    },
+    "google_speech_commands_v2": {
+      "total": 105836,
+      "included": 19102,
+      "excluded": 86734
+    },
+    "slurp": {
+      "total": 141649,
+      "included": 23864,
+      "excluded": 117785
+    }
+  },
+  "per_class": {
+    "PLAY_MUSIC": {
+      "mapped_utterances": 6572,
+      "included_utterances": 6572,
+      "speakers": 228,
+      "by_dataset": {
+        "fluent_speech_commands": 912,
+        "slurp": 5660
+      },
+      "confidence_breakdown": {
+        "0.85": 188,
+        "0.9": 5472,
+        "0.95": 912
+      }
+    },
+    "WEATHER": {
+      "mapped_utterances": 4855,
+      "included_utterances": 4855,
+      "speakers": 140,
+      "by_dataset": {
+        "slurp": 4855
+      },
+      "confidence_breakdown": {
+        "0.85": 4855
+      }
+    },
+    "TIME": {
+      "mapped_utterances": 1849,
+      "included_utterances": 1849,
+      "speakers": 121,
+      "by_dataset": {
+        "slurp": 1849
+      },
+      "confidence_breakdown": {
+        "0.85": 1849
+      }
+    },
+    "LIGHT_ON": {
+      "mapped_utterances": 4310,
+      "included_utterances": 4310,
+      "speakers": 142,
+      "by_dataset": {
+        "fluent_speech_commands": 4135,
+        "slurp": 175
+      },
+      "confidence_breakdown": {
+        "0.8": 12,
+        "0.85": 163,
+        "0.95": 4135
+      }
+    },
+    "LIGHT_OFF": {
+      "mapped_utterances": 4583,
+      "included_utterances": 4583,
+      "speakers": 210,
+      "by_dataset": {
+        "fluent_speech_commands": 3236,
+        "slurp": 1347
+      },
+      "confidence_breakdown": {
+        "0.85": 1347,
+        "0.95": 3236
+      }
+    },
+    "PAUSE": {
+      "mapped_utterances": 315,
+      "included_utterances": 315,
+      "speakers": 87,
+      "by_dataset": {
+        "fluent_speech_commands": 315
+      },
+      "confidence_breakdown": {
+        "0.9": 315
+      }
+    },
+    "STOP": {
+      "mapped_utterances": 4392,
+      "included_utterances": 4392,
+      "speakers": 92,
+      "by_dataset": {
+        "fluent_speech_commands": 510,
+        "google_speech_commands_v2": 3872,
+        "slurp": 10
+      },
+      "confidence_breakdown": {
+        "0.9": 4392
+      }
+    },
+    "NEXT": {
+      "mapped_utterances": 28,
+      "included_utterances": 28,
+      "speakers": 10,
+      "by_dataset": {
+        "slurp": 28
+      },
+      "confidence_breakdown": {
+        "0.9": 28
+      }
+    },
+    "VOLUME_UP": {
+      "mapped_utterances": 4167,
+      "included_utterances": 4167,
+      "speakers": 198,
+      "by_dataset": {
+        "fluent_speech_commands": 3010,
+        "slurp": 1157
+      },
+      "confidence_breakdown": {
+        "0.95": 4167
+      }
+    },
+    "VOLUME_DOWN": {
+      "mapped_utterances": 3366,
+      "included_utterances": 3366,
+      "speakers": 184,
+      "by_dataset": {
+        "fluent_speech_commands": 2731,
+        "slurp": 635
+      },
+      "confidence_breakdown": {
+        "0.95": 3366
+      }
+    },
+    "CALL": {
+      "mapped_utterances": 8,
+      "included_utterances": 8,
+      "speakers": 0,
+      "by_dataset": {
+        "slurp": 8
+      },
+      "confidence_breakdown": {
+        "0.8": 8
+      }
+    },
+    "MESSAGE": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "LIST_REMINDERS": {
+      "mapped_utterances": 273,
+      "included_utterances": 273,
+      "speakers": 65,
+      "by_dataset": {
+        "slurp": 273
+      },
+      "confidence_breakdown": {
+        "0.65": 273
+      }
+    },
+    "TIMER_10_SEC": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "TIMER_30_SEC": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "TIMER_1_MIN": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "ALARM_6_AM": {
+      "mapped_utterances": 216,
+      "included_utterances": 216,
+      "speakers": 52,
+      "by_dataset": {
+        "slurp": 216
+      },
+      "confidence_breakdown": {
+        "0.9": 216
+      }
+    },
+    "ALARM_8_AM": {
+      "mapped_utterances": 157,
+      "included_utterances": 157,
+      "speakers": 40,
+      "by_dataset": {
+        "slurp": 157
+      },
+      "confidence_breakdown": {
+        "0.9": 157
+      }
+    },
+    "ALARM_9_PM": {
+      "mapped_utterances": 21,
+      "included_utterances": 21,
+      "speakers": 6,
+      "by_dataset": {
+        "slurp": 21
+      },
+      "confidence_breakdown": {
+        "0.9": 21
+      }
+    },
+    "TEMPERATURE_18": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "TEMPERATURE_22": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "TEMPERATURE_26": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "BRIGHTNESS_20": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "BRIGHTNESS_60": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "BRIGHTNESS_100": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "COLOR_RED": {
+      "mapped_utterances": 148,
+      "included_utterances": 148,
+      "speakers": 48,
+      "by_dataset": {
+        "slurp": 148
+      },
+      "confidence_breakdown": {
+        "0.95": 148
+      }
+    },
+    "COLOR_BLUE": {
+      "mapped_utterances": 225,
+      "included_utterances": 225,
+      "speakers": 50,
+      "by_dataset": {
+        "slurp": 225
+      },
+      "confidence_breakdown": {
+        "0.95": 225
+      }
+    },
+    "COLOR_GREEN": {
+      "mapped_utterances": 73,
+      "included_utterances": 73,
+      "speakers": 21,
+      "by_dataset": {
+        "slurp": 73
+      },
+      "confidence_breakdown": {
+        "0.95": 73
+      }
+    },
+    "REMINDER_DRINK_WATER": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "REMINDER_STUDY": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "REMINDER_EXERCISE": {
+      "mapped_utterances": 0,
+      "included_utterances": 0,
+      "speakers": 0,
+      "by_dataset": {},
+      "confidence_breakdown": {}
+    },
+    "UNKNOWN": {
+      "mapped_utterances": 31631,
+      "included_utterances": 31631,
+      "speakers": 230,
+      "by_dataset": {
+        "fluent_speech_commands": 9374,
+        "google_speech_commands_v2": 15230,
+        "slurp": 7027
+      },
+      "confidence_breakdown": {
+        "0.6": 15230,
+        "0.7": 1577,
+        "0.75": 3860,
+        "0.8": 9374,
+        "0.85": 1590
+      }
+    }
+  },
+  "imbalance": {
+    "classes_with_coverage": 19,
+    "max_class": "UNKNOWN",
+    "max_included": 31631,
+    "min_class": "CALL",
+    "min_included": 8,
+    "severe_imbalance_ratio_max_over_min": 3953.9,
+    "zero_coverage_classes": [
+      "MESSAGE",
+      "TIMER_10_SEC",
+      "TIMER_30_SEC",
+      "TIMER_1_MIN",
+      "TEMPERATURE_18",
+      "TEMPERATURE_22",
+      "TEMPERATURE_26",
+      "BRIGHTNESS_20",
+      "BRIGHTNESS_60",
+      "BRIGHTNESS_100",
+      "REMINDER_DRINK_WATER",
+      "REMINDER_STUDY",
+      "REMINDER_EXERCISE"
+    ],
+    "note": "ratio computed over included utterances of covered classes only; zero-coverage classes listed separately"
+  }
+}

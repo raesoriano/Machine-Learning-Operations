@@ -1,0 +1,21 @@
+[
+  "PLAY_MUSIC",
+  "WEATHER",
+  "TIME",
+  "LIGHT_ON",
+  "LIGHT_OFF",
+  "PAUSE",
+  "STOP",
+  "NEXT",
+  "VOLUME_UP",
+  "VOLUME_DOWN",
+  "CALL",
+  "MESSAGE",
+  "LIST_REMINDERS",
+  "TIMER",
+  "ALARM",
+  "TEMPERATURE",
+  "BRIGHTNESS",
+  "COLOR",
+  "CREATE_REMINDER"
+]

@@ -1,0 +1,109 @@
+{
+  "project": "Standalone Voice-Command Recognition (Raspberry Pi 5)",
+  "generated": "2026-09-21T13:19:50+00:00",
+  "policy": "Raw downloads only. Original files preserved unmodified under data/raw/; no extraction or preprocessing.",
+  "datasets": [
+    {
+      "name": "slurp",
+      "display_name": "SLURP (audio + textual annotations)",
+      "source_url": "https://github.com/pswietojanski/slurp",
+      "source_page": "https://github.com/pswietojanski/slurp",
+      "version": "EMNLP 2020 release; audio via Zenodo record 4274930 (2020-11-11)",
+      "location": "data/raw/slurp/ (repo/ = git clone, audio/ = Zenodo audio)",
+      "status": "ok",
+      "downloaded_at": "2026-09-21T13:18:10+00:00",
+      "files": [
+        {
+          "path": "data/raw/slurp/audio/slurp_real.tar.gz",
+          "url": "https://zenodo.org/api/records/4274930/files/slurp_real.tar.gz/content",
+          "size_bytes": 3918185662,
+          "md5": "9efc0f058ced47bf5131c7cb2cade513",
+          "sha256": "7f8fdd5e58960d22d2d0557612a407dd57bfa6188776f2d4fd47926a68b18dd5",
+          "expected_size_bytes": 3918185662,
+          "size_ok": true,
+          "expected_md5": "9efc0f058ced47bf5131c7cb2cade513",
+          "md5_ok": true,
+          "archive_entry_count": 72396
+        },
+        {
+          "path": "data/raw/slurp/audio/slurp_synth.tar.gz",
+          "url": "https://zenodo.org/api/records/4274930/files/slurp_synth.tar.gz/content",
+          "size_bytes": 2839670545,
+          "md5": "6186b4d2475aa8020afe746096e30b4f",
+          "sha256": "6d1da313f658beeb404e2beec9624ec67fe63af9c05d91a07b1b1b3ca15773fb",
+          "expected_size_bytes": 2839670545,
+          "size_ok": true,
+          "expected_md5": "6186b4d2475aa8020afe746096e30b4f",
+          "md5_ok": true,
+          "archive_entry_count": 69258
+        },
+        {
+          "path": "data/raw/slurp/audio/LICENSE.txt",
+          "url": "https://zenodo.org/api/records/4274930/files/LICENSE.txt/content",
+          "size_bytes": 287,
+          "md5": "eb6f866654ad4facb53b038dc24f9c6a",
+          "sha256": "c59fbbbc817127b02543a10e9bea7a9a425385975d2b0125d9ac6ae77e47be17",
+          "expected_size_bytes": 287,
+          "size_ok": true,
+          "expected_md5": "eb6f866654ad4facb53b038dc24f9c6a",
+          "md5_ok": true
+        }
+      ],
+      "notes": [],
+      "repo_commit": "8eb16545762be97ace75334109d73824217311f1",
+      "repo_file_count": 25,
+      "total_size_bytes": 6757856494
+    },
+    {
+      "name": "fluent_speech_commands",
+      "display_name": "Fluent Speech Commands",
+      "source_url": "https://zenodo.org/records/11106540",
+      "source_page": "https://zenodo.org/records/11106540",
+      "version": "Zenodo record 11106540, DOI 10.5281/zenodo.11106540, published 2024-05-02, CC-BY-4.0",
+      "location": "data/raw/fluent_speech_commands/",
+      "status": "ok",
+      "downloaded_at": "2026-09-21T13:19:14+00:00",
+      "files": [
+        {
+          "path": "data/raw/fluent_speech_commands/fluentai.zip",
+          "url": "https://zenodo.org/api/records/11106540/files/fluentai.zip/content",
+          "size_bytes": 1545730387,
+          "md5": "625d5dfecef850443955a034d5f892b2",
+          "sha256": "eb7069f505da04e248eb214d53d8c799bcd69f74fe1e4e27d7f61b65e23cdb1f",
+          "expected_size_bytes": 1545730387,
+          "size_ok": true,
+          "expected_md5": "625d5dfecef850443955a034d5f892b2",
+          "md5_ok": true,
+          "archive_entry_count": 30154
+        }
+      ],
+      "notes": [],
+      "total_size_bytes": 1545730387
+    },
+    {
+      "name": "google_speech_commands_v2",
+      "display_name": "Google Speech Commands v2",
+      "source_url": "https://www.tensorflow.org/datasets/catalog/speech_commands",
+      "source_page": "https://www.tensorflow.org/datasets/catalog/speech_commands",
+      "version": "v0.02 official tarball (storage.googleapis.com/download.tensorflow.org)",
+      "location": "data/raw/google_speech_commands_v2/",
+      "status": "ok",
+      "downloaded_at": "2026-09-21T13:19:20+00:00",
+      "files": [
+        {
+          "path": "data/raw/google_speech_commands_v2/speech_commands_v0.02.tar.gz",
+          "url": "https://storage.googleapis.com/download.tensorflow.org/data/speech_commands_v0.02.tar.gz",
+          "size_bytes": 2428923189,
+          "md5": "6b74f3901214cb2c2934e98196829835",
+          "sha256": "af14739ee7dc311471de98f5f9d2c9191b18aedfe957f4a6ff791c709868ff58",
+          "expected_size_bytes": 2428923189,
+          "size_ok": true,
+          "archive_entry_count": 105878
+        }
+      ],
+      "notes": [],
+      "total_size_bytes": 2428923189
+    }
+  ],
+  "total_size_bytes": 10732510070
+}

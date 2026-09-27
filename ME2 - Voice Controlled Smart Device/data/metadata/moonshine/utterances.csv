@@ -1,0 +1,94 @@
+utterance,intent,slot_name,slot_value
+Play music,PLAY_MUSIC,,
+Play a song,PLAY_MUSIC,,
+Start the music,PLAY_MUSIC,,
+Weather,WEATHER,,
+What's the weather?,WEATHER,,
+Tell me the weather,WEATHER,,
+Time,TIME,,
+What time is it?,TIME,,
+Tell me the time,TIME,,
+Lights on,LIGHT_ON,,
+Power on the lights,LIGHT_ON,,
+Turn on the lights,LIGHT_ON,,
+Lights off,LIGHT_OFF,,
+Kill the lights,LIGHT_OFF,,
+Turn off the lights,LIGHT_OFF,,
+Pause,PAUSE,,
+Pause audio,PAUSE,,
+Pause for now,PAUSE,,
+Stop,STOP,,
+Stop playback,STOP,,
+Stop playing,STOP,,
+Next,NEXT,,
+Next track,NEXT,,
+Play next song,NEXT,,
+Volume up,VOLUME_UP,,
+Increase the volume,VOLUME_UP,,
+Turn the volume up,VOLUME_UP,,
+Volume down,VOLUME_DOWN,,
+Lower the volume,VOLUME_DOWN,,
+Turn the volume down,VOLUME_DOWN,,
+Call,CALL,,
+Make a call,CALL,,
+Make a phone call,CALL,,
+Message,MESSAGE,,
+Send a message,MESSAGE,,
+Send my message,MESSAGE,,
+Reminders,LIST_REMINDERS,,
+Show my reminders,LIST_REMINDERS,,
+List my reminders,LIST_REMINDERS,,
+Timer 10 seconds,TIMER,duration,
+Timer 30 seconds,TIMER,duration,
+Timer 1 minute,TIMER,duration,60s
+Countdown for 10 seconds,TIMER,duration,
+Countdown for 30 seconds,TIMER,duration,
+Countdown for 1 minute,TIMER,duration,60s
+Start a timer for 10 seconds,TIMER,duration,
+Start a timer for 30 seconds,TIMER,duration,
+Start a timer for 1 minute,TIMER,duration,60s
+Alarm 6:00 AM,ALARM,time,06:00
+Alarm 8:00 AM,ALARM,time,08:00
+Alarm 9:00 PM,ALARM,time,21:00
+Wake me up at 6:00 AM,ALARM,time,06:00
+Wake me up at 8:00 AM,ALARM,time,08:00
+Wake me up at 9:00 PM,ALARM,time,21:00
+Set an alarm for 6:00 AM,ALARM,time,06:00
+Set an alarm for 8:00 AM,ALARM,time,08:00
+Set an alarm for 9:00 PM,ALARM,time,21:00
+Temperature 18 degrees,TEMPERATURE,degrees,18deg
+Temperature 22 degrees,TEMPERATURE,degrees,22deg
+Temperature 26 degrees,TEMPERATURE,degrees,26deg
+Change the temperature to 18 degrees,TEMPERATURE,degrees,18deg
+Change the temperature to 22 degrees,TEMPERATURE,degrees,22deg
+Change the temperature to 26 degrees,TEMPERATURE,degrees,26deg
+Set the temperature to 18 degrees,TEMPERATURE,degrees,18deg
+Set the temperature to 22 degrees,TEMPERATURE,degrees,22deg
+Set the temperature to 26 degrees,TEMPERATURE,degrees,26deg
+Brightness 20 percent,BRIGHTNESS,percent,20%
+Brightness 60 percent,BRIGHTNESS,percent,60%
+Brightness 100 percent,BRIGHTNESS,percent,100%
+Set the brightness to 20 percent,BRIGHTNESS,percent,20%
+Set the brightness to 60 percent,BRIGHTNESS,percent,60%
+Set the brightness to 100 percent,BRIGHTNESS,percent,100%
+Change the brightness to 20 percent,BRIGHTNESS,percent,20%
+Change the brightness to 60 percent,BRIGHTNESS,percent,60%
+Change the brightness to 100 percent,BRIGHTNESS,percent,100%
+Color Red,COLOR,color,red
+Color Blue,COLOR,color,blue
+Color Green,COLOR,color,green
+Change the lights to Red,COLOR,color,red
+Change the lights to Blue,COLOR,color,blue
+Change the lights to Green,COLOR,color,green
+Set the lights to Red,COLOR,color,red
+Set the lights to Blue,COLOR,color,blue
+Set the lights to Green,COLOR,color,green
+Reminder Drink water,CREATE_REMINDERS,task,drink water
+Reminder Study,CREATE_REMINDERS,task,study
+Reminder Exercise,CREATE_REMINDERS,task,exercise
+Remind me to Drink water,CREATE_REMINDERS,task,drink water
+Remind me to Study,CREATE_REMINDERS,task,study
+Remind me to Exercise,CREATE_REMINDERS,task,exercise
+Create a reminder to Drink water,CREATE_REMINDERS,task,drink water
+Create a reminder to Study,CREATE_REMINDERS,task,study
+Create a reminder to Exercise,CREATE_REMINDERS,task,exercise

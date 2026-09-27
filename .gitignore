@@ -1,18 +1,14 @@
-# data
-data/
-*.csv
-*.npy
-*.npz
-*.pt
-*.pth
-*.ckpt
-*.bin
-
 # checkpoints & logs
 checkpoints/
 logs/
 wandb/
 runs/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.npy
+*.npz
 
 # python
 __pycache__/
@@ -23,3 +19,6 @@ __pycache__/
 
 # os
 .DS_Store
+
+# NOTE: per-project data dirs manage their own .gitignore
+# (ME1 ignores its data/; ME2 tracks manifests+metadata, ignores audio).

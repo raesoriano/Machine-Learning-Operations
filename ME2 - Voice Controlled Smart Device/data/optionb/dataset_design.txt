@@ -1,0 +1,10 @@
+Intents: 19
+Reference speakers: 100 (84 LibriSpeech, 16 Filipino-English)
+Phrase variations: v1, v2, v3
+Acoustic conditions: clean, noisy
+Original base utterances per speaker: 93
+Original WAV files: 18600
+Active WAV files after filtering: 17656
+Active clean WAV files: 8828
+Active noisy WAV files: 8828
+Archived WAV files in FLAGGED: 944

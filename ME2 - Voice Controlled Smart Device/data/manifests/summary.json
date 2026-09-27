@@ -1,0 +1,131 @@
+{
+  "generated": "2026-09-27",
+  "total_rows": 82778,
+  "positive": 49786,
+  "negative": 32992,
+  "intents": [
+    "ask_question",
+    "call",
+    "lights_adjust",
+    "lights_switch",
+    "media_control",
+    "play_music",
+    "reminders_lists",
+    "set_alarm",
+    "set_temperature",
+    "set_timer"
+  ],
+  "commands": [
+    "ALARM_6_00AM",
+    "ALARM_8_00AM",
+    "ALARM_9_00PM",
+    "BRIGHTNESS_100",
+    "BRIGHTNESS_20",
+    "BRIGHTNESS_60",
+    "CALL",
+    "COLOR_BLUE",
+    "COLOR_GREEN",
+    "COLOR_RED",
+    "CREATE_REMINDER_DRINK_WATER",
+    "CREATE_REMINDER_EXERCISE",
+    "CREATE_REMINDER_STUDY",
+    "LIGHT_OFF",
+    "LIGHT_ON",
+    "LIST_REMINDERS",
+    "MESSAGE",
+    "NEXT",
+    "PAUSE",
+    "PLAY_MUSIC",
+    "STOP",
+    "TEMPERATURE_18",
+    "TEMPERATURE_22",
+    "TEMPERATURE_26",
+    "TIME",
+    "TIMER_10s",
+    "TIMER_1m",
+    "TIMER_30s",
+    "VOLUME_DOWN",
+    "VOLUME_UP",
+    "WEATHER"
+  ],
+  "by_polarity_split": {
+    "positive": {
+      "test": 6470,
+      "train": 37998,
+      "val": 5318
+    },
+    "negative": {
+      "train": 25031,
+      "val": 2939,
+      "test": 5022
+    }
+  },
+  "positive_by_command": {
+    "ALARM_6_00AM": 786,
+    "ALARM_8_00AM": 726,
+    "ALARM_9_00PM": 599,
+    "BRIGHTNESS_100": 594,
+    "BRIGHTNESS_20": 586,
+    "BRIGHTNESS_60": 590,
+    "CALL": 553,
+    "COLOR_BLUE": 743,
+    "COLOR_GREEN": 625,
+    "COLOR_RED": 687,
+    "CREATE_REMINDER_DRINK_WATER": 596,
+    "CREATE_REMINDER_EXERCISE": 592,
+    "CREATE_REMINDER_STUDY": 578,
+    "LIGHT_OFF": 4915,
+    "LIGHT_ON": 4828,
+    "LIST_REMINDERS": 778,
+    "MESSAGE": 528,
+    "NEXT": 609,
+    "PAUSE": 887,
+    "PLAY_MUSIC": 5754,
+    "STOP": 4966,
+    "TEMPERATURE_18": 598,
+    "TEMPERATURE_22": 600,
+    "TEMPERATURE_26": 598,
+    "TIME": 2021,
+    "TIMER_10s": 588,
+    "TIMER_1m": 568,
+    "TIMER_30s": 594,
+    "VOLUME_DOWN": 3901,
+    "VOLUME_UP": 4647,
+    "WEATHER": 4151
+  },
+  "positive_by_source": {
+    "optionb": 17924,
+    "fluent_speech_commands": 14849,
+    "slurp": 13141,
+    "google_speech_commands_v2": 3872
+  },
+  "negative_by_command": {
+    "UNKNOWN": 30366,
+    "BACKGROUND_NOISE": 6,
+    "OOD_SPEECH": 2620
+  },
+  "negative_by_source": {
+    "fluent_speech_commands": 9374,
+    "slurp": 5762,
+    "google_speech_commands_v2": 15230,
+    "gsc_background_noise": 6,
+    "librispeech": 1500,
+    "librispeech_test_clean": 1120
+  },
+  "frozen_test": {
+    "total": 11492,
+    "in_domain": 6470,
+    "ood_reject": 5022
+  },
+  "missing_audio_skipped": {
+    "slurp": 4961
+  },
+  "notes": [
+    "Positive target = canonical in-vocab phrase; CTC trains to emit it, parser maps to (intent, slots).",
+    "OptionB FLAGGED wavs excluded entirely (known-command audio that failed QC).",
+    "BRIGHTNESS_*/TEMPERATURE_*/CREATE_REMINDER_* have OptionB audio only (metadata policy mapped external directional/other-value rows to UNKNOWN).",
+    "Negatives = metadata UNKNOWN/EXCLUDE rows + GSCv2 _background_noise_ + LibriSpeech (1,500 val train; 1,120 non-overlapping test-clean held out as frozen OOD reject test).",
+    "4,961 SLURP synth rows skipped: metadata references a different SLURP synth distribution than the 10,272 synth FLACs on disk (only 814 overlap); all 18,089 SLURP real rows resolved.",
+    "Splits: OptionB speaker-disjoint 80/10/10; external keeps source splits."
+  ]
+}

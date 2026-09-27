@@ -1,0 +1,47 @@
+{
+  "intents": [
+    "PLAY_MUSIC",
+    "WEATHER",
+    "TIME",
+    "LIGHT_ON",
+    "LIGHT_OFF",
+    "PAUSE",
+    "STOP",
+    "NEXT",
+    "VOLUME_UP",
+    "VOLUME_DOWN",
+    "CALL",
+    "MESSAGE",
+    "LIST_REMINDERS",
+    "TIMER",
+    "ALARM",
+    "TEMPERATURE",
+    "BRIGHTNESS",
+    "COLOR",
+    "CREATE_REMINDERS"
+  ],
+  "slot_intents": {
+    "TIMER": [
+      "duration"
+    ],
+    "ALARM": [
+      "time"
+    ],
+    "TEMPERATURE": [
+      "degrees"
+    ],
+    "BRIGHTNESS": [
+      "percent"
+    ],
+    "COLOR": [
+      "color"
+    ],
+    "CREATE_REMINDERS": [
+      "task"
+    ]
+  },
+  "labels": 19,
+  "n_utterances": 93,
+  "n_fixed": 13,
+  "n_slotted": 6
+}
