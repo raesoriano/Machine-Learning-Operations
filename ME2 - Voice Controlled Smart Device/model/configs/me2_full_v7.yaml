@@ -1,0 +1,45 @@
+# Tiny VCM — full ME2 dataset, v7 recipe (2026-09-27).
+#
+# Context: v5 (ReduceLROnPlateau, 313K params) reached frozen-v1 intent acc
+# 56.4% but collapsed on a NEW speaker (additional_test_data: 10.5% intent,
+# 47% blank transcripts) — the model overfits to the training voices.
+#
+# v6 levers (per the agreed plan; the new recordings are NOT added to
+# training — held out as an honest generalization test):
+#   1. MEL-DOMAIN AUGMENTATION (vcm/augment.py), on-the-fly each epoch:
+#        pitch shift +-3 st  (the speaker-diversity lever)
+#        time stretch 0.9-1.1, gain +-3 dB, time shift +-80 ms,
+#        SpecAugment (1 time + 1 freq mask, 50% prob)
+#      The dataset is already 50/50 clean+noisy, so no additive noise.
+#   2. MORE TRAINING: same ReduceLROnPlateau recipe as v4/v5 (proven best),
+#      epochs 400, early-stop patience 30 so the extra data from
+#      augmentation gets fully exploited.
+#   3. (Inference-side) confidence/reject gate — see model/decode.py and
+#      deploy/rpi_service/server.py; tuned separately on frozen v1.
+#
+# Architecture unchanged: 128ch/4blk (313K params, ~0.36 MB int8) — the
+# RPi-realtime model. v3 showed scaling to 1.41M gave no train-set gain.
+n_mels: 40
+channels: 128
+blocks: 4
+dropout: 0.1
+device: cuda
+epochs: 400
+batch_size: 64
+lr: 0.0003
+weight_decay: 0.0001
+eval_every: 1
+eval_n: 500
+patience: 30
+lr_factor: 0.5
+lr_patience: 6
+min_lr: 0.00001
+augment: true
+augment_cfg:
+  pitch_semitones: 3.0
+  time_stretch: 0.10
+  gain_db: 3.0
+  time_shift_frames: 8
+  spec_aug_prob: 0.5
+  spec_aug_time: 1
+  spec_aug_freq: 1

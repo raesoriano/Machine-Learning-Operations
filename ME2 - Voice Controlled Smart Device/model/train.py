@@ -35,6 +35,7 @@ if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
 from model.decode import greedy_decode  # noqa: E402
+from vcm.augment import augment_mel  # noqa: E402
 from model.model_def import VCMEncoder, ctc_loss, BLANK  # noqa: E402
 from vcm.features import log_mel  # noqa: E402
 from vcm.vocab import to_ids, VOCAB  # noqa: E402
@@ -222,6 +223,12 @@ def main():
         opt, mode="min", factor=cfg.get("lr_factor", 0.5),
         patience=cfg.get("lr_patience", 6), min_lr=cfg.get("min_lr", 1e-5))
     patience = cfg.get("patience", 24)
+    # Mel-domain augmentation (on-the-fly, per epoch). Attacks the
+    # overfit-to-training-speakers failure mode; see vcm/augment.py.
+    do_aug = bool(cfg.get("augment", False))
+    aug_cfg = cfg.get("augment_cfg", {})
+    if do_aug:
+        print(f"augmentation: ON {aug_cfg}")
     best = float("inf")  # best val CTC loss (lower is better)
     bad = 0
     for ep in range(1, epochs + 1):
@@ -234,6 +241,8 @@ def main():
             prepared = []
             for row in batch:
                 mels = _row_mel(row)
+                if do_aug:
+                    mels = augment_mel(mels, aug_cfg)
                 prepared.append((mels, _row_toks(row)))
             X, Y, ilens, tlens = collate(prepared)
             X, Y, ilens, tlens = (X.to(device), Y.to(device),

@@ -34,18 +34,32 @@ from vcm.parser import parse  # noqa: E402
 
 
 class VCMPipeline:
-    """The on-device model front-end (no I/O, easy to unit test)."""
+    """The on-device model front-end (no I/O, easy to unit test).
 
-    def __init__(self, onnx_path):
+    ``reject_min_conf`` is the OOD-reject gate: an utterance whose mean
+    non-blank-frame log-prob is below the threshold decodes to "" and the
+    parser returns {intent: "unknown"}, so the device stays silent instead
+    of acting on a misheard command. Tune with
+    scripts/tune_reject_threshold.py (default None = no gate, legacy
+    behaviour).
+    """
+
+    def __init__(self, onnx_path, reject_min_conf=None):
         import onnxruntime as ort
         self.session = ort.InferenceSession(
             onnx_path, providers=["CPUExecutionProvider"])
         self.in_name = self.session.get_inputs()[0].name
+        self.reject_min_conf = reject_min_conf
 
     def transcribe(self, audio, sr=16000):
-        """16 kHz float32 mono -> transcript string."""
+        """16 kHz float32 mono -> transcript string ('' if rejected)."""
         mel = log_mel(audio, sr=sr)                 # 16 kHz native
         logits = self.session.run(None, {self.in_name: mel[None]})[0]
+        if self.reject_min_conf is not None:
+            from model.decode import decode_with_confidence
+            text, _ = decode_with_confidence(logits[0],
+                                             min_conf=self.reject_min_conf)
+            return text
         return decode_to_text(logits[0], blank=BLANK)
 
     def command(self, audio, sr=16000):
@@ -110,9 +124,13 @@ def main():
     ap.add_argument("--backend-url", default="http://127.0.0.1:5000/command")
     ap.add_argument("--mqtt-host", default="localhost")
     ap.add_argument("--sr", type=int, default=16000)
+    ap.add_argument("--reject-min-conf", type=float, default=None,
+                    help="OOD-reject gate: mean non-blank log-prob below "
+                         "this -> no action (tune with "
+                         "scripts/tune_reject_threshold.py)")
     args = ap.parse_args()
 
-    pipeline = VCMPipeline(args.onnx)
+    pipeline = VCMPipeline(args.onnx, reject_min_conf=args.reject_min_conf)
     backend = None
     if args.backend:
         from .backend import make_backend

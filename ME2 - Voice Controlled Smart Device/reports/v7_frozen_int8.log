@@ -1,0 +1,26 @@
+
+report -> reports/v7_frozen_int8.json
+
+==============================================================
+  MODEL: onnx    TESTSET: data/manifests/frozen_test_v1.jsonl
+==============================================================
+  in-vocab  n= 6470   intent acc  42.92%   slot F1  48.63%   exact  35.47%   WER 80.46%
+  oov       n= 5022   rejection  93.23%   false-accept   6.77%
+  overall   command accuracy  60.71%
+--------------------------------------------------------------
+  per-intent (exact / slot F1):
+    ask_question        16.32% /  16.32%   (n=1066)
+    call                91.96% /  95.54%   (n=112)
+    lights_adjust       61.39% /  61.72%   (n=404)
+    lights_switch       19.47% /  29.77%   (n=1320)
+    media_control       53.25% /  53.25%   (n=1737)
+    play_music          13.89% /  90.31%   (n=929)
+    reminders_lists     38.38% /  38.38%   (n=297)
+    set_alarm           62.65% /  62.65%   (n=249)
+    set_temperature     26.67% /  26.67%   (n=180)
+    set_timer           80.11% /  80.11%   (n=176)
+--------------------------------------------------------------
+  per-subset:
+    in_domain  exact 35.5%   (n=6470)
+    ood_reject rejection 93.2%   (n=5022)
+==============================================================

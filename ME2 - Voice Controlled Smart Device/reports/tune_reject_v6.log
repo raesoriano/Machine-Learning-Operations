@@ -1,0 +1,10 @@
+scored 11492 rows (6470 in-domain, 5022 OOD) in 438s
+
+confidence stats (finite rows; all-blank rows decode to '' and are always rejected):
+  in-domain : n=5886  blank 9.0%  mean -0.225  p10 -0.510  p50 -0.173
+  OOD       : n=3383  blank 32.6%  mean -0.346  p50 -0.332  p90 -0.103
+
+best operating point (id_reject <= 0.05):
+  (no threshold meets the budget; loosen --id-reject-max)
+
+report -> reports/reject_threshold_v6.json

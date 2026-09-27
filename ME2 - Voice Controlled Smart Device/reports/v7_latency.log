@@ -1,0 +1,17 @@
+{
+  "model": "model/checkpoints/me2_v7/vcm_int8.onnx",
+  "n": 300,
+  "latency_ms": {
+    "p50": 26.7,
+    "p95": 94.4,
+    "p99": 177.7,
+    "mean": 34.2
+  },
+  "audio_dur_s": {
+    "mean": 2.8,
+    "p50": 2.13
+  },
+  "rtf": 0.0122,
+  "throughput_utt_per_s": 29.2
+}
+report -> reports/v7_latency.json

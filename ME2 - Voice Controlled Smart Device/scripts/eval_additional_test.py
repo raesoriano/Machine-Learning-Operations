@@ -105,7 +105,8 @@ def run(args):
         raise SystemExit(f"no wav files found under {args.data}")
     print(f"loaded {len(rows)} rows from {args.data}")
 
-    model = get_model("onnx", args.model)
+    model = get_model("onnx", args.model,
+                      reject_min_conf=args.reject_min_conf)
     model.load(args.model)
 
     import soundfile as sf
@@ -209,8 +210,12 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default="../../additional_test_data")
     ap.add_argument("--model",
-                    default="model/checkpoints/me2_v5/vcm_int8.onnx")
+                    default="model/checkpoints/me2_v6/vcm_int8.onnx")
     ap.add_argument("--report", default=None)
+    ap.add_argument("--reject-min-conf", type=float, default=None,
+                    help="OOD-reject gate: mean non-blank log-prob below "
+                         "this -> empty transcript (tune with "
+                         "scripts/tune_reject_threshold.py)")
     args = ap.parse_args()
     run(args)
 

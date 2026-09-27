@@ -70,7 +70,8 @@ def run(args):
 
     # ---- model -----------------------------------------------------------
     model = get_model(args.model, args.model_path,
-                      wer=args.wer, seed=args.seed)
+                      wer=args.wer, seed=args.seed,
+                      reject_min_conf=args.reject_min_conf)
     model.load(args.model_path)
 
     # ---- evaluate --------------------------------------------------------
@@ -173,6 +174,10 @@ def main():
     ap.add_argument("--wer", type=float, default=0.15,
                     help="mock_corrupt corruption level")
     ap.add_argument("--report", default=None, help="write JSON report here")
+    ap.add_argument("--reject-min-conf", type=float, default=None,
+                    help="confidence gate: reject (decode to '') utterances "
+                         "whose mean non-blank log-prob is below this "
+                         "(tune with scripts/tune_reject_threshold.py)")
     ap.add_argument("--no-audio-check", action="store_true")
     args = ap.parse_args()
     if args.testset == "frozen" and not args.testset_manifest:

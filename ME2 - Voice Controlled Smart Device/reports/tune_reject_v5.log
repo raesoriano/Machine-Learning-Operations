@@ -1,0 +1,10 @@
+scored 11492 rows (6470 in-domain, 5022 OOD) in 385s
+
+confidence stats:
+  in-domain : mean -inf  p10 -0.792  p50 -0.191
+  OOD       : mean -inf  p50 -0.365  p90 -0.088
+
+best operating point (id_reject <= 0.05):
+  (no threshold meets the budget; loosen --id-reject-max)
+
+report -> reports/reject_threshold_v5.json

@@ -1,0 +1,898 @@
+{
+  "summary": {
+    "n_in_vocab": 6470,
+    "intent_accuracy": 0.4292117465224111,
+    "slot_f1": 0.4862957238536837,
+    "exact_match": 0.3547140649149923,
+    "wer": 0.8046095532494296,
+    "n_oov": 5022,
+    "rejection_rate": 0.9322978892871366,
+    "false_accept_rate": 0.06770211071286336,
+    "command_accuracy": 0.6071179951270449,
+    "model": "onnx",
+    "testset": "data/manifests/frozen_test_v1.jsonl",
+    "wall_time_s": 383.1,
+    "rtf_estimate": 0.0333
+  },
+  "per_intent": {
+    "ask_question": {
+      "n": 1066,
+      "exact_match": 0.16322701688555347,
+      "slot_f1": 0.16322701688555347
+    },
+    "call": {
+      "n": 112,
+      "exact_match": 0.9196428571428571,
+      "slot_f1": 0.9553571428571429
+    },
+    "lights_adjust": {
+      "n": 404,
+      "exact_match": 0.6138613861386139,
+      "slot_f1": 0.6171617161716172
+    },
+    "lights_switch": {
+      "n": 1320,
+      "exact_match": 0.1946969696969697,
+      "slot_f1": 0.29772727272727273
+    },
+    "media_control": {
+      "n": 1737,
+      "exact_match": 0.5325273459988485,
+      "slot_f1": 0.5325273459988485
+    },
+    "play_music": {
+      "n": 929,
+      "exact_match": 0.13885898815931108,
+      "slot_f1": 0.9031216361679225
+    },
+    "reminders_lists": {
+      "n": 297,
+      "exact_match": 0.3838383838383838,
+      "slot_f1": 0.3838383838383838
+    },
+    "set_alarm": {
+      "n": 249,
+      "exact_match": 0.6265060240963856,
+      "slot_f1": 0.6265060240963856
+    },
+    "set_temperature": {
+      "n": 180,
+      "exact_match": 0.26666666666666666,
+      "slot_f1": 0.26666666666666666
+    },
+    "set_timer": {
+      "n": 176,
+      "exact_match": 0.8011363636363636,
+      "slot_f1": 0.8011363636363636
+    }
+  },
+  "per_subset": {
+    "in_domain": {
+      "n_in_vocab": 6470,
+      "intent_accuracy": 0.4292117465224111,
+      "slot_f1": 0.4862957238536837,
+      "exact_match": 0.3547140649149923,
+      "wer": 0.8046095532494296
+    },
+    "ood_reject": {
+      "n_oov": 5022,
+      "rejection_rate": 0.9322978892871366,
+      "false_accept_rate": 0.06770211071286336
+    }
+  },
+  "n_failures": 4515,
+  "failures_sample": [
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "an six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "an six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "i alarm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "i alarm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s93_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an alarm for six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s93_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an alarm for six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s94_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s94_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s95_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s97_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s97_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set for eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s98_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s98_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_9_00PM_ALARM_9_00PM_s93_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for nine pm",
+      "transcript": "alarm pm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9:00 PM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_9_00PM_ALARM_9_00PM_s93_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for nine pm",
+      "transcript": "alarm pm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9:00 PM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_9_00PM_ALARM_9_00PM_s93_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for nine pm",
+      "transcript": "set an alarm for one nine pm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9:00 PM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "10:00 PM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_9_00PM_ALARM_9_00PM_s93_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for nine pm",
+      "transcript": "set an alarm for one nine pm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9:00 PM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "10:00 PM"
+        }
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s100_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "change the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s91_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "change brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s92_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "change the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set send the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "change the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s93_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "change the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s94_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s94_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "brightness percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_BRIGHTNESS_100_BRIGHTNESS_100_s94_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "dim the lights to one hundred percent",
+      "transcript": "set the brightness to percent",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    }
+  ]
+}

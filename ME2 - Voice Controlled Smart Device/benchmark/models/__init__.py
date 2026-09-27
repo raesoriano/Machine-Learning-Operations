@@ -19,7 +19,7 @@ def get_model(kind, path=None, **kw):
         return MockCorrupt(wer_target=kw.get("wer", 0.15),
                            seed=kw.get("seed", 0))
     if kind == "onnx":
-        return _OnnxModel(path)
+        return _OnnxModel(path, reject_min_conf=kw.get("reject_min_conf"))
     if kind == "vosk":
         return _VoskModel(path)
     if kind == "torch":
@@ -40,12 +40,18 @@ class _OnnxModel(Model):
     decoder the RPi service uses. Constrained decoding is inherent: the head
     only has |VOCAB| + 1 outputs, so the model can only ever emit command
     words.
+
+    Reject gate: if ``reject_min_conf`` is set, utterances whose mean
+    non-blank-frame log-prob is below it decode to "" (-> parser "unknown",
+    no action). This is the OOD-reject guard; tune it with
+    scripts/tune_reject_threshold.py on the frozen set.
     """
     name = "onnx"
 
-    def __init__(self, path):
+    def __init__(self, path, reject_min_conf=None):
         self.path = path
         self.session = None
+        self.reject_min_conf = reject_min_conf
 
     def load(self, path=None):
         import onnxruntime as ort  # local import: optional dependency
@@ -58,6 +64,10 @@ class _OnnxModel(Model):
         from .feats import log_mel  # local feature extraction, no torch
         mel = log_mel(audio, sr=sr)                    # [T, 40]
         logits = self.session.run(None, {"mels": mel[None]})[0][0]  # [T, V]
+        if self.reject_min_conf is not None:
+            from model.decode import decode_with_confidence
+            text, _ = decode_with_confidence(logits, min_conf=self.reject_min_conf)
+            return text
         return greedy_ctc_to_text(logits)
 
 

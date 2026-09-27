@@ -1,0 +1,892 @@
+{
+  "summary": {
+    "n_in_vocab": 6470,
+    "intent_accuracy": 0.46723338485316845,
+    "slot_f1": 0.5227717671303452,
+    "exact_match": 0.3794435857805255,
+    "wer": 0.8084220210495326,
+    "n_oov": 5022,
+    "rejection_rate": 0.945041816009558,
+    "false_accept_rate": 0.054958183990442055,
+    "command_accuracy": 0.6266098155238427,
+    "model": "onnx",
+    "testset": "data/manifests/frozen_test_v1.jsonl",
+    "wall_time_s": 342.6,
+    "rtf_estimate": 0.0298
+  },
+  "per_intent": {
+    "ask_question": {
+      "n": 1066,
+      "exact_match": 0.1669793621013133,
+      "slot_f1": 0.1669793621013133
+    },
+    "call": {
+      "n": 112,
+      "exact_match": 0.875,
+      "slot_f1": 0.9642857142857143
+    },
+    "lights_adjust": {
+      "n": 404,
+      "exact_match": 0.594059405940594,
+      "slot_f1": 0.594059405940594
+    },
+    "lights_switch": {
+      "n": 1320,
+      "exact_match": 0.23939393939393938,
+      "slot_f1": 0.3813131313131313
+    },
+    "media_control": {
+      "n": 1737,
+      "exact_match": 0.6373056994818653,
+      "slot_f1": 0.6373056994818653
+    },
+    "play_music": {
+      "n": 929,
+      "exact_match": 0.1108719052744887,
+      "slot_f1": 0.8966630785791173
+    },
+    "reminders_lists": {
+      "n": 297,
+      "exact_match": 0.45791245791245794,
+      "slot_f1": 0.45791245791245794
+    },
+    "set_alarm": {
+      "n": 249,
+      "exact_match": 0.3654618473895582,
+      "slot_f1": 0.3654618473895582
+    },
+    "set_temperature": {
+      "n": 180,
+      "exact_match": 0.3,
+      "slot_f1": 0.3
+    },
+    "set_timer": {
+      "n": 176,
+      "exact_match": 0.75,
+      "slot_f1": 0.75
+    }
+  },
+  "per_subset": {
+    "in_domain": {
+      "n_in_vocab": 6470,
+      "intent_accuracy": 0.46723338485316845,
+      "slot_f1": 0.5227717671303452,
+      "exact_match": 0.3794435857805255,
+      "wer": 0.8084220210495326
+    },
+    "ood_reject": {
+      "n_oov": 5022,
+      "rejection_rate": 0.945041816009558,
+      "false_accept_rate": 0.054958183990442055
+    }
+  },
+  "n_failures": 4291,
+  "failures_sample": [
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm six",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm six",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s100_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "for six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s91_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s92_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s92_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s93_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s93_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s93_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set an alarm for six six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "12:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set an for six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s94_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set an for six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm six six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "12:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "alarm six six am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "12:00 AM"
+        }
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "wake me up at am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s95_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set for six",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s96_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set an for",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s96_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set an for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s97_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s97_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "turn an alarm for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s98_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "set turn an alarm for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_6_00AM_ALARM_6_00AM_s99_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s100_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an for eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s100_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an for eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "me up at eight",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v2_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "wake me up at eight",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s91_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s93_v2_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "me up at eight am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s93_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an alarm for am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s94_v1_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s94_v1_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s95_v3_noisy",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ob_ALARM_8_00AM_ALARM_8_00AM_s96_v3_clean",
+      "subset": "in_domain",
+      "gold_text": "set an alarm for eight am",
+      "transcript": "set an alarm for eight",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    }
+  ]
+}

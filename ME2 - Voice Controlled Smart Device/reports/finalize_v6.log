@@ -1,0 +1,202 @@
+### [1/6] export ONNX (model/checkpoints/me2_v6/best.pt)
+/mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/deploy/export_onnx.py:60: UserWarning: Exporting a model while it is in training mode. Please ensure that this is intended, as it may lead to different behavior during inference. Calling model.eval() before export is recommended.
+  torch.onnx.export(
+/mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/deploy/export_onnx.py:60: UserWarning: # 'dynamic_axes' is not recommended when dynamo=True, and may lead to 'torch._dynamo.exc.UserError: Constraints violated.' Supply the 'dynamic_shapes' argument instead if export is unsuccessful.
+  torch.onnx.export(
+W0927 20:25:49.214000 2620551 /mnt/jfs_hpc/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/torch/onnx/_internal/exporter/_compat.py:133] Setting ONNX exporter to use operator set version 18 because the requested opset_version 13 is a lower version than we have implementations for. Automatic version conversion will be performed, which may not be successful at converting to the requested version. If version conversion is unsuccessful, the opset version of the exported model will be kept at 18. Please consider setting opset_version >=18 to leverage latest ONNX features
+W0927 20:25:51.226000 2620551 /mnt/jfs_hpc/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::nms
+W0927 20:25:51.230000 2620551 /mnt/jfs_hpc/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::roi_align
+W0927 20:25:51.230000 2620551 /mnt/jfs_hpc/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::roi_pool
+W0927 20:25:51.230000 2620551 /mnt/jfs_hpc/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::deform_conv2d
+The model version conversion is not supported by the onnxscript version converter and fallback is enabled. The model will be converted using the onnx C API (target version: 13).
+Failed to convert the model to the target version 13 using the ONNX C API. The model was not modified
+Traceback (most recent call last):
+  File "/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/onnxscript/version_converter/__init__.py", line 137, in call
+    converted_proto = _c_api_utils.call_onnx_api(
+        func=_partial_convert_version, model=model
+    )
+  File "/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/onnxscript/version_converter/_c_api_utils.py", line 65, in call_onnx_api
+    result = func(proto)
+  File "/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/onnxscript/version_converter/__init__.py", line 132, in _partial_convert_version
+    return onnx.version_converter.convert_version(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        proto, target_version=self.target_version
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ron.andrei.soriano/.local/lib/python3.13/site-packages/onnx/version_converter.py", line 39, in convert_version
+    converted_model_str = C.convert_version(model_str, target_version)
+RuntimeError: /project/onnx/version_converter/BaseConverter.h:66: adapter_lookup: Assertion `false` failed: No Adapter From Version $15 for Shape
+[torch.onnx] Obtain model graph for `ExportWrapper([...]` with `torch.export.export(..., strict=False)`...
+[torch.onnx] Obtain model graph for `ExportWrapper([...]` with `torch.export.export(..., strict=False)`... ✅
+[torch.onnx] Run decompositions...
+[torch.onnx] Run decompositions... ✅
+[torch.onnx] Translate the graph into ONNX...
+[torch.onnx] Translate the graph into ONNX... ✅
+[torch.onnx] Optimize the ONNX graph...
+[torch.onnx] Optimize the ONNX graph... ✅
+exported model/checkpoints/me2_v6/vcm.onnx (0.06 MB float32)
+next: python -m deploy.quantize --in model/checkpoints/me2_v6/vcm.onnx --out model/checkpoints/me2_v6/vcm_int8.onnx
+### [2/6] quantize int8
+WARNING:root:Please consider to run pre-processing before quantization. Refer to example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md 
+quantized: 0.06 MB -> 0.48 MB (857%)
+### [3/6] tune reject threshold on frozen v1
+scored 11492 rows (6470 in-domain, 5022 OOD) in 401s
+
+confidence stats (finite rows; all-blank rows decode to '' and are always rejected):
+  in-domain : n=5645  blank 12.8%  mean -0.223  p10 -0.491  p50 -0.173
+  OOD       : n=3273  blank 34.8%  mean -0.342  p50 -0.327  p90 -0.100
+
+best operating point (id_reject <= 0.05):
+  (no threshold meets the budget; loosen --id-reject-max)
+
+report -> reports/reject_threshold_v6.json
+### using reject_min_conf=-0.3
+### [4/6] benchmark frozen v1 (int8 + reject gate)
+  500/11492 ...
+  1000/11492 ...
+  1500/11492 ...
+  2000/11492 ...
+  2500/11492 ...
+  3000/11492 ...
+  3500/11492 ...
+  4000/11492 ...
+  4500/11492 ...
+  5000/11492 ...
+  5500/11492 ...
+  6000/11492 ...
+  6500/11492 ...
+  7000/11492 ...
+  7500/11492 ...
+  8000/11492 ...
+  8500/11492 ...
+  9000/11492 ...
+  9500/11492 ...
+  10000/11492 ...
+  10500/11492 ...
+  11000/11492 ...
+
+report -> reports/v6_frozen_int8.json
+
+==============================================================
+  MODEL: onnx    TESTSET: data/manifests/frozen_test_v1.jsonl
+==============================================================
+  in-vocab  n= 6470   intent acc  46.72%   slot F1  52.28%   exact  37.94%   WER 80.84%
+  oov       n= 5022   rejection  94.50%   false-accept   5.50%
+  overall   command accuracy  62.66%
+--------------------------------------------------------------
+  per-intent (exact / slot F1):
+    ask_question        16.70% /  16.70%   (n=1066)
+    call                87.50% /  96.43%   (n=112)
+    lights_adjust       59.41% /  59.41%   (n=404)
+    lights_switch       23.94% /  38.13%   (n=1320)
+    media_control       63.73% /  63.73%   (n=1737)
+    play_music          11.09% /  89.67%   (n=929)
+    reminders_lists     45.79% /  45.79%   (n=297)
+    set_alarm           36.55% /  36.55%   (n=249)
+    set_temperature     30.00% /  30.00%   (n=180)
+    set_timer           75.00% /  75.00%   (n=176)
+--------------------------------------------------------------
+  per-subset:
+    in_domain  exact 37.9%   (n=6470)
+    ood_reject rejection 94.5%   (n=5022)
+==============================================================
+### [5/6] benchmark additional_test (NO gate — all in-domain; the fair
+###      generalization comparison to the previous 10.5% baseline)
+loaded 171 rows from ../../additional_test_data
+  40/171 ...
+  80/171 ...
+  120/171 ...
+  160/171 ...
+
+report -> reports/additional_test_v6_int8.json
+
+================================================================
+  MODEL: onnx-int8   TESTSET: ../../additional_test_data
+================================================================
+  n_in_vocab     171
+  intent acc    12.28%
+  slot F1       19.88%
+  exact match   10.53%
+  WER           80.75%
+  infer ms     mean 30.3  p50 14.0  p95 25.0  p99 27.9  max 2633.1
+----------------------------------------------------------------
+  per-folder (intent acc / exact):
+    ALARM               0.0% /    0.0%   (n=9)
+    BRIGHTNESS         11.1% /    0.0%   (n=9)
+    CALL               22.2% /   22.2%   (n=9)
+    COLOR               0.0% /    0.0%   (n=9)
+    CREATE_REMINDER     0.0% /    0.0%   (n=9)
+    LIGHT_OFF           0.0% /    0.0%   (n=9)
+    LIGHT_ON            0.0% /    0.0%   (n=9)
+    LIST_REMINDERS     11.1% /   11.1%   (n=9)
+    MESSAGE            11.1% /   11.1%   (n=9)
+    NEXT               44.4% /   44.4%   (n=9)
+    PAUSE               0.0% /    0.0%   (n=9)
+    PLAY_MUSIC          0.0% /    0.0%   (n=9)
+    STOP               44.4% /   44.4%   (n=9)
+    TEMPERATURE         0.0% /    0.0%   (n=9)
+    TIME                0.0% /    0.0%   (n=9)
+    TIMER              22.2% /    0.0%   (n=9)
+    VOLUME_DOWN        11.1% /   11.1%   (n=9)
+    VOLUME_UP          11.1% /   11.1%   (n=9)
+    WEATHER            44.4% /   44.4%   (n=9)
+================================================================
+loaded 171 rows from ../../additional_test_data
+  40/171 ...
+  80/171 ...
+  120/171 ...
+  160/171 ...
+
+report -> reports/additional_test_v6_int8_gated.json
+
+================================================================
+  MODEL: onnx-int8   TESTSET: ../../additional_test_data
+================================================================
+  n_in_vocab     171
+  intent acc     4.09%
+  slot F1       13.45%
+  exact match    4.09%
+  WER           93.62%
+  infer ms     mean 33.5  p50 16.4  p95 33.0  p99 43.8  max 2659.8
+----------------------------------------------------------------
+  per-folder (intent acc / exact):
+    ALARM               0.0% /    0.0%   (n=9)
+    BRIGHTNESS          0.0% /    0.0%   (n=9)
+    CALL               22.2% /   22.2%   (n=9)
+    COLOR               0.0% /    0.0%   (n=9)
+    CREATE_REMINDER     0.0% /    0.0%   (n=9)
+    LIGHT_OFF           0.0% /    0.0%   (n=9)
+    LIGHT_ON            0.0% /    0.0%   (n=9)
+    LIST_REMINDERS      0.0% /    0.0%   (n=9)
+    MESSAGE             0.0% /    0.0%   (n=9)
+    NEXT                0.0% /    0.0%   (n=9)
+    PAUSE               0.0% /    0.0%   (n=9)
+    PLAY_MUSIC          0.0% /    0.0%   (n=9)
+    STOP               44.4% /   44.4%   (n=9)
+    TEMPERATURE         0.0% /    0.0%   (n=9)
+    TIME                0.0% /    0.0%   (n=9)
+    TIMER               0.0% /    0.0%   (n=9)
+    VOLUME_DOWN        11.1% /   11.1%   (n=9)
+    VOLUME_UP           0.0% /    0.0%   (n=9)
+    WEATHER             0.0% /    0.0%   (n=9)
+================================================================
+### [6/6] latency (int8, CPU, 300 rows)
+{
+  "model": "model/checkpoints/me2_v6/vcm_int8.onnx",
+  "n": 300,
+  "latency_ms": {
+    "p50": 17.8,
+    "p95": 63.2,
+    "p99": 104.4,
+    "mean": 23.5
+  },
+  "audio_dur_s": {
+    "mean": 2.8,
+    "p50": 2.13
+  },
+  "rtf": 0.0084,
+  "throughput_utt_per_s": 42.5
+}
+report -> reports/v6_latency.json
+### DONE v6

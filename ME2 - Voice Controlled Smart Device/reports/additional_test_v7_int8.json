@@ -1,0 +1,2516 @@
+{
+  "summary": {
+    "n_in_vocab": 171,
+    "intent_accuracy": 0.15789473684210525,
+    "slot_f1": 0.22807017543859648,
+    "exact_match": 0.14035087719298245,
+    "wer": 0.8114035087719298,
+    "model": "onnx-int8",
+    "testset": "../../additional_test_data",
+    "wall_time_s": 7.8,
+    "inference_ms": {
+      "mean": 40.8,
+      "p50": 15.8,
+      "p95": 32.5,
+      "p99": 43.2,
+      "max": 4019.2
+    }
+  },
+  "per_intent": {
+    "ask_question": {
+      "n": 18,
+      "exact_match": 0.4444444444444444,
+      "slot_f1": 0.4444444444444444
+    },
+    "call": {
+      "n": 18,
+      "exact_match": 0.2222222222222222,
+      "slot_f1": 0.5555555555555556
+    },
+    "lights_adjust": {
+      "n": 18,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "lights_switch": {
+      "n": 18,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "media_control": {
+      "n": 45,
+      "exact_match": 0.17777777777777778,
+      "slot_f1": 0.17777777777777778
+    },
+    "play_music": {
+      "n": 9,
+      "exact_match": 0.0,
+      "slot_f1": 1.0
+    },
+    "reminders_lists": {
+      "n": 18,
+      "exact_match": 0.05555555555555555,
+      "slot_f1": 0.05555555555555555
+    },
+    "set_alarm": {
+      "n": 9,
+      "exact_match": 0.3333333333333333,
+      "slot_f1": 0.3333333333333333
+    },
+    "set_temperature": {
+      "n": 9,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "set_timer": {
+      "n": 9,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    }
+  },
+  "per_folder": {
+    "ALARM": {
+      "n": 9,
+      "intent_acc": 0.333,
+      "exact": 0.333
+    },
+    "BRIGHTNESS": {
+      "n": 9,
+      "intent_acc": 0.222,
+      "exact": 0.0
+    },
+    "CALL": {
+      "n": 9,
+      "intent_acc": 0.333,
+      "exact": 0.333
+    },
+    "COLOR": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "CREATE_REMINDER": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "LIGHT_OFF": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "LIGHT_ON": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "LIST_REMINDERS": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.111
+    },
+    "MESSAGE": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.111
+    },
+    "NEXT": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.111
+    },
+    "PAUSE": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.111
+    },
+    "PLAY_MUSIC": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "STOP": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.111
+    },
+    "TEMPERATURE": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "TIME": {
+      "n": 9,
+      "intent_acc": 0.111,
+      "exact": 0.0
+    },
+    "TIMER": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "VOLUME_DOWN": {
+      "n": 9,
+      "intent_acc": 0.556,
+      "exact": 0.556
+    },
+    "VOLUME_UP": {
+      "n": 9,
+      "intent_acc": 0.0,
+      "exact": 0.0
+    },
+    "WEATHER": {
+      "n": 9,
+      "intent_acc": 0.889,
+      "exact": 0.889
+    }
+  },
+  "n_failures": 147,
+  "failures": [
+    {
+      "id": "ALARM/alarm 6 AM 1.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 6 AM",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ALARM/alarm 6 AM 2.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 6 AM",
+      "transcript": "alarm am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ALARM/alarm 6 AM 3.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 6 AM",
+      "transcript": "am",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ALARM/alarm 8 AM 2.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 8 AM",
+      "transcript": "alarm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ALARM/alarm 8 AM 3.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 8 AM",
+      "transcript": "alarm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8:00 AM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "ALARM/alarm 9 PM 3.wav",
+      "folder": "ALARM",
+      "gold_text": "alarm 9 PM",
+      "transcript": "alarm",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9:00 PM"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 100 percent 1.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 100 percent",
+      "transcript": "play brightness",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 100 percent 2.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 100 percent",
+      "transcript": "play",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {
+          "query": "play"
+        }
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 100 percent 3.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 100 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 100
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 20 percent 1.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 20 percent",
+      "transcript": "brightness",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 20
+        }
+      },
+      "pred": {
+        "intent": "lights_adjust",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 20 percent 2.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 20 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 20
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 20 percent 3.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 20 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 20
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 60 percent 1.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 60 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 60
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 60 percent 2.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 60 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 60
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "BRIGHTNESS/brightness 60 percent 3.wav",
+      "folder": "BRIGHTNESS",
+      "gold_text": "brightness 60 percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 60
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/call 3.wav",
+      "folder": "CALL",
+      "gold_text": "call",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/make a call 2.wav",
+      "folder": "CALL",
+      "gold_text": "make a call",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/make a call 3.wav",
+      "folder": "CALL",
+      "gold_text": "make a call",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/make a phone call 1.wav",
+      "folder": "CALL",
+      "gold_text": "make a phone call",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/make a phone call 2.wav",
+      "folder": "CALL",
+      "gold_text": "make a phone call",
+      "transcript": "me",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CALL/make a phone call 3.wav",
+      "folder": "CALL",
+      "gold_text": "make a phone call",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to blue 1.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to blue",
+      "transcript": "change",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "blue"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to blue 2.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to blue",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "blue"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to blue 3.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to blue",
+      "transcript": "change",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "blue"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to green 1.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to green",
+      "transcript": "change in",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "green"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to green 2.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to green",
+      "transcript": "green",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "green"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to green 3.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to green",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "green"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to red 1.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to red",
+      "transcript": "change red",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "red"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to red 2.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to red",
+      "transcript": "change",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "red"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "COLOR/change color to red 3.wav",
+      "folder": "COLOR",
+      "gold_text": "change color to red",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "color": "red"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder drink water 3.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder drink water",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "drink water"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder exercise 1.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder exercise",
+      "transcript": "my",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "exercise"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder study 2.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder study",
+      "transcript": "start",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "study"
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {
+          "query": "start"
+        }
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder to drink water 2.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder to drink water",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "drink water"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder to exercise 2.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder to exercise",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "exercise"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder to exercise 3.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder to exercise",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "exercise"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder to study 1.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder to study",
+      "transcript": "my",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "study"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create a reminder to study 3.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create a reminder to study",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "study"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "CREATE_REMINDER/create reminder to drink water 1.wav",
+      "folder": "CREATE_REMINDER",
+      "gold_text": "create reminder to drink water",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "drink water"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/kill the lights 1.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "kill the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/kill the lights 2.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "kill the lights",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/kill the lights 3.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "kill the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/lights out 1.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "lights out",
+      "transcript": "lights",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/lights out 2.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "lights out",
+      "transcript": "play lights",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/lights out 3.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "lights out",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/shut off the lights 1.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "shut off the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/shut off the lights 2.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "shut off the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_OFF/shut off the lights 3.wav",
+      "folder": "LIGHT_OFF",
+      "gold_text": "shut off the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/lights on 2.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "lights on",
+      "transcript": "lights",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/lights on 3.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "lights on",
+      "transcript": "play",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {
+          "query": "play"
+        }
+      }
+    },
+    {
+      "id": "LIGHT_ON/lights on.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "lights on",
+      "transcript": "play lights",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/power on the lights 1.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "power on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/power on the lights 2.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "power on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/power on the lights 3.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "power on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/turn on the lights 1.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "turn on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/turn on the lights 2.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "turn on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIGHT_ON/turn on the lights 3.wav",
+      "folder": "LIGHT_ON",
+      "gold_text": "turn on the lights",
+      "transcript": "the",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "on"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/list my reminders 1.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "list my reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/list my reminders 3.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "list my reminders",
+      "transcript": "the",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/reminders 1.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/reminders 2.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/reminders 3.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/show my reminders 1.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "show my reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/show my reminders 2.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "show my reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "LIST_REMINDERS/show my reminders 3.wav",
+      "folder": "LIST_REMINDERS",
+      "gold_text": "show my reminders",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "list"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/message 1.wav",
+      "folder": "MESSAGE",
+      "gold_text": "message",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/message 2.wav",
+      "folder": "MESSAGE",
+      "gold_text": "message",
+      "transcript": "get next",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      }
+    },
+    {
+      "id": "MESSAGE/message 3.wav",
+      "folder": "MESSAGE",
+      "gold_text": "message",
+      "transcript": "six am",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/send a message 2.wav",
+      "folder": "MESSAGE",
+      "gold_text": "send a message",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/send a message 3.wav",
+      "folder": "MESSAGE",
+      "gold_text": "send a message",
+      "transcript": "music am",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/send my message 1.wav",
+      "folder": "MESSAGE",
+      "gold_text": "send my message",
+      "transcript": "my",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/send my message 2.wav",
+      "folder": "MESSAGE",
+      "gold_text": "send my message",
+      "transcript": "",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "MESSAGE/send my message 3.wav",
+      "folder": "MESSAGE",
+      "gold_text": "send my message",
+      "transcript": "my playlist",
+      "gold": {
+        "intent": "call",
+        "slots": {
+          "action": "message"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/next song 1.wav",
+      "folder": "NEXT",
+      "gold_text": "next song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/next song 2.wav",
+      "folder": "NEXT",
+      "gold_text": "next song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/play next song 1.wav",
+      "folder": "NEXT",
+      "gold_text": "play next song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/play next song 2.wav",
+      "folder": "NEXT",
+      "gold_text": "play next song",
+      "transcript": "play",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {
+          "query": "play"
+        }
+      }
+    },
+    {
+      "id": "NEXT/play next song 3.wav",
+      "folder": "NEXT",
+      "gold_text": "play next song",
+      "transcript": "song",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/skip song 1.wav",
+      "folder": "NEXT",
+      "gold_text": "skip song",
+      "transcript": "song",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/skip song 2.wav",
+      "folder": "NEXT",
+      "gold_text": "skip song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "NEXT/skip song 3.wav",
+      "folder": "NEXT",
+      "gold_text": "skip song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause 2.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause 3.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause audio 1.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause audio",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause audio 2.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause audio",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause audio 3.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause audio",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause song 1.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause song 2.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause song",
+      "transcript": "song",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PAUSE/pause song 3.wav",
+      "folder": "PAUSE",
+      "gold_text": "pause song",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "pause"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play music 2.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play music 3.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play music.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play some music 1.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play some music",
+      "transcript": "please",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play some music 2.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play some music",
+      "transcript": "please music",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/play some music 3.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "play some music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/start music 1.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "start music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/start music 2.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "start music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "PLAY_MUSIC/start music 3.wav",
+      "folder": "PLAY_MUSIC",
+      "gold_text": "start music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/end playback 1.wav",
+      "folder": "STOP",
+      "gold_text": "end playback",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/end playback 2.wav",
+      "folder": "STOP",
+      "gold_text": "end playback",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/end playback 3.wav",
+      "folder": "STOP",
+      "gold_text": "end playback",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/stop 1.wav",
+      "folder": "STOP",
+      "gold_text": "stop",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/stop 2.wav",
+      "folder": "STOP",
+      "gold_text": "stop",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/stop 3.wav",
+      "folder": "STOP",
+      "gold_text": "stop",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/stop playing 1.wav",
+      "folder": "STOP",
+      "gold_text": "stop playing",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "STOP/stop playing 3.wav",
+      "folder": "STOP",
+      "gold_text": "stop playing",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "stop"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 18 degrees 1.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 18 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 18,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 18 degrees 2.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 18 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 18,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 18 degrees 3.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 18 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 18,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 22 degrees 1.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 22 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 22,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 22 degrees 2.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 22 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 22,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 22 degrees 3.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 22 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 22,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 26 degrees 1.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 26 degrees",
+      "transcript": "temperature playlist",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 26,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 26 degrees 2.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 26 degrees",
+      "transcript": "play",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 26,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {
+          "query": "play"
+        }
+      }
+    },
+    {
+      "id": "TEMPERATURE/temperature 26 degrees 3.wav",
+      "folder": "TEMPERATURE",
+      "gold_text": "temperature 26 degrees",
+      "transcript": "",
+      "gold": {
+        "intent": "set_temperature",
+        "slots": {
+          "value": 26,
+          "unit": "C"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/tell me the time 1.wav",
+      "folder": "TIME",
+      "gold_text": "tell me the time",
+      "transcript": "tell me",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/tell me the time 2.wav",
+      "folder": "TIME",
+      "gold_text": "tell me the time",
+      "transcript": "tell me",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/tell me the time 3.wav",
+      "folder": "TIME",
+      "gold_text": "tell me the time",
+      "transcript": "tell me",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/time 1.wav",
+      "folder": "TIME",
+      "gold_text": "time",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/time 2.wav",
+      "folder": "TIME",
+      "gold_text": "time",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/time 3.wav",
+      "folder": "TIME",
+      "gold_text": "time",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/what time is it 1.wav",
+      "folder": "TIME",
+      "gold_text": "what time is it",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/what time is it 3.wav",
+      "folder": "TIME",
+      "gold_text": "what time is it",
+      "transcript": "music",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "play_music",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIME/what time is it.wav",
+      "folder": "TIME",
+      "gold_text": "what time is it",
+      "transcript": "weather",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "weather"
+        }
+      }
+    },
+    {
+      "id": "TIMER/timer 1 minute 1.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 1 minute",
+      "transcript": "me",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "1m"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 1 minute 2.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 1 minute",
+      "transcript": "one me",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "1m"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 1 minute 3.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 1 minute",
+      "transcript": "one",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "1m"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 10 seconds 1.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 10 seconds",
+      "transcript": "",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "10s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 10 seconds 2.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 10 seconds",
+      "transcript": "",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "10s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 10 seconds 3.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 10 seconds",
+      "transcript": "six",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "10s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 30 seconds 1.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 30 seconds",
+      "transcript": "",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "30s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 30 seconds 2.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 30 seconds",
+      "transcript": "",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "30s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "TIMER/timer 30 seconds 3.wav",
+      "folder": "TIMER",
+      "gold_text": "timer 30 seconds",
+      "transcript": "",
+      "gold": {
+        "intent": "set_timer",
+        "slots": {
+          "duration": "30s"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_DOWN/lower the volume 1.wav",
+      "folder": "VOLUME_DOWN",
+      "gold_text": "lower the volume",
+      "transcript": "lower",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_down"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_DOWN/lower the volume 3.wav",
+      "folder": "VOLUME_DOWN",
+      "gold_text": "lower the volume",
+      "transcript": "volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_down"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_DOWN/turn the volume down 1.wav",
+      "folder": "VOLUME_DOWN",
+      "gold_text": "turn the volume down",
+      "transcript": "down",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_down"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_DOWN/volume down 3.wav",
+      "folder": "VOLUME_DOWN",
+      "gold_text": "volume down",
+      "transcript": "down",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_down"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/increase the volume 1.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "increase the volume",
+      "transcript": "the volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/increase the volume 2.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "increase the volume",
+      "transcript": "volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/increase the volume 3.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "increase the volume",
+      "transcript": "the volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/turn the volume up 1.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "turn the volume up",
+      "transcript": "the volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/turn the volume up 2.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "turn the volume up",
+      "transcript": "volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/turn the volume up 3.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "turn the volume up",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/volume up 1.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "volume up",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/volume up 3.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "volume up",
+      "transcript": "volume",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "VOLUME_UP/voluyme up 2.wav",
+      "folder": "VOLUME_UP",
+      "gold_text": "voluyme up",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_up"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "WEATHER/weather 1.wav",
+      "folder": "WEATHER",
+      "gold_text": "weather",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "weather"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    }
+  ]
+}

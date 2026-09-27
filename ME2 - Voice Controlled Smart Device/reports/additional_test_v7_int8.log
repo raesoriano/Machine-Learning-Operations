@@ -1,0 +1,35 @@
+loaded 171 rows from ../../additional_test_data
+
+report -> reports/additional_test_v7_int8.json
+
+================================================================
+  MODEL: onnx-int8   TESTSET: ../../additional_test_data
+================================================================
+  n_in_vocab     171
+  intent acc    15.79%
+  slot F1       22.81%
+  exact match   14.04%
+  WER           81.14%
+  infer ms     mean 40.8  p50 15.8  p95 32.5  p99 43.2  max 4019.2
+----------------------------------------------------------------
+  per-folder (intent acc / exact):
+    ALARM              33.3% /   33.3%   (n=9)
+    BRIGHTNESS         22.2% /    0.0%   (n=9)
+    CALL               33.3% /   33.3%   (n=9)
+    COLOR               0.0% /    0.0%   (n=9)
+    CREATE_REMINDER     0.0% /    0.0%   (n=9)
+    LIGHT_OFF           0.0% /    0.0%   (n=9)
+    LIGHT_ON            0.0% /    0.0%   (n=9)
+    LIST_REMINDERS     11.1% /   11.1%   (n=9)
+    MESSAGE            11.1% /   11.1%   (n=9)
+    NEXT               11.1% /   11.1%   (n=9)
+    PAUSE              11.1% /   11.1%   (n=9)
+    PLAY_MUSIC          0.0% /    0.0%   (n=9)
+    STOP               11.1% /   11.1%   (n=9)
+    TEMPERATURE         0.0% /    0.0%   (n=9)
+    TIME               11.1% /    0.0%   (n=9)
+    TIMER               0.0% /    0.0%   (n=9)
+    VOLUME_DOWN        55.6% /   55.6%   (n=9)
+    VOLUME_UP           0.0% /    0.0%   (n=9)
+    WEATHER            88.9% /   88.9%   (n=9)
+================================================================
