@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VCM Demo Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui, sans-serif; background:#101418; color:#e6edf3; margin:0; padding:16px; }
+  h1 { font-size:1.2rem; margin:0 0 12px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+  .card { background:#1a2027; border:1px solid #2d3640; border-radius:10px; padding:12px; }
+  .card h2 { font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:#8b98a5; margin:0 0 8px; }
+  .on { color:#4ade80; font-weight:600; } .off { color:#6b7684; }
+  .row { display:flex; justify-content:space-between; padding:3px 0; font-size:.95rem; }
+  #last { font-size:1.05rem; padding:10px; background:#1a2027; border-radius:10px; margin-bottom:12px; border:1px solid #2d3640; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  td, th { text-align:left; padding:4px 6px; border-bottom:1px solid #2d3640; }
+  .ok { color:#4ade80; } .bad { color:#f87171; }
+</style>
+</head>
+<body>
+<h1>🏠 VCM Smart-Home Demo <span id="clock" style="color:#8b98a5;font-size:.8rem"></span></h1>
+<div id="last">waiting for a command…</div>
+<div class="grid">
+  <div class="card"><h2>Thermostat</h2><div id="temp" class="row"><span>—</span></div></div>
+  <div class="card"><h2>Media</h2><div id="media"></div></div>
+  <div class="card"><h2>Timers / Alarms</h2><div id="timers"></div></div>
+  <div class="card"><h2>Reminders</h2><div id="reminders"></div></div>
+</div>
+<div class="card" style="margin-top:12px"><h2>Lights</h2><div id="lights"></div></div>
+<div class="card" style="margin-top:12px"><h2>Command Log</h2>
+  <table id="log"><tr><th>time</th><th>intent</th><th>slots</th><th>response</th></tr></table>
+</div>
+<script>
+async function tick() {
+  try {
+    const s = await (await fetch('/state')).json();
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+    const last = s.history[s.history.length - 1];
+    if (last) {
+      const el = document.getElementById('last');
+      el.innerHTML = `<b>${last.response.ok ? '✅' : '❌'}</b> ${esc(last.response.message)}`;
+    }
+    document.getElementById('temp').innerHTML =
+      `<span class="${s.temperature.value >= 22 ? 'on' : 'off'}">${s.temperature.value}°${s.temperature.unit}</span>`;
+    const m = s.media;
+    document.getElementById('media').innerHTML =
+      `<div class="row"><span>${m.state}</span><span>vol ${m.volume}${m.muted ? ' 🔇' : ''}</span></div>`;
+    document.getElementById('timers').innerHTML =
+      (s.timers.map(t => `<div class="row"><span class="on">⏱ ${t.duration}</span></div>`).join('') || '<div class="off">none</div>') +
+      (s.alarms.map(a => `<div class="row"><span class="on">⏰ ${a.time}</span></div>`).join('') || '');
+    document.getElementById('reminders').innerHTML =
+      (s.reminders.map(r => `<div class="row"><span>📌 ${esc(r.action)}</span></div>`).join('') || '<div class="off">none</div>');
+    document.getElementById('lights').innerHTML =
+      Object.entries(s.lights).map(([loc, L]) =>
+        `<div class="row"><span class="${L.on ? 'on' : 'off'}">${L.on ? '💡' : '◽'} ${esc(loc)}</span><span>${L.percent}% ${L.color}</span></div>`
+      ).join('') || '<div class="off">no lights yet</div>';
+    const log = document.getElementById('log');
+    log.innerHTML = '<tr><th>time</th><th>intent</th><th>slots</th><th>response</th></tr>' +
+      s.history.slice().reverse().map(h =>
+        `<tr><td>${new Date(h.ts * 1000).toLocaleTimeString()}</td>
+         <td>${esc(h.command.intent || '?')}</td>
+         <td>${esc(JSON.stringify(h.command.slots || {}))}</td>
+         <td class="${h.response.ok ? 'ok' : 'bad'}">${esc(h.response.message)}</td></tr>`
+      ).join('');
+  } catch (e) { /* server not up yet */ }
+}
+function esc(x) { return String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

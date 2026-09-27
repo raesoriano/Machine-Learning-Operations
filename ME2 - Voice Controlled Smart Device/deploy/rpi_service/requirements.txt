@@ -1,0 +1,8 @@
+# RPi4/5 runtime — keep this list small (tiny footprint is the point).
+onnxruntime>=1.17          # CPU inference (int8)
+sounddevice>=0.4           # mic capture
+webrtcvad>=2.0             # VAD (optional; energy fallback included)
+scipy>=1.10                # resample + wav I/O
+numpy>=1.24
+paho-mqtt>=2.0             # optional: MQTT backend
+# NOT required: torch (training/export only), vosk (baseline only)

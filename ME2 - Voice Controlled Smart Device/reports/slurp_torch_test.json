@@ -1,0 +1,832 @@
+{
+  "summary": {
+    "n_in_vocab": 48,
+    "intent_accuracy": 0.0,
+    "slot_f1": 0.16666666666666666,
+    "exact_match": 0.0,
+    "wer": 1.0,
+    "n_oov": 9,
+    "rejection_rate": 1.0,
+    "false_accept_rate": 0.0,
+    "command_accuracy": 0.15789473684210525,
+    "model": "torch",
+    "testset": "data/manifests/slurp_test.jsonl",
+    "wall_time_s": 2.3,
+    "rtf_estimate": 0.0408
+  },
+  "per_intent": {
+    "ask_question": {
+      "n": 2,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "lights_adjust": {
+      "n": 3,
+      "exact_match": 0.0,
+      "slot_f1": 0.3333333333333333
+    },
+    "lights_switch": {
+      "n": 14,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "media_control": {
+      "n": 10,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "play_music": {
+      "n": 4,
+      "exact_match": 0.0,
+      "slot_f1": 0.75
+    },
+    "reminders_lists": {
+      "n": 2,
+      "exact_match": 0.0,
+      "slot_f1": 0.0
+    },
+    "set_alarm": {
+      "n": 13,
+      "exact_match": 0.0,
+      "slot_f1": 0.3076923076923077
+    }
+  },
+  "per_subset": {
+    "real": {
+      "n_in_vocab": 48,
+      "intent_accuracy": 0.0,
+      "slot_f1": 0.16666666666666666,
+      "exact_match": 0.0,
+      "wer": 1.0,
+      "n_oov": 9,
+      "rejection_rate": 1.0,
+      "false_accept_rate": 0.0,
+      "command_accuracy": 0.15789473684210525
+    }
+  },
+  "n_failures": 48,
+  "failures_sample": [
+    {
+      "id": "slurp_test_730",
+      "subset": "real",
+      "gold_text": "turn the lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_4654",
+      "subset": "real",
+      "gold_text": "set an alarm for six thirty am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "36am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_2816",
+      "subset": "real",
+      "gold_text": "set the living room lights to fifty percent",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "percent": 50,
+          "location": "living room"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3812",
+      "subset": "real",
+      "gold_text": "mute for fifteen minutes",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_914",
+      "subset": "real",
+      "gold_text": "please turn lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3785",
+      "subset": "real",
+      "gold_text": "turn off the bathroom light please",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "bathroom"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_884",
+      "subset": "real",
+      "gold_text": "set alarm for eight am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5623",
+      "subset": "real",
+      "gold_text": "alarm ten am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "10am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_299",
+      "subset": "real",
+      "gold_text": "what is the weather",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "weather"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_11272",
+      "subset": "real",
+      "gold_text": "play next",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5584",
+      "subset": "real",
+      "gold_text": "please turn the lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_9330",
+      "subset": "real",
+      "gold_text": "play",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_427",
+      "subset": "real",
+      "gold_text": "turn off the lights in the bathroom",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "bathroom"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_2168",
+      "subset": "real",
+      "gold_text": "turn off my alarm",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_4346",
+      "subset": "real",
+      "gold_text": "turn lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1454",
+      "subset": "real",
+      "gold_text": "set the alarm off",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1778",
+      "subset": "real",
+      "gold_text": "please dim the lights",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_939",
+      "subset": "real",
+      "gold_text": "set my alarm for seven am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "7am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1774",
+      "subset": "real",
+      "gold_text": "turn off the alarm",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5156",
+      "subset": "real",
+      "gold_text": "turn the light off in the living room",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "living room"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_11265",
+      "subset": "real",
+      "gold_text": "play the next one",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_533",
+      "subset": "real",
+      "gold_text": "set an alarm for nine am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "9am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5365",
+      "subset": "real",
+      "gold_text": "set alarm six am",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "6am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_560",
+      "subset": "real",
+      "gold_text": "turn off eight am alarm",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "8am"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_2230",
+      "subset": "real",
+      "gold_text": "turn off kitchen light",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "kitchen"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_428",
+      "subset": "real",
+      "gold_text": "turn off the bathroom lights",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "bathroom"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1995",
+      "subset": "real",
+      "gold_text": "play the beatles",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {
+          "query": "beatles"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_197",
+      "subset": "real",
+      "gold_text": "what time is it",
+      "transcript": "",
+      "gold": {
+        "intent": "ask_question",
+        "slots": {
+          "query": "time"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_4171",
+      "subset": "real",
+      "gold_text": "turn off the lights in the kitchen",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "kitchen"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3582",
+      "subset": "real",
+      "gold_text": "mute please",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_651",
+      "subset": "real",
+      "gold_text": "turn off room lights",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_8541",
+      "subset": "real",
+      "gold_text": "remind me please",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "general"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1639",
+      "subset": "real",
+      "gold_text": "please turn the volume down",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "volume_down"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_2965",
+      "subset": "real",
+      "gold_text": "turn office lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "office"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3837",
+      "subset": "real",
+      "gold_text": "mute the music",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5413",
+      "subset": "real",
+      "gold_text": "play the music",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_9760",
+      "subset": "real",
+      "gold_text": "stop play",
+      "transcript": "",
+      "gold": {
+        "intent": "play_music",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_9156",
+      "subset": "real",
+      "gold_text": "remind",
+      "transcript": "",
+      "gold": {
+        "intent": "reminders_lists",
+        "slots": {
+          "action": "general"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_11261",
+      "subset": "real",
+      "gold_text": "next",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "next"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3167",
+      "subset": "real",
+      "gold_text": "turn my bedroom lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "bedroom"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_4077",
+      "subset": "real",
+      "gold_text": "turn the kitchen lights off",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_switch",
+        "slots": {
+          "state": "off",
+          "location": "kitchen"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_189",
+      "subset": "real",
+      "gold_text": "mute volume",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5043",
+      "subset": "real",
+      "gold_text": "set my alarm for twelve pm",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "12pm"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_5525",
+      "subset": "real",
+      "gold_text": "mute for one hour",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_4851",
+      "subset": "real",
+      "gold_text": "is my alarm set",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {}
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_1030",
+      "subset": "real",
+      "gold_text": "dim the lights in the living room",
+      "transcript": "",
+      "gold": {
+        "intent": "lights_adjust",
+        "slots": {
+          "location": "living room"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_3398",
+      "subset": "real",
+      "gold_text": "please set my alarm for five pm",
+      "transcript": "",
+      "gold": {
+        "intent": "set_alarm",
+        "slots": {
+          "time": "5pm"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    },
+    {
+      "id": "slurp_test_6166",
+      "subset": "real",
+      "gold_text": "please mute for five minutes",
+      "transcript": "",
+      "gold": {
+        "intent": "media_control",
+        "slots": {
+          "action": "mute"
+        }
+      },
+      "pred": {
+        "intent": "unknown",
+        "slots": {}
+      }
+    }
+  ]
+}

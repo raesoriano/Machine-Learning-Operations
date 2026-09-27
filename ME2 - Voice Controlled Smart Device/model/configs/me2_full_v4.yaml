@@ -1,0 +1,32 @@
+# Tiny VCM — full ME2 dataset, v4 recipe (ReduceLROnPlateau).
+#
+# Diagnosis (v2/v3): the model UNDERFITS even the training set — train
+# exact-match plateaus at ~17% with CTC loss ~1.0 (not near 0). Word-level
+# acc is 63.5% but the LEADING VERB is the dominant error (play->volume,
+# turn off->stop, dim->set) plus truncation. Scaling 128ch/4blk -> 256ch/5blk
+# (4.5x) did NOT help (train exact-match 17.8% -> 17.0%), so capacity is not
+# the bottleneck.
+#
+# Root cause: CosineAnnealingLR(T_max=200) decays too slowly — early-stopping
+# at ep 25-77 killed the run while the LR was still 68-96% of peak and the
+# train loss was still falling. v4 switches to ReduceLROnPlateau (drop LR on
+# val plateau) so the model keeps fitting the data, with a longer early-stop
+# patience and a larger (less noisy) eval sample for best.pt selection.
+#
+# Keeping the small 128ch/4blk model (313K params, ~0.36MB int8): scaling
+# didn't help, and the small model is the RPi-realtime one.
+n_mels: 40
+channels: 128
+blocks: 4
+dropout: 0.1
+device: cuda
+epochs: 300
+batch_size: 64
+lr: 0.0003
+weight_decay: 0.0001
+eval_every: 1
+eval_n: 500
+patience: 24
+lr_factor: 0.5
+lr_patience: 6
+min_lr: 0.00001

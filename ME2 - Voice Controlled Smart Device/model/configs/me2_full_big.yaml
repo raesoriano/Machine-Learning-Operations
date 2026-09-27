@@ -1,0 +1,18 @@
+# Tiny VCM — full ME2 dataset, BIGGER model (v3).
+# v2 (128ch/4blk, 313K) underfit: train exact-match only 17.8% (val 13.2%,
+# test 11.2%) — a small train->val gap = underfitting, not overfitting.
+# The 313K model is too small for CTC sequence generation over 185 words.
+# v3 scales to 256ch/5blk (1.41M params, ~1.62MB int8, under the 2MB budget)
+# so the model can actually fit the data. Same recipe otherwise
+# (dropout 0.1, cosine LR, early stop patience 15 on val CTC).
+n_mels: 40
+channels: 256
+blocks: 5
+dropout: 0.1
+device: cuda
+epochs: 200
+batch_size: 64
+lr: 0.0003
+weight_decay: 0.0001
+eval_every: 1
+patience: 15

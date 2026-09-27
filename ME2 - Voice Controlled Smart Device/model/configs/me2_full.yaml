@@ -1,0 +1,19 @@
+# Tiny VCM — full ME2 dataset run (49,786 positives).
+# Architecture unchanged (~1.3M params, int8 < 1 MB) so it stays RPi-realtime;
+# only the training recipe changed for the larger dataset.
+#
+# Recipe v2 (2026-09-27): v1 (constant lr, no dropout) overfit after ep 13
+# (train 5.18->1.84, val_ctc 2.69->3.85) and the best checkpoint was
+# undertrained (frozen intent acc 12.6%). v2 adds dropout + cosine LR decay
+# + early stopping (patience on val CTC).
+n_mels: 40
+channels: 128
+blocks: 4
+dropout: 0.1
+device: cuda
+epochs: 200
+batch_size: 64
+lr: 0.0003
+weight_decay: 0.0001
+eval_every: 1
+patience: 15
