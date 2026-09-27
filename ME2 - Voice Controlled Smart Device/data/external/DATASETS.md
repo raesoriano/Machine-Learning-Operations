@@ -1,7 +1,7 @@
 # External Datasets (consolidated 2026-09-26)
 
 All external speech datasets for the AI-222/AI-231 voice projects now live in
-**one place**: this directory, inside `Voice-Recognition-Mark-Dataset`.
+**one place**: this directory, inside `ME2 - Voice Controlled Smart Device`.
 Audio is **never committed to git** (see `.gitignore`) — it stays on shared
 storage. Metadata, manifests, and download scripts are tracked.
 
