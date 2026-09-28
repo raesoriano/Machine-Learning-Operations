@@ -9,10 +9,10 @@ utterance.
 | File | What it is | Size |
 |---|---|---|
 | `vcm_pi.py` | the listener (mic + VAD + inference + metrics) | 22 KB |
-| `encoder_int8.onnx` | Whisper base.en **encoder** (fine-tuned, int8) | ~145 MB |
-| `decoder_int8.onnx` | Whisper base.en **decoder + LM head** (int8) | ~145 MB |
-| `encoder.onnx` / `decoder.onnx` | same, fp32 (fallback if int8 misbehaves) | ~290 MB each |
-| `student_int8.onnx` | **distilled ~2.7M-param encoder** (mel → 512-d) | ~3 MB |
+| `encoder_int8.onnx` | Whisper base.en **encoder** (fine-tuned, int8) | 23 MB |
+| `decoder_int8.onnx` | Whisper base.en **decoder + LM head** (int8) | 79 MB |
+| `encoder.onnx` / `decoder.onnx` | same, fp32 (fallback if int8 misbehaves) | 82 MB / 314 MB |
+| `student_int8.onnx` | **distilled ~2.7M-param encoder** (mel → 512-d) | ~2.7 MB |
 | `head_int8.onnx` | linear 32-way command head (512-d → logits) | ~16 KB |
 | `classes.json` | head's label order (31 commands + REJECT) | 1 KB |
 | `tokenizer/` | Whisper tokenizer + feature extractor (mel) | 3.9 MB |

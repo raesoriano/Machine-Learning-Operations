@@ -1,0 +1,191 @@
+{
+  "task": "PocketSphinx comparison: stock en-us AM vs custom-trained AM (our dataset) vs Whisper fine-tune",
+  "test_set": "test_data/additional_test_data (171 clips, one new speaker, held out from all training)",
+  "date": "2026-09-29",
+  "models": [
+    {
+      "name": "whisper_base_ft_v1 (current best)",
+      "command_acc": 0.8538,
+      "intent_acc": 0.8596,
+      "mean_wer": 10.8362,
+      "median_wer": 0.0,
+      "asr_ms_p50": 225.2,
+      "asr_ms_p95": 569.8,
+      "blank_rate": 0.0,
+      "footprint": "290 MB (fp32) / 102 MB (int8)",
+      "notes": "repetition loops on 40.9% of clips inflate mean WER; median 0"
+    },
+    {
+      "name": "pocketsphinx_stock_cmd (base/stock AM + 93-phrase JSGF grammar)",
+      "command_acc": 0.7836,
+      "intent_acc": 0.8304,
+      "mean_wer": 0.3103,
+      "median_wer": 0.0,
+      "asr_ms_p50": 60.0,
+      "asr_ms_p95": 81.0,
+      "blank_rate": 0.0643,
+      "footprint": "~9.6 MB (6.4 MB AM + 3.2 MB cmudict + 3 KB JSGF)",
+      "notes": "stock en-us acoustic model, grammar-constrained decode"
+    },
+    {
+      "name": "pocketsphinx_stock_free (base/stock AM + bigram LM, no grammar)",
+      "command_acc": 0.1754,
+      "intent_acc": 0.2281,
+      "mean_wer": 1.151,
+      "median_wer": 1.0,
+      "asr_ms_p50": 1207.3,
+      "asr_ms_p95": 1794.9,
+      "blank_rate": 0.0,
+      "footprint": "~9.6 MB",
+      "notes": "free dictation; shows grammar is essential"
+    },
+    {
+      "name": "pocketsphinx_trained_cmd (custom AM trained on our 6,964 clips + JSGF)",
+      "command_acc": 0.7485,
+      "intent_acc": 0.8246,
+      "mean_wer": 0.2806,
+      "median_wer": 0.0,
+      "asr_ms_p50": 26.2,
+      "asr_ms_p95": 33.7,
+      "blank_rate": 0.076,
+      "footprint": "~1.9 MB (0.97 MB AM + 1.2 KB dict + 770 KB LM)",
+      "notes": "sphinxtrain cd_cont 200-gaussian, converged; 2 clips skipped (align fail)"
+    },
+    {
+      "name": "pocketsphinx_trained_free (custom AM + bigram LM, no grammar)",
+      "command_acc": 0.7485,
+      "intent_acc": 0.8129,
+      "mean_wer": 0.3004,
+      "median_wer": 0.0,
+      "asr_ms_p50": 35.8,
+      "asr_ms_p95": 51.2,
+      "blank_rate": 0.0,
+      "footprint": "~1.9 MB",
+      "notes": "free dictation with the custom AM"
+    }
+  ],
+  "per_folder_cmd_acc": {
+    "ALARM": {
+      "n": 9,
+      "stock": 1.0,
+      "trained": 0.8889
+    },
+    "BRIGHTNESS": {
+      "n": 9,
+      "stock": 1.0,
+      "trained": 0.8889
+    },
+    "CALL": {
+      "n": 9,
+      "stock": 0.2222,
+      "trained": 0.8889
+    },
+    "COLOR": {
+      "n": 9,
+      "stock": 0.8889,
+      "trained": 0.4444
+    },
+    "CREATE_REMINDER": {
+      "n": 9,
+      "stock": 1.0,
+      "trained": 0.8889
+    },
+    "LIGHT_OFF": {
+      "n": 9,
+      "stock": 0.3333,
+      "trained": 0.2222
+    },
+    "LIGHT_ON": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.5556
+    },
+    "LIST_REMINDERS": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.8889
+    },
+    "MESSAGE": {
+      "n": 9,
+      "stock": 1.0,
+      "trained": 1.0
+    },
+    "NEXT": {
+      "n": 9,
+      "stock": 0.8889,
+      "trained": 1.0
+    },
+    "PAUSE": {
+      "n": 9,
+      "stock": 0.5556,
+      "trained": 0.8889
+    },
+    "PLAY_MUSIC": {
+      "n": 9,
+      "stock": 0.8889,
+      "trained": 0.8889
+    },
+    "STOP": {
+      "n": 9,
+      "stock": 0.6667,
+      "trained": 0.5556
+    },
+    "TEMPERATURE": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.2222
+    },
+    "TIME": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.4444
+    },
+    "TIMER": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.8889
+    },
+    "VOLUME_DOWN": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 1.0
+    },
+    "VOLUME_UP": {
+      "n": 9,
+      "stock": 0.7778,
+      "trained": 0.8889
+    },
+    "WEATHER": {
+      "n": 9,
+      "stock": 1.0,
+      "trained": 0.7778
+    }
+  },
+  "training": {
+    "toolchain": "sphinxtrain (modern task/stage interface), built from source at sphinx_src/install",
+    "data": "6,964 clean optionb clips (train.jsonl, _clean variants), 16 kHz mono",
+    "phone_set": "en-us 37-phone set (reused mdef)",
+    "architecture": "cd_cont, 200 tied gaussians (split from 1->2->4->8), 37 triphones x 3 states",
+    "convergence": "converged at iteration 7 of stage 8 (ratio 0.077 < threshold)",
+    "known_issue": "2 training clips failed alignment (ob_COLOR_GREEN_s47_v3, ob_COLOR_RED_s47_v3) and were skipped"
+  },
+  "analysis": {
+    "headline": "Stock AM + command grammar (78.4%) BEATS the custom-trained AM (74.9%) on the held-out set, at 5x the footprint.",
+    "why": "The custom AM overfits the 6,964-clip training distribution: it produces confident wrong phrases (e.g. 'play music' for 'tell me the weather', 'lower' for 'temperature 18 degrees') instead of blanking. The stock AM, trained on ~3000h of general speech, handles the new speaker's pronunciation better. The JSGF grammar does most of the domain adaptation in both cases.",
+    "custom_am_wins": [
+      "CALL (0.22 -> 0.89)",
+      "PAUSE (0.56 -> 0.89)",
+      "VOLUME_DOWN (0.78 -> 1.00)",
+      "NEXT (0.89 -> 1.00)"
+    ],
+    "stock_wins": [
+      "TEMPERATURE (0.78 -> 0.22)",
+      "TIME (0.78 -> 0.44)",
+      "COLOR (0.89 -> 0.44)",
+      "LIGHT_ON (0.78 -> 0.56)",
+      "WEATHER (1.00 -> 0.78)"
+    ],
+    "latency": "trained AM is 2.3x faster than stock (26 ms vs 60 ms p50) \u2014 smaller model, same grammar.",
+    "recommendation": "Ship the STOCK AM + JSGF fallback (9.6 MB, 78.4%, 60 ms). The custom AM (1.9 MB, 74.9%, 26 ms) is a viable ultra-small variant if footprint/latency matter more than the 3.5-point accuracy gap."
+  }
+}
