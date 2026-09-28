@@ -1,0 +1,48 @@
+# ============================================================
+# vcm-v2 (migrated from the VCM-v2 repo into the ME2 subfolder)
+# `data` is a SYMLINK to ../data (the ME2 dataset). Git stores the
+# symlink, never the audio behind it. See MIGRATION.md.
+#
+# Layout:
+#   backbone/            ACTIVE pipeline: pretrained Whisper ASR
+#   archive/ctc_v8/      frozen snapshot: from-scratch CTC pipeline
+#   archive/w2v2_base/   frozen snapshot: abandoned wav2vec2 CTC attempt
+# ============================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# --- Model artifacts ---
+# Loadable fine-tuned / pretrained checkpoints (*.safetensors) are committed
+# via Git LFS (see .gitattributes) -- NOT ignored here. Everything else big
+# is ignored (regenerable or intermediate).
+*.onnx
+*.pth
+*.bin
+*.pt
+# ...except the small CTC me2_v8 checkpoints (3.4 MB), which ARE committed
+# (force-added, because the repo-root .gitignore ignores *.pt globally).
+!archive/ctc_v8/artifacts/asr_me2_v8/*.pt
+# The w2v2 raw state_dicts are intermediate (ignored); its loadable
+# model.safetensors is LFS-tracked.
+archive/w2v2_base/artifacts/*.pt
+# ctc_v8 derived features (1.2 GB npz, regenerable via
+# archive/ctc_v8/scripts/build_subset.py) and the 1539 variant wavs.
+archive/ctc_v8/data_new/features/
+archive/ctc_v8/data_new/wavs/
+archive/ctc_v8/artifacts/manifest_clean.csv
+# backbone: intermediate checkpoints / optimizer state are NOT committed.
+backbone/artifacts/*/checkpoints/
+backbone/artifacts/*/optimizer*
+backbone/artifacts/*/rng_state*
+backbone/data/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/

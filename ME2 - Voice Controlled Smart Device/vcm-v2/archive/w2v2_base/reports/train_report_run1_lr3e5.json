@@ -1,0 +1,127 @@
+{
+ "backbone": "facebook/wav2vec2-base-960h",
+ "vocab_size": 1034,
+ "n_vocab_words": 1033,
+ "max_seconds": 10.0,
+ "epochs_run": 15,
+ "best_epoch": 10,
+ "best_val_ctc": 243.1657,
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 430.7768,
+   "val_loss": 251.8383,
+   "seconds": 256.0,
+   "phase": "head"
+  },
+  {
+   "epoch": 2,
+   "train_loss": 415.2819,
+   "val_loss": 245.024,
+   "seconds": 461.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 3,
+   "train_loss": 407.9237,
+   "val_loss": 246.1687,
+   "seconds": 460.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 4,
+   "train_loss": 406.1322,
+   "val_loss": 244.4566,
+   "seconds": 459.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 5,
+   "train_loss": 405.6352,
+   "val_loss": 245.2597,
+   "seconds": 462.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 6,
+   "train_loss": 404.3838,
+   "val_loss": 245.3881,
+   "seconds": 459.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 7,
+   "train_loss": 403.3305,
+   "val_loss": 245.0226,
+   "seconds": 460.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 8,
+   "train_loss": 403.9513,
+   "val_loss": 243.9411,
+   "seconds": 460.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 9,
+   "train_loss": 402.4418,
+   "val_loss": 245.3442,
+   "seconds": 457.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 10,
+   "train_loss": 402.5222,
+   "val_loss": 243.1657,
+   "seconds": 459.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 11,
+   "train_loss": 405.1146,
+   "val_loss": 244.6324,
+   "seconds": 464.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 12,
+   "train_loss": 404.863,
+   "val_loss": 244.6503,
+   "seconds": 461.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 13,
+   "train_loss": 399.8588,
+   "val_loss": 245.6792,
+   "seconds": 457.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 14,
+   "train_loss": 401.5743,
+   "val_loss": 245.2044,
+   "seconds": 458.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 15,
+   "train_loss": 403.355,
+   "val_loss": 245.6337,
+   "seconds": 461.0,
+   "phase": "full"
+  }
+ ],
+ "hyperparams": {
+  "epochs": 20,
+  "batch_size": 32,
+  "lr": 3e-05,
+  "head_lr": 0.0003,
+  "patience": 5,
+  "seed": 42,
+  "head_only_epochs": 1
+ },
+ "train_rows": 37992,
+ "val_rows": 5315
+}

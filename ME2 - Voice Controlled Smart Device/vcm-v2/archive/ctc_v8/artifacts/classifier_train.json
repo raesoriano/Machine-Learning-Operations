@@ -1,0 +1,21 @@
+{
+  "n_positives": 49791,
+  "n_negatives": 30366,
+  "n_classes": 32,
+  "train_split": null,
+  "config": {
+    "word_ngram": [
+      1,
+      2
+    ],
+    "char_ngram": [
+      2,
+      5
+    ],
+    "class_weight": "balanced",
+    "C": 4.0,
+    "min_df": 3
+  },
+  "in_sample_acc": 0.9967,
+  "artifact": "/mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/VCM-v2/artifacts/classifier.pkl"
+}

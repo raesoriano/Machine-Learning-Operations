@@ -1,0 +1,23 @@
+{
+  "source_clips": 171,
+  "variant_clips": 1539,
+  "per_variant": {
+    "clean": 171,
+    "hp80": 171,
+    "rumble": 171,
+    "white": 171,
+    "babble": 171,
+    "reverb": 171,
+    "pitch_up": 171,
+    "pitch_down": 171,
+    "stretch": 171
+  },
+  "train_new": 1368,
+  "val_new": 171,
+  "empty_targets_after_fix": 0,
+  "target_fixes_applied": {
+    "end playback": 27,
+    "voluyme up": 9
+  },
+  "note": "raw 171 clips held out (test); clean variant -> val; 8 variants -> train"
+}

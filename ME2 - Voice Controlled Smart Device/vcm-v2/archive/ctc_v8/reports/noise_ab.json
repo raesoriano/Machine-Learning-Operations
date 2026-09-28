@@ -1,0 +1,3625 @@
+{
+  "summary": {
+    "raw": {
+      "blank": 63,
+      "wer": 0.7529,
+      "cmd_acc": 0.2456,
+      "intent_acc": 0.2807,
+      "asr_ms_mean": 10.88
+    },
+    "hp80": {
+      "blank": 66,
+      "wer": 0.7602,
+      "cmd_acc": 0.2456,
+      "intent_acc": 0.2924,
+      "asr_ms_mean": 7.93
+    },
+    "nr": {
+      "blank": 63,
+      "wer": 0.7778,
+      "cmd_acc": 0.2515,
+      "intent_acc": 0.2982,
+      "asr_ms_mean": 7.81
+    },
+    "hp_nr": {
+      "blank": 65,
+      "wer": 0.7739,
+      "cmd_acc": 0.2632,
+      "intent_acc": 0.3099,
+      "asr_ms_mean": 7.77
+    }
+  },
+  "clips": [
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 6 AM",
+      "gold": "ALARM_6_00AM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm six",
+        "command": "ALARM_6_00AM"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 6 AM",
+      "gold": "ALARM_6_00AM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 6 AM",
+      "gold": "ALARM_6_00AM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm six",
+        "command": "ALARM_6_00AM"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 8 AM",
+      "gold": "ALARM_8_00AM",
+      "raw": {
+        "transcript": "alarm am",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm am",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm am",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 8 AM",
+      "gold": "ALARM_8_00AM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 8 AM",
+      "gold": "ALARM_8_00AM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 9 PM",
+      "gold": "ALARM_9_00PM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm pm",
+        "command": "ALARM_9_00PM"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 9 PM",
+      "gold": "ALARM_9_00PM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "ALARM",
+      "spoken": "alarm 9 PM",
+      "gold": "ALARM_9_00PM",
+      "raw": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "alarm",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 100 percent",
+      "gold": "BRIGHTNESS_100",
+      "raw": {
+        "transcript": "brightness",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "brightness",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "brightness",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 100 percent",
+      "gold": "BRIGHTNESS_100",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 100 percent",
+      "gold": "BRIGHTNESS_100",
+      "raw": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 20 percent",
+      "gold": "BRIGHTNESS_20",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 20 percent",
+      "gold": "BRIGHTNESS_20",
+      "raw": {
+        "transcript": "play play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 20 percent",
+      "gold": "BRIGHTNESS_20",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "brightness",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "brightness",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 60 percent",
+      "gold": "BRIGHTNESS_60",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 60 percent",
+      "gold": "BRIGHTNESS_60",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "BRIGHTNESS",
+      "spoken": "brightness 60 percent",
+      "gold": "BRIGHTNESS_60",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "percent",
+        "command": "BRIGHTNESS_60"
+      },
+      "hp_nr": {
+        "transcript": "percent",
+        "command": "BRIGHTNESS_60"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp80": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp_nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "call",
+        "command": "CALL"
+      },
+      "hp80": {
+        "transcript": "call",
+        "command": "CALL"
+      },
+      "nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp_nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "call",
+        "command": "CALL"
+      },
+      "hp80": {
+        "transcript": "call",
+        "command": "CALL"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a phone call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a phone call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CALL",
+      "spoken": "make a phone call",
+      "gold": "CALL",
+      "raw": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "make",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to blue",
+      "gold": "COLOR_BLUE",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to blue",
+      "gold": "COLOR_BLUE",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to blue",
+      "gold": "COLOR_BLUE",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to green",
+      "gold": "COLOR_GREEN",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change in",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to green",
+      "gold": "COLOR_GREEN",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to green",
+      "gold": "COLOR_GREEN",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to red",
+      "gold": "COLOR_RED",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change lower",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to red",
+      "gold": "COLOR_RED",
+      "raw": {
+        "transcript": "stop change",
+        "command": "STOP"
+      },
+      "hp80": {
+        "transcript": "stop change",
+        "command": "STOP"
+      },
+      "nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "COLOR",
+      "spoken": "change color to red",
+      "gold": "COLOR_RED",
+      "raw": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "change",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder drink water",
+      "gold": "CREATE_REMINDER_DRINK_WATER",
+      "raw": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp80": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "nr": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp_nr": {
+        "transcript": "what whats",
+        "command": "TIME"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder exercise",
+      "gold": "CREATE_REMINDER_EXERCISE",
+      "raw": {
+        "transcript": "please",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder study",
+      "gold": "CREATE_REMINDER_STUDY",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "my start",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "my start",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder to drink water",
+      "gold": "CREATE_REMINDER_DRINK_WATER",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder to exercise",
+      "gold": "CREATE_REMINDER_EXERCISE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "reminders",
+        "command": "LIST_REMINDERS"
+      },
+      "hp_nr": {
+        "transcript": "reminders",
+        "command": "LIST_REMINDERS"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder to exercise",
+      "gold": "CREATE_REMINDER_EXERCISE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder to study",
+      "gold": "CREATE_REMINDER_STUDY",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create a reminder to study",
+      "gold": "CREATE_REMINDER_STUDY",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "reminders start",
+        "command": "LIST_REMINDERS"
+      },
+      "hp_nr": {
+        "transcript": "reminders start",
+        "command": "LIST_REMINDERS"
+      }
+    },
+    {
+      "folder": "CREATE_REMINDER",
+      "spoken": "create reminder to drink water",
+      "gold": "CREATE_REMINDER_DRINK_WATER",
+      "raw": {
+        "transcript": "reminders what",
+        "command": "LIST_REMINDERS"
+      },
+      "hp80": {
+        "transcript": "reminders what",
+        "command": "LIST_REMINDERS"
+      },
+      "nr": {
+        "transcript": "reminders",
+        "command": "LIST_REMINDERS"
+      },
+      "hp_nr": {
+        "transcript": "reminders",
+        "command": "LIST_REMINDERS"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "kill the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "kill the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "kill the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "lights out",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "lights out",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "off",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "off sound",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "lights off on sound",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights off on sound",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "lights out",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "shut off the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "shut off the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_OFF",
+      "spoken": "shut off the lights",
+      "gold": "LIGHT_OFF",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "lights on",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "louder",
+        "command": "VOLUME_UP"
+      },
+      "hp_nr": {
+        "transcript": "louder",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "lights on",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "lights on",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "power on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "lower the lights",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "power on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "power on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "turn on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "turn on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIGHT_ON",
+      "spoken": "turn on the lights",
+      "gold": "LIGHT_ON",
+      "raw": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      },
+      "hp_nr": {
+        "transcript": "the lights",
+        "command": "LIGHT_OFF"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "list my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "play reminder",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "reminder",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "list my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "list my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "show my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "kill",
+        "command": "LIGHT_OFF"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "show",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "show my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "LIST_REMINDERS",
+      "spoken": "show my reminders",
+      "gold": "LIST_REMINDERS",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "list message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "am",
+        "command": "ALARM_6_00AM"
+      },
+      "nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send a message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send a message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send a message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send my message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "my",
+        "command": "LIST_REMINDERS"
+      },
+      "hp80": {
+        "transcript": "my",
+        "command": "LIST_REMINDERS"
+      },
+      "nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      },
+      "hp_nr": {
+        "transcript": "message",
+        "command": "MESSAGE"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send my message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "MESSAGE",
+      "spoken": "send my message",
+      "gold": "MESSAGE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "next stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "next stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "hp_nr": {
+        "transcript": "next",
+        "command": "NEXT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "next",
+        "command": "NEXT"
+      },
+      "hp_nr": {
+        "transcript": "next",
+        "command": "NEXT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "play next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "play next",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "next stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "next stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "play next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "play next",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "play next",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "play next song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "please song",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "please song",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "next song",
+        "command": "NEXT"
+      },
+      "hp_nr": {
+        "transcript": "next song",
+        "command": "NEXT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "skip song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "skip",
+        "command": "NEXT"
+      },
+      "hp80": {
+        "transcript": "skip",
+        "command": "NEXT"
+      },
+      "nr": {
+        "transcript": "skip",
+        "command": "NEXT"
+      },
+      "hp_nr": {
+        "transcript": "skip",
+        "command": "NEXT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "skip song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "skip song",
+        "command": "NEXT"
+      },
+      "hp_nr": {
+        "transcript": "skip",
+        "command": "NEXT"
+      }
+    },
+    {
+      "folder": "NEXT",
+      "spoken": "skip song",
+      "gold": "NEXT",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause audio",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause audio",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause audio",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp80": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp_nr": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause song",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause song",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PAUSE",
+      "spoken": "pause song",
+      "gold": "PAUSE",
+      "raw": {
+        "transcript": "pause",
+        "command": "PAUSE"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play some music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "please",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "please",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "resume",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "resume",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play some music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "please music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "please",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "please",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "play some music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "start music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "start music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "start",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "start",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "PLAY_MUSIC",
+      "spoken": "start music",
+      "gold": "PLAY_MUSIC",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "end playback",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "end playback",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "please",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "please",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "end playback",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp80": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp80": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp80": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop playing",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop playing",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "stop play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "stop play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "STOP",
+      "spoken": "stop playing",
+      "gold": "STOP",
+      "raw": {
+        "transcript": "green",
+        "command": "COLOR_GREEN"
+      },
+      "hp80": {
+        "transcript": "green",
+        "command": "COLOR_GREEN"
+      },
+      "nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      },
+      "hp_nr": {
+        "transcript": "stop",
+        "command": "STOP"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 18 degrees",
+      "gold": "TEMPERATURE_18",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 18 degrees",
+      "gold": "TEMPERATURE_18",
+      "raw": {
+        "transcript": "degrees",
+        "command": "TEMPERATURE_18"
+      },
+      "hp80": {
+        "transcript": "degrees",
+        "command": "TEMPERATURE_18"
+      },
+      "nr": {
+        "transcript": "degrees",
+        "command": "TEMPERATURE_18"
+      },
+      "hp_nr": {
+        "transcript": "degrees",
+        "command": "TEMPERATURE_18"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 18 degrees",
+      "gold": "TEMPERATURE_18",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "temperature",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 22 degrees",
+      "gold": "TEMPERATURE_22",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 22 degrees",
+      "gold": "TEMPERATURE_22",
+      "raw": {
+        "transcript": "turn",
+        "command": "VOLUME_UP"
+      },
+      "hp80": {
+        "transcript": "stop turn",
+        "command": "STOP"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 22 degrees",
+      "gold": "TEMPERATURE_22",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 26 degrees",
+      "gold": "TEMPERATURE_26",
+      "raw": {
+        "transcript": "temperature",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "temperature",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 26 degrees",
+      "gold": "TEMPERATURE_26",
+      "raw": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "play",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TEMPERATURE",
+      "spoken": "temperature 26 degrees",
+      "gold": "TEMPERATURE_26",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "tell me the time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "tell me the time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "tell me the time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "tell me",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "tell",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "time",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "what time is it",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp80": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "what time is it",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "what need",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "what need",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "what music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "what music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "TIME",
+      "spoken": "what time is it",
+      "gold": "TIME",
+      "raw": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp80": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "nr": {
+        "transcript": "what music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "what music",
+        "command": "PLAY_MUSIC"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 1 minute",
+      "gold": "TIMER_1m",
+      "raw": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      },
+      "hp80": {
+        "transcript": "me",
+        "command": "PLAY_MUSIC"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 1 minute",
+      "gold": "TIMER_1m",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "timer",
+        "command": "TIME"
+      },
+      "hp_nr": {
+        "transcript": "timer",
+        "command": "TIME"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 1 minute",
+      "gold": "TIMER_1m",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 10 seconds",
+      "gold": "TIMER_10s",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "ten",
+        "command": "TIMER_10s"
+      },
+      "hp_nr": {
+        "transcript": "ten",
+        "command": "TIMER_10s"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 10 seconds",
+      "gold": "TIMER_10s",
+      "raw": {
+        "transcript": "sunset",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 10 seconds",
+      "gold": "TIMER_10s",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "it",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "music",
+        "command": "PLAY_MUSIC"
+      },
+      "hp_nr": {
+        "transcript": "ten",
+        "command": "TIMER_10s"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 30 seconds",
+      "gold": "TIMER_30s",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "ten",
+        "command": "TIMER_10s"
+      },
+      "hp_nr": {
+        "transcript": "ten",
+        "command": "TIMER_10s"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 30 seconds",
+      "gold": "TIMER_30s",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "TIMER",
+      "spoken": "timer 30 seconds",
+      "gold": "TIMER_30s",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "timer",
+        "command": "TIME"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "lower the volume",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "lower the",
+        "command": "VOLUME_DOWN"
+      },
+      "hp80": {
+        "transcript": "lower the",
+        "command": "VOLUME_DOWN"
+      },
+      "nr": {
+        "transcript": "lower",
+        "command": "VOLUME_DOWN"
+      },
+      "hp_nr": {
+        "transcript": "lower",
+        "command": "VOLUME_DOWN"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "lower the volume",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "lower",
+        "command": "VOLUME_DOWN"
+      },
+      "hp80": {
+        "transcript": "lower volume",
+        "command": "VOLUME_DOWN"
+      },
+      "nr": {
+        "transcript": "lower volume",
+        "command": "VOLUME_DOWN"
+      },
+      "hp_nr": {
+        "transcript": "lower volume",
+        "command": "VOLUME_DOWN"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "lower the volume",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "lower the volume",
+        "command": "VOLUME_DOWN"
+      },
+      "hp80": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "turn the volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "the down",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the down",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "turn the volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "the volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "hp80": {
+        "transcript": "the volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "nr": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      },
+      "hp_nr": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "turn the volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "the down",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "hp80": {
+        "transcript": "volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "nr": {
+        "transcript": "volume down",
+        "command": "VOLUME_DOWN"
+      },
+      "hp_nr": {
+        "transcript": "volume down",
+        "command": "VOLUME_DOWN"
+      }
+    },
+    {
+      "folder": "VOLUME_DOWN",
+      "spoken": "volume down",
+      "gold": "VOLUME_DOWN",
+      "raw": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "down",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "increase the volume",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "increase the volume",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "increase the volume",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "hp80": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "turn the volume up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "hp80": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "hp_nr": {
+        "transcript": "turn the volume",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "turn the volume up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "hp80": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "hp_nr": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "turn the volume up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "the",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "the volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "volume up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "volume up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "VOLUME_UP",
+      "spoken": "voluyme up",
+      "gold": "VOLUME_UP",
+      "raw": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      },
+      "hp80": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      },
+      "nr": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      },
+      "hp_nr": {
+        "transcript": "volume",
+        "command": "VOLUME_UP"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "tell me the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "tell the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "turn weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "turn weather",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "tell me the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "me the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "me the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "tell me the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "tell me the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "tell me the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "tell me the weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "tell me the weather",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp80": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "nr": {
+        "transcript": "",
+        "command": "REJECT"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "what",
+        "command": "TIME"
+      },
+      "hp_nr": {
+        "transcript": "",
+        "command": "REJECT"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "weather",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "what's the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "whats what the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "what the",
+        "command": "TIME"
+      },
+      "hp_nr": {
+        "transcript": "what the",
+        "command": "TIME"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "whats the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      }
+    },
+    {
+      "folder": "WEATHER",
+      "spoken": "whats the weather",
+      "gold": "WEATHER",
+      "raw": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "hp80": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "nr": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      },
+      "hp_nr": {
+        "transcript": "what the weather",
+        "command": "WEATHER"
+      }
+    }
+  ]
+}

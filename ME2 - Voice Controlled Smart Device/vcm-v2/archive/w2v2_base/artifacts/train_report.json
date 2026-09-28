@@ -1,0 +1,65 @@
+{
+ "backbone": "facebook/wav2vec2-base-960h",
+ "vocab_size": 1034,
+ "n_vocab_words": 1033,
+ "max_seconds": 10.0,
+ "epochs_run": 6,
+ "best_epoch": 1,
+ "best_val_ctc": 253.8485,
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 454.0975,
+   "val_loss": 253.8485,
+   "seconds": 286.0,
+   "phase": "head"
+  },
+  {
+   "epoch": 2,
+   "train_loss": 431.3017,
+   "val_loss": 263.8181,
+   "seconds": 462.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 3,
+   "train_loss": 424.5224,
+   "val_loss": 278.3825,
+   "seconds": 463.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 4,
+   "train_loss": 423.3028,
+   "val_loss": 285.989,
+   "seconds": 466.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 5,
+   "train_loss": 421.1534,
+   "val_loss": 276.6838,
+   "seconds": 462.0,
+   "phase": "full"
+  },
+  {
+   "epoch": 6,
+   "train_loss": 420.2131,
+   "val_loss": 279.5851,
+   "seconds": 459.0,
+   "phase": "full"
+  }
+ ],
+ "hyperparams": {
+  "epochs": 20,
+  "batch_size": 32,
+  "lr": 0.0003,
+  "head_lr": 0.0003,
+  "patience": 5,
+  "seed": 42,
+  "head_only_epochs": 1,
+  "warmup_steps": 1000
+ },
+ "train_rows": 37992,
+ "val_rows": 5315
+}

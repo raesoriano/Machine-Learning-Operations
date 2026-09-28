@@ -1,0 +1,10 @@
+{
+  "ckpt": "me2_v8",
+  "split": "test",
+  "n_rows": 6468,
+  "wer": 0.4768,
+  "substitution": 0.0546,
+  "deletion": 0.4143,
+  "insertion": 0.0079,
+  "word_exact_match": 0.385
+}

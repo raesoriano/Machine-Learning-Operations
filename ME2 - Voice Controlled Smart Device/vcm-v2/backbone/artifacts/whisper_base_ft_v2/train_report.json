@@ -1,0 +1,52 @@
+{
+  "model": "whisper base.en FINE-TUNED v2 (staged: frozen-encoder warm-start -> unfrozen cosine)",
+  "base": "openai/whisper-base.en",
+  "best_epoch": 1,
+  "best_val_wer": 6.2003,
+  "history": [
+    {
+      "epoch": 1,
+      "stage": "A",
+      "train_loss": 0.1402,
+      "val_loss": 0.1939,
+      "val_wer": 6.2003,
+      "seconds": 359.0
+    },
+    {
+      "epoch": 2,
+      "stage": "A",
+      "train_loss": 0.0362,
+      "val_loss": 0.1975,
+      "val_wer": 9.3734,
+      "seconds": 333.0
+    },
+    {
+      "epoch": 3,
+      "stage": "A",
+      "train_loss": 0.0158,
+      "val_loss": 0.2109,
+      "val_wer": 11.496,
+      "seconds": 316.0
+    },
+    {
+      "epoch": 4,
+      "stage": "B",
+      "train_loss": 0.0089,
+      "val_loss": 0.2479,
+      "val_wer": 8.9404,
+      "seconds": 320.0
+    }
+  ],
+  "hyperparams": {
+    "stage_a_epochs": 3,
+    "stage_b_epochs": 12,
+    "batch_size": 32,
+    "lr_dec": 3e-05,
+    "lr_enc": 1e-05,
+    "patience": 3,
+    "seed": 42
+  },
+  "train_rows": 37992,
+  "val_rows": 5315,
+  "note": "LEAKAGE-FREE: ME2 optionb positives only (--no-newspk); additional_test_data never in train/val. Early stop on val WER (300 clips), not CE."
+}

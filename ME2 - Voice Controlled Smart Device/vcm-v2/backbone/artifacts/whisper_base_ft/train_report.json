@@ -1,0 +1,36 @@
+{
+ "model": "openai/whisper-base.en",
+ "epochs_run": 3,
+ "best_epoch": 1,
+ "best_val_loss": 0.1276,
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 0.1604,
+   "val_loss": 0.1276,
+   "seconds": 1877.0
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.0373,
+   "val_loss": 0.1336,
+   "seconds": 1867.0
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.0136,
+   "val_loss": 0.1328,
+   "seconds": 2304.0
+  }
+ ],
+ "hyperparams": {
+  "epochs": 6,
+  "batch_size": 32,
+  "lr": 1e-05,
+  "patience": 2,
+  "seed": 42
+ },
+ "train_rows": 37992,
+ "val_rows": 5315,
+ "note": "LEAKAGE-FREE: ME2 optionb positives only (--no-newspk); additional_test_data never in train/val"
+}

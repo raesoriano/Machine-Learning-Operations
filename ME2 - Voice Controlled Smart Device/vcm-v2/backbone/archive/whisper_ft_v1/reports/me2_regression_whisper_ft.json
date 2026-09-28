@@ -1,0 +1,8 @@
+{
+ "model": "whisper base.en FINE-TUNED (HF, ME2 domain)",
+ "split": "ME2 test (original speakers, in-domain guardrail)",
+ "n_rows": 400,
+ "wer": 5.2552,
+ "word_exact_match": 0.06,
+ "wall_s": 72.5
+}
