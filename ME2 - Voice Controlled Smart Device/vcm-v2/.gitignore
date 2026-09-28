@@ -30,6 +30,9 @@ venv/
 !archive/ctc_v8/artifacts/asr_me2_v8/*.pt
 # pi_test ONNX (Pi deployment) ARE committed via LFS.
 !pi_test/*.onnx
+# pi_test/pocketsphinx fallback (stock en-us AM + command JSGF, ~10.75 MB)
+# committed as regular files; the phone-LM is a .bin so re-include the dir.
+!pi_test/pocketsphinx/**
 # The w2v2 raw state_dicts are intermediate (ignored); its loadable
 # model.safetensors is LFS-tracked.
 archive/w2v2_base/artifacts/*.pt
