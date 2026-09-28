@@ -95,6 +95,11 @@ ME2 - Voice Controlled Smart Device/
 ├── benchmark/                    # frozen + synthetic harness, metrics, ONNX/torch backends
 ├── deploy/                       # ONNX conversion + int8 quantize, RPi service, simulator
 ├── demo/                         # mock smart-home dashboard (browser demo)
+├── vcm-v2/                       # VCM v2: pretrained Whisper ASR backbone (migrated 2026-09-28)
+│   ├── README.md, MIGRATION.md   #   pipeline docs + migration notes + results
+│   ├── backbone/                 #   ACTIVE: Whisper fine-tune + 31-cmd classifier (git-lfs models)
+│   ├── archive/ctc_v8/           #   frozen from-scratch CTC pipeline (me2_v8)
+│   └── archive/w2v2_base/        #   frozen abandoned wav2vec2-base CTC attempt
 ├── tools/check_grammar.py        # CI gate: every row must round-trip through the parser
 └── data/
     ├── .gitignore                # audio ignored; manifests+metadata tracked
@@ -168,6 +173,13 @@ Regenerate: `python3 data/scripts/build_manifest.py` (from this folder).
 - [x] P4 validate on frozen test v1 (final numbers in `reports/`)
 - [ ] P5 RPi4/5 demo: VAD → VCM → parser → GPIO (LED/relay/buzzer/DHT11)
       (RPi service + simulator in `deploy/`)
+- [x] P7 (2026-09-28) VCM v2 backbone: the from-scratch CTC underfits even
+      its own in-domain data (47.7% WER on the ME2 test split), so the
+      standalone `VCM-v2` repo explored a **pretrained Whisper base.en** ASR
+      backbone + the same 31-command classifier. Migrated into `vcm-v2/`
+      (this folder). Best result: **85.4% command / 86.0% intent** on the
+      held-out 171-clip new-speaker set (vs 24.6% for every from-scratch
+      attempt, 81.9% zero-shot). See `vcm-v2/README.md` + `vcm-v2/MIGRATION.md`.
 
 ## Results
 
