@@ -28,6 +28,8 @@ venv/
 # ...except the small CTC me2_v8 checkpoints (3.4 MB), which ARE committed
 # (force-added, because the repo-root .gitignore ignores *.pt globally).
 !archive/ctc_v8/artifacts/asr_me2_v8/*.pt
+# pi_test ONNX (Pi deployment) ARE committed via LFS.
+!pi_test/*.onnx
 # The w2v2 raw state_dicts are intermediate (ignored); its loadable
 # model.safetensors is LFS-tracked.
 archive/w2v2_base/artifacts/*.pt

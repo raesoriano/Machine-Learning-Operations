@@ -3,3 +3,4 @@
 # (Raw best.pt / last.pt state_dicts for the w2v2 attempt are git-ignored;
 #  the small CTC me2_v8 .pt checkpoints are force-added, see MIGRATION.md.)
 *.safetensors filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
