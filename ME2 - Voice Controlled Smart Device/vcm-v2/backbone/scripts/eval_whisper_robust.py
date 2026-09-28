@@ -10,7 +10,7 @@ hanging the whole run.
 
 Usage:
     python backbone/scripts/eval_whisper_robust.py \
-        --data ../data/additional_test_data \
+        --data ../test_data/additional_test_data \
         --report backbone/reports/additional_test_whisper.json \
         --size base.en --device cuda
 """
@@ -27,8 +27,8 @@ import soundfile as sf
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _BACK = os.path.dirname(_HERE)
 _REPO = os.path.dirname(_BACK)
-_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 _ME2 = os.path.dirname(_REPO)  # vcm-v2 lives inside the ME2 folder
+_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 sys.path.insert(0, _ME2)          # for `vcm` (normalize -> vcm.parser)
 sys.path.insert(0, _BACK)
 sys.path.insert(0, os.path.join(_REPO, "archive", "ctc_v8"))

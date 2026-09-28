@@ -12,7 +12,7 @@ same normalize() the classifier was trained on.
 Usage:
     CUDA_VISIBLE_DEVICES=0 python backbone/scripts/eval_whisper_ft.py \
         --model backbone/artifacts/whisper_base_ft/best \
-        --data ../data/additional_test_data \
+        --data ../test_data/additional_test_data \
         --report backbone/reports/additional_test_whisper_ft.json
 """
 import argparse
@@ -30,8 +30,8 @@ from transformers import (AutoTokenizer, WhisperForConditionalGeneration,
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _BACK = os.path.dirname(_HERE)
 _REPO = os.path.dirname(_BACK)
-_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 _ME2 = os.path.dirname(_REPO)  # vcm-v2 lives inside the ME2 folder
+_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 sys.path.insert(0, _ME2)
 sys.path.insert(0, _BACK)
 sys.path.insert(0, os.path.join(_REPO, "archive", "ctc_v8"))

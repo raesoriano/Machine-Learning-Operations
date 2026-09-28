@@ -42,6 +42,12 @@ backbone/artifacts/*/optimizer*
 backbone/artifacts/*/rng_state*
 backbone/data/
 
+# --- Test data ---
+# test_data/additional_test_data/ is the project's SOLE test set (171 clips,
+# one new speaker). Copied locally from ../data/additional_test_data so the
+# project is self-contained; audio is never committed (ME2 policy).
+test_data/
+
 # --- OS / editor ---
 .DS_Store
 .idea/

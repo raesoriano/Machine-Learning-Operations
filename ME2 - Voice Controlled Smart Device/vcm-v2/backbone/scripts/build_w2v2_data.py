@@ -32,8 +32,8 @@ import sys
 _HERE = os.path.dirname(os.path.abspath(__file__))          # .../backbone/scripts
 _BACK = os.path.dirname(_HERE)                              # .../backbone
 _REPO = os.path.dirname(_BACK)                              # .../VCM-v2
-_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 _ME2 = os.path.dirname(_REPO)  # vcm-v2 lives inside the ME2 folder
+_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 sys.path.insert(0, _REPO)
 sys.path.insert(0, _ME2)
 

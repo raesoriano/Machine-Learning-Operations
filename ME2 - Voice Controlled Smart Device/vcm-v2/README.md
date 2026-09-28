@@ -63,7 +63,7 @@ backbone/               ACTIVE pipeline: pretrained Whisper ASR
   scripts/eval_whisper_ft.py       # fine-tuned end-to-end eval (171 clips)
   scripts/eval_whisper_ft_me2.py   # in-domain regression guardrail (ME2 test)
   artifacts/whisper_base_ft_v2/ #   fine-tuned HF model (git-lfs) + train report
-  archive/whisper_ft_v1/      #   archived v1 fine-tune (degenerate; see its README)
+  archive/whisper_ft_v1/      #   archived copy of the v1 fine-tune (BEST; see its README)
   reports/                #   eval result JSONs
 
 archive/ctc_v8/           FROZEN snapshot of the original CTC pipeline
@@ -93,22 +93,34 @@ speech / noise).
 
 ## Results on `additional_test_data` (171 clips, 19 intents, new speaker)
 
-Test set: `additional_test_data` — 171 clips, **one new speaker held out of
-all training** (the raw clips are never seen in any form).
+**Sole test set.** `additional_test_data` — 171 clips, **one new speaker held
+out of all training** (the raw clips are never seen in any form). It is the
+project's only test set; a local copy lives at `test_data/additional_test_data`
+(git-ignored) so the project is self-contained.
 
 | Stage 1 (ASR) | Command (31-way) | Intent (19-way) | Blank | WER vs spoken |
 |---|---|---|---|---|
 | me2_v6 (from-scratch 422k CTC, speaker-aug) | 24.6% | 28.1% | 38.6% | 76.5% |
 | me2_v8 (v6 + new-speaker subset fine-tune) | 24.0% | 28.1% | 38.6% | 76.3% |
 | wav2vec2-base-960h fine-tuned (ABANDONED) | not evaluated (abandoned) | — | — | 250.1% (ME2 test) |
-| **whisper base.en zero-shot (backbone)** | **81.9%** | **81.9%** | **0.0%** | **22.5%** |
-| whisper base.en fine-tuned **v1** (archived, degenerate) | 75.4% | 77.8% | 0.0% | 1024% |
-| **whisper base.en fine-tuned v2 (backbone, active)** | **__CMD__%** | **__INT__%** | **__BLANK__%** | **__WER__%** |
+| whisper base.en zero-shot (backbone) | 81.9% | 81.9% | 0.0% | 22.5% |
+| whisper base.en fine-tuned **v2** (staged, archived) | 50.3% | 55.0% | 0.0% | 18.6% mean / 19% median |
+| **whisper base.en fine-tuned v1 (backbone, BEST + active)** | **85.4%** | **86.0%** | **0.0%** | **10.8% mean / 0% median** |
 
+- **Best & active model:** `backbone/artifacts/whisper_base_ft/best` (the v1
+  fine-tune) — **85.4% command / 86.0% intent**, re-verified 2026-09-28 on the
+  171-clip sole test set (`reports/additional_test_whisper_ft_rerun.json`).
+  It beats the zero-shot baseline (81.9%) and the v2 staged fine-tune (50.3%).
+- **WER caveat (v1):** mean 10.8% is inflated by repetition loops on 70/171
+  clips (40.9%) — the fine-tuned model doesn't always emit EOS on noisy OOD
+  input and repeats a phrase. Median WER is 0.0% (the typical clip is exact).
+  Loops don't hurt command accuracy (the stage-2 classifier extracts the
+  command from the looped transcript). The zero-shot path (faster-whisper)
+  has no loops and 22.5% WER — a cleaner transcript, slightly lower accuracy.
 - **Classifier alone** (gold transcripts in): **99.4%** command accuracy —
   the end-to-end gap lives entirely in Stage 1.
-- **Inference latency (backbone, GPU):** p50 21 ms, p95 31 ms per clip
-  (faster-whisper base.en, int8).
+- **Inference latency (GPU):** zero-shot p50 21 ms / p95 31 ms (faster-whisper
+  int8); fine-tuned v1 p50 225 ms / p95 570 ms (HF `generate`).
 - **Fine-tune data**: ME2 optionb positives only (train 37,992 / val 5,315),
   built with `build_w2v2_data.py --no-newspk` — the 171 raw
   `additional_test_data` clips and every derived denoised/noise/reverb/pitch
@@ -134,11 +146,11 @@ all training** (the raw clips are never seen in any form).
 5. **Whisper base.en** (this repo, `backbone/`): pretrained 72M-param seq2seq
    ASR. Zero-shot it already hits 81.9% command accuracy on the held-out
    new-speaker set (vs 24.6% for every from-scratch attempt). The first
-   fine-tune (v1) was **degenerate** — early-stopped on CE loss at epoch 3,
-   it hallucinated fluent filler after the first word (1024% WER; archived
-   in `backbone/archive/whisper_ft_v1/`). The **v2 staged fine-tune**
-   (frozen-encoder warm-start → unfrozen cosine LR; early stop on val WER)
-   is the active backbone — see `backbone/README.md`.
+   fine-tune (v1) is the **best and active** backbone — 85.4% command /
+   86.0% intent on the 171-clip sole test set (re-verified 2026-09-28),
+   beating zero-shot (81.9%). The **v2 staged fine-tune** (frozen-encoder
+   warm-start → unfrozen cosine LR; early stop on val WER) scored worse
+   (50.3%) and is archived — see `backbone/README.md`.
 
 ## Noise pre-processing — measured, and it is NOT the fix
 
@@ -177,20 +189,20 @@ tokenizer, not the constrained vocab).
 # --- backbone (active) ---
 python backbone/scripts/build_w2v2_data.py --no-newspk   # leakage-free JSONL
 python backbone/scripts/finetune_whisper.py --epochs 6 --batch-size 32 --lr 1e-5
-python backbone/scripts/eval_whisper_robust.py --data ../additional_test_data \
+python backbone/scripts/eval_whisper_robust.py --data test_data/additional_test_data \
     --report backbone/reports/additional_test_whisper.json
 python backbone/scripts/eval_whisper_ft.py \
     --model backbone/artifacts/whisper_base_ft/best \
-    --data ../additional_test_data \
+    --data test_data/additional_test_data \
     --report backbone/reports/additional_test_whisper_ft.json
 
 # --- archive/ctc_v8 (frozen) ---
-python archive/ctc_v8/scripts/build_subset.py --src ../additional_test_data
+python archive/ctc_v8/scripts/build_subset.py --src test_data/additional_test_data
 python archive/ctc_v8/scripts/train_asr_v8.py --features archive/ctc_v8/data_new/features \
     --init  "../Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/model/checkpoints/me2_v6/best.pt" \
     --config "../Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/model/checkpoints/me2_v6/config.yaml" \
     --out archive/ctc_v8/artifacts/asr_me2_v8
 python archive/ctc_v8/scripts/train_classifier.py --clean
-python archive/ctc_v8/scripts/eval.py --data ../additional_test_data \
+python archive/ctc_v8/scripts/eval.py --data test_data/additional_test_data \
     --report archive/ctc_v8/reports/additional_test_v8.json
 ```

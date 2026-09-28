@@ -29,8 +29,8 @@ from transformers import (AutoTokenizer, WhisperForConditionalGeneration,
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _BACK = os.path.dirname(_HERE)
 _REPO = os.path.dirname(_BACK)
-_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 _ME2 = os.path.dirname(_REPO)  # vcm-v2 lives inside the ME2 folder
+_SANDBOX = os.path.dirname(os.path.dirname(_ME2))  # .../sandbox
 sys.path.insert(0, _ME2)
 
 MANIFEST = os.path.join(_ME2, "data", "manifests",
