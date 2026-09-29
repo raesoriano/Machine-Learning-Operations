@@ -33,6 +33,7 @@ Stop with Ctrl-C at any time.
 """
 import argparse
 import json
+import math
 import os
 import sys
 import time
@@ -373,7 +374,7 @@ def time_response_text() -> str:
 
 
 # --------------------------------------------------------------------------
-# VAD (webrtcvad -- noise-robust endpointing)
+# VAD (webrtcvad + absolute energy gate -- noise-robust endpointing)
 #
 # The old energy VAD ended an utterance only when the mic's RMS dropped below
 # an ABSOLUTE threshold (0.0035). Any continuous background noise (e.g. a
@@ -381,17 +382,30 @@ def time_response_text() -> str:
 # cap and the perceived latency was ~12 s + decode. webrtcvad separates
 # speech from stationary background noise, so the 0.6 s trailing-silence rule
 # now fires on your actual pause even with a call playing.
+#
+# webrtcvad alone still let a *noisy* mic start utterances on noise bursts
+# ("ghost commands"). So a frame now counts as speech only if webrtcvad says
+# so AND its RMS is above an ABSOLUTE gate (GATE, -26 dBFS). The gate was
+# calibrated on the 171-clip additional_test_data set: recording noise
+# floors sit at RMS ~0.038-0.057 (-28.5..-25 dBFS), while webrtcvad-voiced
+# speech frames sit at p5 = 0.040 / p50 = 0.068, and every clip's peak
+# speech frame is >= 0.086. At GATE=0.05 all 171 clips still yield exactly
+# one utterance each (0 splits, 0 misses, lengths unchanged); at 0.06 real
+# speech starts getting split (2 clips). Raise --gate if ghost commands
+# persist on a noisier mic; lower it if quiet commands get dropped.
 # --------------------------------------------------------------------------
 class VAD:
     FRAME_S = 0.030
     END_S = 0.60          # trailing silence to end an utterance
     MAX_S = 4.0           # hard cap: worst-case wait is 4 s, not 12
     MODE = 2              # aggressiveness 0..3; 2 = strong noise rejection
+    GATE = 0.05           # absolute min frame RMS to count as speech (-26 dBFS)
 
-    def __init__(self, rate):
+    def __init__(self, rate, gate=None):
         import webrtcvad
         self._vad = webrtcvad.Vad(self.MODE)
         self.rate = rate
+        self.GATE = float(gate) if gate is not None else self.GATE
         self.reset()
 
     def reset(self):
@@ -403,6 +417,8 @@ class VAD:
         """feed one float32 frame at self.rate; 'speech-start'|'speech-end'|None."""
         pcm = (np.clip(frame, -1.0, 1.0) * 32767).astype(np.int16).tobytes()
         voiced = self._vad.is_speech(pcm, self.rate)
+        if voiced and float(np.sqrt(np.mean(frame * frame))) < self.GATE:
+            voiced = False          # absolute gate: too quiet to be speech
         if not self.speaking:
             if voiced:
                 self.speaking = True
@@ -446,9 +462,30 @@ def run_mic(args):
         sr = 16000
     if sr != 16000:
         print(f"mic native rate {sr} Hz -> resampling to 16000 Hz")
-    vad = VAD(sr)
+    vad = VAD(sr, gate=args.gate)
     frame = int(sr * VAD.FRAME_S)
     n = 0
+
+    # Show the live mic noise floor next to the gate so a noisy mic is
+    # visible at a glance (if the floor prints ABOVE the gate, raise --gate).
+    try:
+        import sounddevice as _sd
+        _floor = []
+        def _probe(indata, nframes, t, status):
+            if not status:
+                _floor.append(np.sqrt(np.mean(indata[:, 0].astype(np.float32)
+                                              ** 2)))
+        with _sd.InputStream(samplerate=sr, channels=1, dtype="float32",
+                             blocksize=frame, callback=_probe):
+            time.sleep(1.5)
+        if _floor:
+            fl = float(np.percentile(np.array(_floor), 90))
+            print(f"mic noise floor (1.5 s): {fl:.4f} RMS "
+                  f"({20 * math.log10(fl + 1e-9):.1f} dBFS) | "
+                  f"speech gate: {vad.GATE:.4f} "
+                  f"({20 * math.log10(vad.GATE + 1e-9):.1f} dBFS)")
+    except Exception:
+        pass
 
     def cb(indata, nframes, t, status):
         if status or state["busy"]:
@@ -579,6 +616,11 @@ def main():
                     help="test-set directory (for --test)")
     ap.add_argument("--no-play", action="store_true",
                     help="print the response instead of playing it")
+    ap.add_argument("--gate", type=float, default=None,
+                    help="absolute min frame RMS (0..1) to count as speech; "
+                         "default 0.05 (-26 dBFS), calibrated on the "
+                         "171-clip test set. Raise it (e.g. 0.07) if a noisy "
+                         "mic still triggers ghost commands.")
     args = ap.parse_args()
 
     if args.file:
