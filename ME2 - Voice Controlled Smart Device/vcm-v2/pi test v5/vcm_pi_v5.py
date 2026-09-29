@@ -36,7 +36,10 @@ import json
 import os
 import sys
 import time
+import urllib.request
 import wave
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 from scipy.signal import resample_poly
@@ -262,6 +265,108 @@ def play_wav(path: str, enabled: bool = True) -> None:
 
 
 # --------------------------------------------------------------------------
+# dynamic TTS (Piper -- ultra-lightweight local neural TTS)
+#
+# Used for responses that change every time (e.g. the current time). Piper is
+# a small ONNX model (~63 MB) that runs entirely on-device; the voice is
+# downloaded ONCE into ./tts/ on first run (needs internet that one time),
+# after which everything is offline. The voice is en_US-lessac-low -- the
+# lightest quality tier of the same voice family the pre-recorded response
+# WAVs use (lessac-medium), so it sounds consistent.
+#
+# piper-tts 1.8.x ships a ready aarch64 wheel (cp39-abi3), so it installs
+# cleanly on the Pi's Python 3.13.
+# --------------------------------------------------------------------------
+TTS_DIR = os.path.join(_HERE, "tts")
+TTS_VOICE = "en_US-lessac-low"
+TTS_VOICE_URL = ("https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+                 f"en/en_US/lessac/low/{TTS_VOICE}.onnx")
+TTS_VOICE_JSON_URL = TTS_VOICE_URL + ".json"
+
+
+def _ensure_tts_voice() -> str:
+    """Download the Piper voice into ./tts/ once; return the .onnx path."""
+    os.makedirs(TTS_DIR, exist_ok=True)
+    onnx = os.path.join(TTS_DIR, f"{TTS_VOICE}.onnx")
+    jso = os.path.join(TTS_DIR, f"{TTS_VOICE}.onnx.json")
+    for dst, url in ((onnx, TTS_VOICE_URL), (jso, TTS_VOICE_JSON_URL)):
+        if os.path.exists(dst) and os.path.getsize(dst) > 0:
+            continue
+        print(f"  downloading TTS voice -> {os.path.basename(dst)} "
+              f"(one-time, ~63 MB)")
+        urllib.request.urlretrieve(url, dst)
+    return onnx
+
+
+def _load_tts():
+    """Load the Piper voice once per process (lazy). None if unavailable."""
+    global _TTS_VOICE
+    if _TTS_VOICE is None:
+        try:
+            from piper import PiperVoice
+            _TTS_VOICE = PiperVoice.load(_ensure_tts_voice())
+        except Exception as e:  # noqa: BLE001 - offline / not installed
+            print(f"  >> [TTS unavailable: {type(e).__name__}] "
+                  f"falling back to the canned response")
+            _TTS_VOICE = False
+    return _TTS_VOICE or None
+
+
+_TTS_VOICE = None
+
+
+def speak(text: str, enabled: bool = True) -> None:
+    """Synthesize `text` with Piper and play it (blocking).
+
+    Falls back to printing the text if piper-tts is missing or there is no
+    audio device.
+    """
+    if not enabled:
+        print(f"  >> [no-play] would say: {text!r}")
+        return
+    voice = _load_tts()
+    if voice is None:
+        print(f"  >> [TTS unavailable] would say: {text!r}")
+        return
+    import io
+    import soundfile as sf
+    import sounddevice as sd
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        voice.synthesize_wav(text, w)
+    buf.seek(0)
+    data, sr = sf.read(buf, dtype="float32")
+    try:
+        out_sr = int(sd.query_devices(sd.default.device[1], "output")
+                     ["default_samplerate"])
+    except Exception:
+        out_sr = sr
+    last_err = None
+    for target in dict.fromkeys([out_sr, 16000]):
+        d = data
+        if target != sr:
+            g = int(np.gcd(sr, target))
+            d = resample_poly(data, int(target) // g, int(sr) // g)
+        try:
+            sd.play(d, target)
+            sd.wait()
+            return
+        except Exception as e:
+            last_err = e
+    print(f"  >> [playback failed: {type(last_err).__name__}] would say: "
+          f"{text!r}")
+
+
+def time_response_text() -> str:
+    """Current time in UTC+8, 12-hour format, as a spoken sentence.
+
+    e.g. "It is 5:42 PM."  (UTC+8 = the device's timezone, Asia/Manila)
+    """
+    now = datetime.now(ZoneInfo("Asia/Manila"))
+    return f"It is {now.strftime('%I:%M %p')}."
+
+
+# --------------------------------------------------------------------------
 # VAD (webrtcvad -- noise-robust endpointing)
 #
 # The old energy VAD ended an utterance only when the mic's RMS dropped below
@@ -370,15 +475,22 @@ def run_mic(args):
                 cmd, intent, transcript, cprob = model.classify_warm(
                     float32_to_pcm16(a), reps=reps)
                 e2e = (time.perf_counter() - t0) * 1000.0
-                wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
                 print(f"[{time.strftime('%H:%M:%S')}] ── utterance #{n} "
                       f"({len(a) / 16000:.2f} s) ─────────────────────")
                 print(f"  transcript : {transcript!r}")
                 print(f"  command    : {cmd}  (prob {cprob:.3f})   "
                       f"intent: {intent}")
                 print(f"  E2E {e2e:.0f} ms")
-                print(f"  >> playing {wav}")
-                play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
+                if cmd == "TIME":
+                    # dynamic response: say the ACTUAL current time (UTC+8)
+                    text = time_response_text()
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
+                else:
+                    wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
+                    print(f"  >> playing {wav}")
+                    play_wav(os.path.join(RESP_DIR, wav),
+                             enabled=not args.no_play)
                 state["busy"] = False     # re-arm: wait for the next command
         except KeyboardInterrupt:
             pass
@@ -391,13 +503,18 @@ def run_file(args):
     t0 = time.perf_counter()
     cmd, intent, transcript, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
     e2e = (time.perf_counter() - t0) * 1000.0
-    wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
     print(f"  file       : {args.file}")
     print(f"  transcript : {transcript!r}")
     print(f"  command    : {cmd}  (prob {cprob:.3f})   intent: {intent}")
     print(f"  E2E {e2e:.0f} ms")
-    print(f"  >> playing {wav}")
-    play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
+    if cmd == "TIME":
+        text = time_response_text()
+        print(f"  >> saying (Piper TTS): {text!r}")
+        speak(text, enabled=not args.no_play)
+    else:
+        wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
+        print(f"  >> playing {wav}")
+        play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
 
 
 def run_test(args):

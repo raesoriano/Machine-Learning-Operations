@@ -5,3 +5,4 @@ soundfile>=0.12
 sounddevice>=0.4
 scipy>=1.10.0
 webrtcvad-wheels>=2.0.14
+piper-tts>=1.3
