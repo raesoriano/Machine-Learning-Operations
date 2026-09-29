@@ -39,6 +39,7 @@ import time
 import wave
 
 import numpy as np
+from scipy.signal import resample_poly
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)          # so `import vcm` / `import vcm2` resolve locally
@@ -220,7 +221,13 @@ def float32_to_pcm16(audio: np.ndarray) -> bytes:
 
 
 def play_wav(path: str, enabled: bool = True) -> None:
-    """Play a WAV (blocking). Degrades to a printed note if no audio device."""
+    """Play a WAV (blocking). Degrades to a printed note if no audio device.
+
+    Pi speakers (USB / I2S) usually only support 44.1/48 kHz, so opening the
+    stream at the wav's 16 kHz fails with "Invalid sample rate". Play at the
+    device's native rate, resampling in software; fall back to 16 kHz if the
+    native rate is also rejected.
+    """
     if not enabled:
         print(f"  >> [no-play] {os.path.basename(path)}")
         return
@@ -228,8 +235,27 @@ def play_wav(path: str, enabled: bool = True) -> None:
         import soundfile as sf
         import sounddevice as sd
         data, sr = sf.read(path, dtype="float32")
-        sd.play(data, sr)
-        sd.wait()
+        if data.ndim > 1:
+            data = data.mean(axis=1)
+        try:
+            out_sr = int(sd.query_devices(sd.default.device[1], "output")
+                         ["default_samplerate"])
+        except Exception:
+            out_sr = sr
+        last_err = None
+        for target in dict.fromkeys([out_sr, 16000]):
+            d = data
+            if target != sr:
+                g = int(np.gcd(sr, target))
+                d = resample_poly(data, int(target) // g, int(sr) // g)
+            try:
+                sd.play(d, target)
+                sd.wait()
+                return
+            except Exception as e:
+                last_err = e
+        print(f"  >> [playback failed: {type(last_err).__name__}] would play "
+              f"{os.path.basename(path)}")
     except Exception as e:  # noqa: BLE001 - headless / no PortAudio
         print(f"  >> [no audio device: {type(e).__name__}] would play "
               f"{os.path.basename(path)}")
