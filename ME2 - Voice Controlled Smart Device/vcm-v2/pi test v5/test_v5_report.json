@@ -1,9 +1,9 @@
 {
   "model": "PocketSphinx ensemble (custom + stock, agree+clf fusion)",
-  "n_clips": 171,
-  "command_acc": 0.9532,
-  "intent_acc": 0.9708,
-  "wall_s": 23.7,
+  "n_clips": 176,
+  "command_acc": 0.9375,
+  "intent_acc": 0.9545,
+  "wall_s": 25.1,
   "per_folder": {
     "ALARM": {
       "n": 9,
@@ -64,6 +64,11 @@
       "n": 9,
       "cmd_acc": 0.8889,
       "intent_acc": 0.8889
+    },
+    "REJECT": {
+      "n": 5,
+      "cmd_acc": 0.4,
+      "intent_acc": 0.4
     },
     "STOP": {
       "n": 9,
