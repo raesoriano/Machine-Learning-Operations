@@ -262,44 +262,49 @@ def play_wav(path: str, enabled: bool = True) -> None:
 
 
 # --------------------------------------------------------------------------
-# VAD (energy-based, adaptive noise floor) -- same as pi_test/vcm_pi.py
+# VAD (webrtcvad -- noise-robust endpointing)
+#
+# The old energy VAD ended an utterance only when the mic's RMS dropped below
+# an ABSOLUTE threshold (0.0035). Any continuous background noise (e.g. a
+# zoom call) kept the RMS above it, so every utterance ran to the 12 s hard
+# cap and the perceived latency was ~12 s + decode. webrtcvad separates
+# speech from stationary background noise, so the 0.6 s trailing-silence rule
+# now fires on your actual pause even with a call playing.
 # --------------------------------------------------------------------------
 class VAD:
     FRAME_S = 0.030
-    END_S = 0.60          # silence to end an utterance
-    MAX_S = 12.0
+    END_S = 0.60          # trailing silence to end an utterance
+    MAX_S = 4.0           # hard cap: worst-case wait is 4 s, not 12
+    MODE = 2              # aggressiveness 0..3; 2 = strong noise rejection
 
-    def __init__(self, threshold=0.0035):
-        self.threshold = threshold
+    def __init__(self, rate):
+        import webrtcvad
+        self._vad = webrtcvad.Vad(self.MODE)
+        self.rate = rate
         self.reset()
 
     def reset(self):
-        self.noise = 0.001
         self.buf = []
         self.silence = 0.0
         self.speaking = False
 
-    def rms(self, frame):
-        return float(np.sqrt(np.mean(frame ** 2)) + 1e-9)
-
     def push(self, frame):
-        """feed one frame; returns 'speech-start' | 'speech-end' | None."""
-        r = self.rms(frame)
+        """feed one float32 frame at self.rate; 'speech-start'|'speech-end'|None."""
+        pcm = (np.clip(frame, -1.0, 1.0) * 32767).astype(np.int16).tobytes()
+        voiced = self._vad.is_speech(pcm, self.rate)
         if not self.speaking:
-            self.noise = 0.95 * self.noise + 0.05 * r
-            if r > max(self.threshold, 3.0 * self.noise):
+            if voiced:
                 self.speaking = True
                 self.buf = [frame]
                 self.silence = 0.0
                 return "speech-start"
             return None
         self.buf.append(frame)
-        dur = len(self.buf) * self.FRAME_S
-        if r < self.threshold:
-            self.silence += self.FRAME_S
-        else:
+        if voiced:
             self.silence = 0.0
-        if self.silence >= self.END_S or dur >= self.MAX_S:
+        else:
+            self.silence += self.FRAME_S
+        if self.silence >= self.END_S or len(self.buf) * self.FRAME_S >= self.MAX_S:
             self.speaking = False
             return "speech-end"
         return None
@@ -317,7 +322,6 @@ def run_mic(args):
     import sounddevice as sd
     from scipy.signal import resample_poly
     model = Ensemble()
-    vad = VAD()
     state = {"busy": False, "audio": None}
 
     # Pi mics (USB / I2S) usually only support 44.1/48 kHz, so opening the
@@ -331,6 +335,7 @@ def run_mic(args):
         sr = 16000
     if sr != 16000:
         print(f"mic native rate {sr} Hz -> resampling to 16000 Hz")
+    vad = VAD(sr)
     frame = int(sr * VAD.FRAME_S)
     n = 0
 
