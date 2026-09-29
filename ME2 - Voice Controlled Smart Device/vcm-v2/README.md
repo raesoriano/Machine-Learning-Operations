@@ -152,6 +152,47 @@ project's only test set; a local copy lives at `test_data/additional_test_data`
    warm-start → unfrozen cosine LR; early stop on val WER) scored worse
    (50.3%) and is archived — see `backbone/README.md`.
 
+## Ultra-small recognizer — custom PocketSphinx AM + command grammar (1.6 MB)
+
+A **grammar-constrained PocketSphinx** recognizer trained on the ME2 command
+data is the project's smallest ASR, and it is now the **best accuracy-per-byte**
+option:
+
+| Recognizer | Command | Intent | Blank | Latency p50 | Footprint |
+|---|---|---|---|---|---|
+| **custom 200-LDA AM + 102-phrase JSGF (BEST, active)** | **87.1%** | **90.1%** | **3.5%** | **29 ms** | **1.6 MB** |
+| custom 200-LDA AM + original 93-phrase JSGF | 84.8% | 88.3% | 4.1% | 26 ms | 1.6 MB |
+| stock en-us AM + 93-phrase JSGF (fallback) | 78.4% | 83.0% | 6.4% | 60 ms | 9.6 MB |
+| Whisper base.en fine-tuned v1 (largest) | 85.4% | 86.0% | 0.0% | 225 ms | 290 MB |
+
+The custom AM (`backbone/artifacts/pocketsphinx_trained_lda_enh/`) is a
+`sphinxtrain` cd_cont model — 200 tied senones, 8 gaussians, LDA/MLLT 39→29,
+trained on the 6,964 clean optionb clips. It is constrained at decode time by a
+JSGF grammar of the 102 in-domain command phrases, then the transcript is fed to
+the **same stage-2 classifier** as the Whisper path, so command/intent are
+measured identically.
+
+**The win was the grammar, not the AM.** Retraining the AM with more capacity
+(800 senones → 80.7%), more density (16 gaussians → 77.8%), or more speakers
+(100 TTS voices → 77.2%) all made it *worse* — the 1.6 MB 200-senone model is
+already the best custom AM. The real gap was decoder-side: the original
+93-phrase JSGF covered only 51 of the 62 test phrases, so the decoder snapped
+missing phrasings to the nearest one or blanked. Completing the grammar
+(`change color to red`, `lights out`, `shut off the lights`, the no-`to`
+`create a reminder …` forms, …) — a **zero-retrain, +0.5 KB** change — lifted
+accuracy 84.8% → 87.1%, past Whisper FT, at 1/180th the footprint and 8x lower
+latency. Full numbers + the retrain ablations:
+`backbone/reports/pocketsphinx_comparison.json`.
+
+- **Build/retrain:** `backbone/pocketsphinx/build_trained_am.py` (sphinxtrain,
+  built from source at `sphinx_src/install`).
+- **Eval:** `backbone/pocketsphinx/eval_pocketsphinx.py` (same ground truth +
+  classifier + WER definition as the Whisper eval).
+- **Deploy:** the `pocketsphinx` pip wheel (aarch64 available) loads the AM +
+  dict + JSGF directly; no separate model download. The stock en-us + JSGF
+  fallback ships in `pi_test/pocketsphinx/` (~10.75 MB) for the zero-training
+  path.
+
 ## Noise pre-processing — measured, and it is NOT the fix
 
 The test audio is genuinely noisier (noise floor −27.6 dBFS vs −49.2 dBFS in

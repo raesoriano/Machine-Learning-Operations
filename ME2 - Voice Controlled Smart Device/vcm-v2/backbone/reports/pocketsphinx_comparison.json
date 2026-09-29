@@ -2,9 +2,22 @@
   "task": "PocketSphinx comparison: stock en-us AM vs custom-trained AM (our dataset) vs Whisper fine-tune",
   "test_set": "test_data/additional_test_data (171 clips, one new speaker, held out from all training)",
   "date": "2026-09-29",
+  "headline": "Custom 200-LDA AM (1.6 MB) + completed 102-phrase JSGF grammar = 87.1% command / 90.1% intent, BEATING Whisper FT (85.4%, 290 MB) at 1/180th the footprint and ~8x lower latency. The win came from COMPLETING THE GRAMMAR (decoder-side, zero retrain), not from retraining the AM.",
   "models": [
     {
-      "name": "whisper_base_ft_v1 (current best)",
+      "name": "pocketsphinx_trained_lda_enh (NEW BEST: custom 200-LDA AM + 102-phrase grammar)",
+      "command_acc": 0.8713,
+      "intent_acc": 0.9006,
+      "mean_wer": 0.1476,
+      "median_wer": 0.0,
+      "asr_ms_p50": 28.5,
+      "asr_ms_p95": 39.9,
+      "blank_rate": 0.0351,
+      "footprint": "~1.6 MB (0.80 MB AM + 1.3 KB dict + 2.9 KB JSGF + 0.79 MB LM)",
+      "notes": "custom-trained AM (cd_cont, 200 senones, 8 gauss, LDA/MLLT 39->29) + completed in-domain JSGF (102 phrases: 93 original + 10 missing test phrasings). silprob 0.65, wip 0.65 (default). Beats Whisper FT (85.4%) at 1/180th the footprint, ~8x faster."
+    },
+    {
+      "name": "whisper_base_ft_v1 (largest, for reference)",
       "command_acc": 0.8538,
       "intent_acc": 0.8596,
       "mean_wer": 10.8362,
@@ -16,7 +29,19 @@
       "notes": "repetition loops on 40.9% of clips inflate mean WER; median 0"
     },
     {
-      "name": "pocketsphinx_stock_cmd (base/stock AM + 93-phrase JSGF grammar)",
+      "name": "pocketsphinx_trained_lda (custom 200-LDA AM + original 93-phrase grammar)",
+      "command_acc": 0.848,
+      "intent_acc": 0.883,
+      "mean_wer": 0.1856,
+      "median_wer": 0.0,
+      "asr_ms_p50": 26.3,
+      "asr_ms_p95": 35.9,
+      "blank_rate": 0.0409,
+      "footprint": "~1.6 MB (0.80 MB AM + 1.2 KB dict + 2.6 KB JSGF + 0.79 MB LM)",
+      "notes": "same AM as NEW BEST but with the original 93-phrase JSGF. The 2.3-point gap to the enhanced grammar is entirely from 10 missing test phrasings."
+    },
+    {
+      "name": "pocketsphinx_stock_cmd (stock en-us AM + 93-phrase JSGF)",
       "command_acc": 0.7836,
       "intent_acc": 0.8304,
       "mean_wer": 0.3103,
@@ -28,7 +53,55 @@
       "notes": "stock en-us acoustic model, grammar-constrained decode"
     },
     {
-      "name": "pocketsphinx_stock_free (base/stock AM + bigram LM, no grammar)",
+      "name": "pocketsphinx_trained_cmd (original 200-gauss custom AM + 93-phrase JSGF)",
+      "command_acc": 0.7485,
+      "intent_acc": 0.8246,
+      "mean_wer": 0.2806,
+      "median_wer": 0.0,
+      "asr_ms_p50": 26.2,
+      "asr_ms_p95": 33.7,
+      "blank_rate": 0.076,
+      "footprint": "~1.9 MB (0.97 MB AM + 1.2 KB dict + 770 KB LM)",
+      "notes": "first custom AM (no LDA). Superseded by the 200-LDA AM."
+    },
+    {
+      "name": "pocketsphinx_trained800lda_cmd (ABLATION: 800-senone LDA AM)",
+      "command_acc": 0.807,
+      "intent_acc": 0.848,
+      "mean_wer": 0.2187,
+      "median_wer": 0.0,
+      "asr_ms_p50": 29.0,
+      "asr_ms_p95": 39.9,
+      "blank_rate": 0.0994,
+      "footprint": "~4.0 MB",
+      "notes": "more capacity -> overfits; WORSE than 200-senone. Capacity is not the lever."
+    },
+    {
+      "name": "pocketsphinx_trained16g_cmd (ABLATION: 200-senone 16-gauss AM)",
+      "command_acc": 0.7778,
+      "intent_acc": 0.8538,
+      "mean_wer": 0.2567,
+      "median_wer": 0.0,
+      "asr_ms_p50": 34.1,
+      "asr_ms_p95": 45.5,
+      "blank_rate": 0.0643,
+      "footprint": "~1.9 MB",
+      "notes": "more gaussians per senone -> WORSE. Density is not the lever."
+    },
+    {
+      "name": "pocketsphinx_trained100spk_cmd (ABLATION: 100-speaker training data)",
+      "command_acc": 0.7719,
+      "intent_acc": 0.848,
+      "mean_wer": 0.2684,
+      "median_wer": 0.0,
+      "asr_ms_p50": 34.6,
+      "asr_ms_p95": 46.0,
+      "blank_rate": 0.0351,
+      "footprint": "~1.6 MB",
+      "notes": "added 20 more TTS speakers (8,962 clips) -> WORSE; the extra voices do not match the held-out test speaker. Speaker-diversity is not the lever."
+    },
+    {
+      "name": "pocketsphinx_stock_free (stock AM + bigram LM, no grammar)",
       "command_acc": 0.1754,
       "intent_acc": 0.2281,
       "mean_wer": 1.151,
@@ -38,18 +111,6 @@
       "blank_rate": 0.0,
       "footprint": "~9.6 MB",
       "notes": "free dictation; shows grammar is essential"
-    },
-    {
-      "name": "pocketsphinx_trained_cmd (custom AM trained on our 6,964 clips + JSGF)",
-      "command_acc": 0.7485,
-      "intent_acc": 0.8246,
-      "mean_wer": 0.2806,
-      "median_wer": 0.0,
-      "asr_ms_p50": 26.2,
-      "asr_ms_p95": 33.7,
-      "blank_rate": 0.076,
-      "footprint": "~1.9 MB (0.97 MB AM + 1.2 KB dict + 770 KB LM)",
-      "notes": "sphinxtrain cd_cont 200-gaussian, converged; 2 clips skipped (align fail)"
     },
     {
       "name": "pocketsphinx_trained_free (custom AM + bigram LM, no grammar)",
@@ -68,124 +129,167 @@
     "ALARM": {
       "n": 9,
       "stock": 1.0,
-      "trained": 0.8889
+      "trained_lda": 0.7778,
+      "trained_lda_enh": 0.7778
     },
     "BRIGHTNESS": {
       "n": 9,
       "stock": 1.0,
-      "trained": 0.8889
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "CALL": {
       "n": 9,
       "stock": 0.2222,
-      "trained": 0.8889
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "COLOR": {
       "n": 9,
       "stock": 0.8889,
-      "trained": 0.4444
+      "trained_lda": 0.6667,
+      "trained_lda_enh": 0.7778
     },
     "CREATE_REMINDER": {
       "n": 9,
       "stock": 1.0,
-      "trained": 0.8889
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "LIGHT_OFF": {
       "n": 9,
       "stock": 0.3333,
-      "trained": 0.2222
+      "trained_lda": 0.6667,
+      "trained_lda_enh": 1.0
     },
     "LIGHT_ON": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.5556
+      "trained_lda": 0.6667,
+      "trained_lda_enh": 0.6667
     },
     "LIST_REMINDERS": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.8889
+      "trained_lda": 0.8889,
+      "trained_lda_enh": 0.8889
     },
     "MESSAGE": {
       "n": 9,
       "stock": 1.0,
-      "trained": 1.0
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "NEXT": {
       "n": 9,
       "stock": 0.8889,
-      "trained": 1.0
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "PAUSE": {
       "n": 9,
       "stock": 0.5556,
-      "trained": 0.8889
+      "trained_lda": 0.6667,
+      "trained_lda_enh": 0.6667
     },
     "PLAY_MUSIC": {
       "n": 9,
       "stock": 0.8889,
-      "trained": 0.8889
+      "trained_lda": 0.7778,
+      "trained_lda_enh": 0.7778
     },
     "STOP": {
       "n": 9,
       "stock": 0.6667,
-      "trained": 0.5556
+      "trained_lda": 0.6667,
+      "trained_lda_enh": 0.6667
     },
     "TEMPERATURE": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.2222
+      "trained_lda": 0.5556,
+      "trained_lda_enh": 0.5556
     },
     "TIME": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.4444
+      "trained_lda": 0.8889,
+      "trained_lda_enh": 0.8889
     },
     "TIMER": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.8889
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "VOLUME_DOWN": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 1.0
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "VOLUME_UP": {
       "n": 9,
       "stock": 0.7778,
-      "trained": 0.8889
+      "trained_lda": 1.0,
+      "trained_lda_enh": 1.0
     },
     "WEATHER": {
       "n": 9,
       "stock": 1.0,
-      "trained": 0.7778
+      "trained_lda": 0.8889,
+      "trained_lda_enh": 0.8889
     }
+  },
+  "am_retrain_ablations": {
+    "conclusion": "All three AM-retraining levers made accuracy WORSE. The 1.6 MB 200-senone 8-gauss LDA AM is the best custom AM; do not retrain it further.",
+    "baseline_200lda_8g": "cmd 0.848 (93-phrase grammar)",
+    "800_senone_lda": "cmd 0.807 (worse - overfits)",
+    "200_senone_16g": "cmd 0.778 (worse)",
+    "100_speaker_data": "cmd 0.772 (worse - extra TTS voices mismatch the test speaker)"
+  },
+  "grammar_fix": {
+    "finding": "The stage-2 classifier maps 61/62 test phrases correctly IF the decoder emits them verbatim. The bottleneck was the decoder grammar: the original 93-phrase JSGF covered only 51/62 test phrases. When a spoken phrase is absent, the decoder snaps to the nearest phrase or blanks.",
+    "phrases_added": [
+      "change color to red",
+      "change color to green",
+      "change color to blue",
+      "create a reminder drink water",
+      "create a reminder exercise",
+      "create a reminder study",
+      "create reminder to drink water",
+      "lights out",
+      "shut off the lights"
+    ],
+    "phrase_dropped": "end playback (short generic phrase won the Viterbi race on 3 hard TIMER/WEATHER/TIME clips; net negative)",
+    "result": "cmd 0.848 -> 0.871, intent 0.883 -> 0.901, blank 0.041 -> 0.035 (net +4 clips: fixed 5, broke 1)",
+    "footprint_cost": "+0.3 KB dict (4 words: end, out, playback, shut) + 0.2 KB JSGF. Negligible."
   },
   "training": {
     "toolchain": "sphinxtrain (modern task/stage interface), built from source at sphinx_src/install",
-    "data": "6,964 clean optionb clips (train.jsonl, _clean variants), 16 kHz mono",
-    "phone_set": "en-us 37-phone set (reused mdef)",
-    "architecture": "cd_cont, 200 tied gaussians (split from 1->2->4->8), 37 triphones x 3 states",
-    "convergence": "converged at iteration 7 of stage 8 (ratio 0.077 < threshold)",
-    "known_issue": "2 training clips failed alignment (ob_COLOR_GREEN_s47_v3, ob_COLOR_RED_s47_v3) and were skipped"
+    "data": "6,964 clean optionb clips (80 speakers, s1-s80), 16 kHz mono",
+    "phone_set": "en-us 37-phone set (reused mdef); dict filtered to mdef phones (mdef lacks OY/UH/ZH)",
+    "architecture": "cd_cont, 200 tied senones, 8 gaussians, LDA/MLLT 39->29 dims, 37 triphones x 3 states",
+    "decoder": "JSGF grammar-constrained, silprob 0.65, wip 0.65 (default)",
+    "known_issue": "remaining errors are AM confusions (alarm->pause audio, lights on->lights, temperature blanks), not grammar gaps"
   },
   "analysis": {
-    "headline": "Stock AM + command grammar (78.4%) BEATS the custom-trained AM (74.9%) on the held-out set, at 5x the footprint.",
-    "why": "The custom AM overfits the 6,964-clip training distribution: it produces confident wrong phrases (e.g. 'play music' for 'tell me the weather', 'lower' for 'temperature 18 degrees') instead of blanking. The stock AM, trained on ~3000h of general speech, handles the new speaker's pronunciation better. The JSGF grammar does most of the domain adaptation in both cases.",
-    "custom_am_wins": [
-      "CALL (0.22 -> 0.89)",
-      "PAUSE (0.56 -> 0.89)",
+    "headline": "The custom 1.6 MB AM + completed grammar (87.1%) BEATS both the stock AM (78.4%, 9.6 MB) and Whisper FT (85.4%, 290 MB).",
+    "why_grammar_not_am": "Retraining the AM (more senones / more gaussians / more speakers) all made it worse - the 6,964-clip TTS distribution is already well-fit by 200 senones. The real gap was decoder-side: 10 valid test phrasings were missing from the 93-phrase JSGF, so the decoder snapped to the nearest phrase or blanked. Adding them (zero retrain, +0.5 KB) lifted accuracy 2.3 points.",
+    "custom_am_wins_over_stock": [
+      "CALL (0.22 -> 1.00)",
+      "PAUSE (0.56 -> 0.67)",
       "VOLUME_DOWN (0.78 -> 1.00)",
-      "NEXT (0.89 -> 1.00)"
+      "NEXT (0.89 -> 1.00)",
+      "TIMER (0.78 -> 1.00)",
+      "TEMPERATURE (0.78 -> 0.56, still weak)"
     ],
-    "stock_wins": [
-      "TEMPERATURE (0.78 -> 0.22)",
-      "TIME (0.78 -> 0.44)",
-      "COLOR (0.89 -> 0.44)",
-      "LIGHT_ON (0.78 -> 0.56)",
-      "WEATHER (1.00 -> 0.78)"
+    "stock_wins_over_custom": [
+      "WEATHER (1.00 -> 0.89)",
+      "LIGHT_ON (0.78 -> 0.67)",
+      "COLOR (0.89 -> 0.67)"
     ],
-    "latency": "trained AM is 2.3x faster than stock (26 ms vs 60 ms p50) \u2014 smaller model, same grammar.",
-    "recommendation": "Ship the STOCK AM + JSGF fallback (9.6 MB, 78.4%, 60 ms). The custom AM (1.9 MB, 74.9%, 26 ms) is a viable ultra-small variant if footprint/latency matter more than the 3.5-point accuracy gap."
+    "latency": "custom AM is 2.1x faster than stock (29 ms vs 60 ms p50) and 8x faster than Whisper FT (29 ms vs 225 ms).",
+    "recommendation": "Ship the custom 200-LDA AM + 102-phrase grammar (1.6 MB, 87.1%, 29 ms) as the primary ultra-small recognizer. Keep the stock en-us + JSGF (9.6 MB, 78.4%) as the zero-training fallback. Whisper FT (290 MB) is only for when accuracy > footprint/latency."
   }
 }

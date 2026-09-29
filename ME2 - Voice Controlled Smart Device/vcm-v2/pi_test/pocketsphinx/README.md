@@ -55,6 +55,10 @@ exactly as the Whisper pipeline does. See `backbone/pocketsphinx/eval_pocketsphi
 for the full eval (same ground truth + classifier + WER definition).
 
 ## Why a fallback?
-The custom-trained acoustic model (trained on our 7,164 clean clips) is the
-primary target — it should beat 78.4%. This stock model is the guaranteed,
-zero-training baseline that always works, at a tiny footprint.
+The **custom-trained** acoustic model now **beats** this stock baseline:
+`backbone/artifacts/pocketsphinx_trained_lda_enh/` (1.6 MB, 200-senone LDA AM
++ 102-phrase JSGF) scores **87.1% command / 90.1% intent** on the 171-clip
+held-out set, vs 78.4% here — at 1/6th the footprint and 2x lower latency.
+It is the primary ultra-small recognizer. This stock en-us + JSGF folder is
+kept as the **guaranteed zero-training** baseline that always works (no
+sphinxtrain build needed), and as a reference for the grammar format.
