@@ -289,10 +289,23 @@ class VAD:
 # --------------------------------------------------------------------------
 def run_mic(args):
     import sounddevice as sd
+    from scipy.signal import resample_poly
     model = Ensemble()
     vad = VAD()
     state = {"busy": False, "audio": None}
-    frame = int(16000 * VAD.FRAME_S)
+
+    # Pi mics (USB / I2S) usually only support 44.1/48 kHz, so opening the
+    # stream at 16 kHz fails with "Invalid sample rate". Capture at the
+    # device's native rate and resample each finished utterance to 16 kHz
+    # (the model's rate). VAD timing is unaffected (frames stay 30 ms).
+    try:
+        sr = int(sd.query_devices(sd.default.device[0], "input")
+                 ["default_samplerate"])
+    except Exception:
+        sr = 16000
+    if sr != 16000:
+        print(f"mic native rate {sr} Hz -> resampling to 16000 Hz")
+    frame = int(sr * VAD.FRAME_S)
     n = 0
 
     def cb(indata, nframes, t, status):
@@ -301,14 +314,16 @@ def run_mic(args):
         ev = vad.push(indata[:, 0].astype(np.float32))
         if ev == "speech-end":
             a = vad.audio()
-            if len(a) < 16000 * 0.3:      # < 300 ms: ignore
+            if len(a) < sr * 0.3:         # < 300 ms: ignore
                 return
+            if sr != 16000:
+                a = resample_poly(a, 16000, sr)
             state["audio"] = a
             state["busy"] = True          # main thread takes over
 
     print("listening on mic ... Ctrl-C to stop")
     print("say a command; ~0.6 s of silence ends the utterance.\n")
-    with sd.InputStream(samplerate=16000, channels=1, dtype="float32",
+    with sd.InputStream(samplerate=sr, channels=1, dtype="float32",
                         blocksize=frame, callback=cb):
         try:
             while True:
