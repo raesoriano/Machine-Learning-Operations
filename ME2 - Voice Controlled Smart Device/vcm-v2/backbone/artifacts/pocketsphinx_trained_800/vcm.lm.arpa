@@ -1,0 +1,494 @@
+Corpus: 0 sentences; 41397 words, 83 1-grams, 187 2-grams, 210 3-grams, with fixed discount mass 0.1 
+
+\data\
+ngram 1=83
+ngram 2=187
+ngram 3=210
+
+\1-grams:
+-0.8199 </s> -1.0000
+-0.8199 <s> -0.8862
+-1.8102 a -0.9862
+-1.9953 alarm -0.9841
+-1.9916 am -0.9287
+-2.2898 an -0.9956
+-2.2861 at -0.9910
+-2.7596 audio -0.9287
+-2.2917 blue -0.9287
+-1.8139 brightness -0.9674
+-2.3183 call -0.9287
+-1.8066 change -0.9777
+-2.3223 color -0.9934
+-2.2861 countdown -0.9932
+-2.2825 create -0.9932
+-1.8066 degrees -0.9287
+-2.4752 down -0.9287
+-2.2843 drink -0.9977
+-2.2917 eight -0.9955
+-2.2843 eighteen -0.9932
+-2.2898 exercise -0.9287
+-1.8102 for -0.9819
+-2.2954 green -0.9287
+-2.2880 hundred -0.9933
+-2.7596 increase -0.9777
+-2.7596 is -0.9992
+-2.7596 it -0.9287
+-2.7762 kill -0.9777
+-1.6910 lights -0.9024
+-2.7651 list -0.9978
+-2.7651 lower -0.9777
+-2.4613 make -0.9932
+-1.8668 me -0.9543
+-2.3468 message -0.9287
+-2.3086 minute -0.9287
+-2.2700 music -0.9287
+-2.2917 my -0.9959
+-2.4641 next -0.9971
+-2.2935 nine -0.9978
+-2.4752 off -0.9023
+-2.3048 on -0.9023
+-1.9971 one -0.9956
+-2.3048 pause -0.9243
+-1.8139 percent -0.9287
+-2.7596 phone -0.9979
+-2.2825 play -0.9954
+-3.6213 playing -0.9287
+-2.2935 pm -0.9287
+-2.7762 power -0.9978
+-2.3029 red -0.9287
+-2.2898 remind -0.9941
+-1.9906 reminder -0.9746
+-2.3144 reminders -0.9287
+-1.9888 seconds -0.9287
+-2.4809 send -0.9910
+-1.6836 set -0.9753
+-2.7651 show -0.9978
+-1.9879 six -0.9886
+-2.2898 sixty -0.9933
+-2.7651 skip -0.9971
+-2.7596 some -0.9977
+-2.1714 song -0.9287
+-2.1644 start -0.9908
+-3.2156 stop -0.9021
+-2.2991 study -0.9287
+-2.4837 tell -0.9941
+-1.8066 temperature -0.9721
+-2.2935 ten -0.9955
+-1.3002 the -0.9656
+-2.2861 thirty -0.9955
+-2.3183 time -0.9278
+-2.0000 timer -0.9842
+-1.3815 to -0.9702
+-2.1617 turn -0.9739
+-1.8102 twenty -0.9864
+-2.2825 two -0.9932
+-2.0795 up -0.9260
+-2.0019 volume -0.9227
+-2.2861 wake -0.9941
+-2.2843 water -0.9287
+-2.3263 weather -0.9287
+-2.7596 what -0.9979
+-2.7706 whats -0.9777
+
+\2-grams:
+-1.5288 <s> alarm -0.7457
+-1.5288 <s> brightness -0.8501
+-2.0962 <s> call 0.0000
+-1.0325 <s> change 0.0000
+-1.5482 <s> color 0.0000
+-1.5120 <s> countdown 0.0000
+-1.5084 <s> create 0.0000
+-1.9855 <s> increase 0.0000
+-2.0021 <s> kill -0.0000
+-1.7243 <s> lights -0.9344
+-1.9910 <s> list 0.0000
+-1.9910 <s> lower 0.0000
+-1.6872 <s> make -0.0000
+-2.1483 <s> message 0.0000
+-1.9965 <s> next 0.0000
+-1.5307 <s> pause -0.0000
+-1.5084 <s> play -0.0000
+-2.0021 <s> power -0.0000
+-1.5157 <s> remind 0.0000
+-1.5269 <s> reminder -0.7479
+-2.0757 <s> reminders 0.0000
+-1.7068 <s> send 0.0000
+-0.9095 <s> set 0.0000
+-1.9910 <s> show 0.0000
+-1.9910 <s> skip 0.0000
+-1.3903 <s> start 0.0000
+-2.4415 <s> stop 0.0000
+-1.7096 <s> tell 0.0000
+-1.5120 <s> temperature -0.8461
+-2.0757 <s> time -0.6292
+-1.5423 <s> timer -0.7525
+-1.3876 <s> turn 0.0000
+-1.7394 <s> volume -0.6154
+-1.5120 <s> wake 0.0000
+-2.0824 <s> weather 0.0000
+-1.9855 <s> what 0.0000
+-1.9965 <s> whats 0.0000
+-1.0006 a call 0.0000
+-1.0232 a message 0.0000
+-0.9951 a phone 0.0000
+-0.5180 a reminder -0.7327
+-0.5217 a timer -0.7278
+-0.8324 alarm eight 0.0000
+-0.3403 alarm for -0.8461
+-0.8381 alarm nine 0.0000
+-0.8211 alarm six -0.7441
+-0.0458 am </s> -1.0000
+-0.0458 an alarm -0.7350
+-0.5192 at eight 0.0000
+-0.5247 at nine 0.0000
+-0.5247 at six -0.7441
+-0.0458 audio </s> -1.0000
+-0.0458 blue </s> -1.0000
+-0.9969 brightness one -0.7318
+-1.0137 brightness sixty 0.0000
+-0.2160 brightness to -0.7956
+-1.0253 brightness twenty -0.8485
+-0.0458 call </s> -1.0000
+-0.0458 change the -0.5013
+-0.5054 color blue 0.0000
+-0.5170 color green 0.0000
+-0.5474 color red 0.0000
+-0.0458 countdown for -0.6002
+-0.0458 create a -0.8430
+-0.0458 degrees </s> -1.0000
+-0.0458 down </s> -1.0000
+-0.0458 drink water 0.0000
+-0.0458 eight am 0.0000
+-0.0458 eighteen degrees 0.0000
+-0.0458 exercise </s> -1.0000
+-1.0006 for eight 0.0000
+-0.9951 for nine 0.0000
+-0.7023 for one -0.7487
+-1.0117 for six -0.7441
+-0.6968 for ten 0.0000
+-0.6941 for thirty 0.0000
+-0.0458 green </s> -1.0000
+-0.0458 hundred percent 0.0000
+-0.0458 increase the -0.9426
+-0.0458 is it 0.0000
+-0.0458 it </s> -1.0000
+-0.0458 kill the -0.8395
+-0.5220 lights </s> -1.0000
+-1.1424 lights off -0.7495
+-1.1662 lights on -0.8572
+-0.3381 lights to -0.8892
+-0.0458 list my -0.5965
+-0.0458 lower the -0.9426
+-0.0458 make a -0.9026
+-0.6627 me the -0.9593
+-0.4687 me to -0.8898
+-0.4651 me up -0.6442
+-0.0458 message </s> -1.0000
+-0.0458 minute </s> -1.0000
+-0.0458 music </s> -1.0000
+-0.5303 my message 0.0000
+-0.2182 my reminders 0.0000
+-0.0458 next song 0.0000
+-0.0458 nine pm 0.0000
+-0.3582 off </s> -1.0000
+-0.3357 off the -0.8395
+-0.5524 on </s> -1.0000
+-0.2078 on the -0.8395
+-0.3366 one hundred 0.0000
+-0.3572 one minute 0.0000
+-0.5286 pause </s> -1.0000
+-0.5006 pause audio 0.0000
+-0.5404 pause song 0.0000
+-0.0458 percent </s> -1.0000
+-0.0458 phone call 0.0000
+-0.5229 play music 0.0000
+-0.5229 play next 0.0000
+-0.5229 play some 0.0000
+-0.0458 playing </s> -1.0000
+-0.0458 pm </s> -1.0000
+-0.0458 power on -0.5801
+-0.0458 red </s> -1.0000
+-0.0458 remind me -0.8196
+-0.8148 reminder drink 0.0000
+-0.8370 reminder exercise 0.0000
+-0.8486 reminder study 0.0000
+-0.3376 reminder to -0.8898
+-0.0458 reminders </s> -1.0000
+-0.0458 seconds </s> -1.0000
+-0.3525 send a -0.9567
+-0.3411 send my -0.8483
+-0.6519 set an 0.0000
+-0.1693 set the -0.5013
+-0.0458 show my -0.5965
+-0.3514 six am 0.0000
+-0.3422 six degrees 0.0000
+-0.0458 sixty percent 0.0000
+-0.0458 skip song 0.0000
+-0.0458 some music 0.0000
+-0.0458 song </s> -1.0000
+-0.1675 start a -0.8446
+-0.6576 start music 0.0000
+-0.6478 stop </s> -1.0000
+-0.4515 stop playing 0.0000
+-0.4929 stop the -0.9983
+-0.0458 study </s> -1.0000
+-0.0458 tell me -0.8935
+-1.0043 temperature eighteen 0.0000
+-0.2206 temperature to -0.8445
+-0.7005 temperature twenty -0.5961
+-0.0458 ten seconds 0.0000
+-0.7297 the brightness -0.5932
+-0.5101 the lights -0.3806
+-2.4082 the music 0.0000
+-0.7270 the temperature -0.6002
+-1.5274 the time -0.6292
+-0.9072 the volume -0.0000
+-1.2235 the weather 0.0000
+-0.0458 thirty seconds 0.0000
+-0.2409 time </s> -1.0000
+-0.4871 time is 0.0000
+-0.3319 timer for -0.6002
+-0.8697 timer one -0.7487
+-0.8335 timer ten 0.0000
+-0.8164 timer thirty 0.0000
+-1.1256 to blue 0.0000
+-1.1256 to drink 0.0000
+-1.1229 to eighteen 0.0000
+-1.1229 to exercise 0.0000
+-1.1256 to green 0.0000
+-1.1284 to one -0.7318
+-1.1229 to red 0.0000
+-1.1229 to sixty 0.0000
+-1.1311 to study 0.0000
+-0.6467 to twenty -0.0000
+-0.6492 turn off -0.7310
+-0.6437 turn on -0.5801
+-0.3482 turn the -0.9426
+-0.5309 twenty percent 0.0000
+-0.5198 twenty six -0.7366
+-0.5180 twenty two 0.0000
+-0.0458 two degrees 0.0000
+-0.4676 up </s> -1.0000
+-0.2524 up at 0.0000
+-0.5052 volume </s> -1.0000
+-0.5191 volume down -0.0000
+-0.5453 volume up -0.8191
+-0.0458 wake me -0.8178
+-0.0458 water </s> -1.0000
+-0.0458 weather </s> -1.0000
+-0.0458 what time -0.8288
+-0.0458 whats the -0.9732
+
+\3-grams:
+-0.5248 <s> alarm eight
+-0.5305 <s> alarm nine
+-0.5135 <s> alarm six
+-0.5080 <s> brightness one
+-0.5248 <s> brightness sixty
+-0.5364 <s> brightness twenty
+-0.0458 <s> call </s>
+-0.0458 <s> change the
+-0.5054 <s> color blue
+-0.5170 <s> color green
+-0.5474 <s> color red
+-0.0458 <s> countdown for
+-0.0458 <s> create a
+-0.0458 <s> increase the
+-0.0458 <s> kill the
+-0.3350 <s> lights off
+-0.3589 <s> lights on
+-0.0458 <s> list my
+-0.0458 <s> lower the
+-0.0458 <s> make a
+-0.0458 <s> message </s>
+-0.0458 <s> next song
+-0.5286 <s> pause </s>
+-0.5006 <s> pause audio
+-0.5404 <s> pause song
+-0.5229 <s> play music
+-0.5229 <s> play next
+-0.5229 <s> play some
+-0.0458 <s> power on
+-0.0458 <s> remind me
+-0.5044 <s> reminder drink
+-0.5267 <s> reminder exercise
+-0.5383 <s> reminder study
+-0.0458 <s> reminders </s>
+-0.3525 <s> send a
+-0.3411 <s> send my
+-0.6519 <s> set an
+-0.1693 <s> set the
+-0.0458 <s> show my
+-0.0458 <s> skip song
+-0.1675 <s> start a
+-0.6576 <s> start music
+-0.6478 <s> stop </s>
+-0.4515 <s> stop playing
+-0.4929 <s> stop the
+-0.0458 <s> tell me
+-0.5247 <s> temperature eighteen
+-0.2209 <s> temperature twenty
+-0.0458 <s> time </s>
+-0.5533 <s> timer one
+-0.5170 <s> timer ten
+-0.5000 <s> timer thirty
+-0.6492 <s> turn off
+-0.6437 <s> turn on
+-0.3482 <s> turn the
+-0.3199 <s> volume down
+-0.3754 <s> volume up
+-0.0458 <s> wake me
+-0.0458 <s> weather </s>
+-0.0458 <s> what time
+-0.0458 <s> whats the
+-0.0458 a call </s>
+-0.0458 a message </s>
+-0.0458 a phone call
+-0.0458 a reminder to
+-0.0458 a timer for
+-0.0458 alarm eight am
+-0.5210 alarm for eight
+-0.5156 alarm for nine
+-0.5322 alarm for six
+-0.0458 alarm nine pm
+-0.0458 alarm six am
+-0.0458 an alarm for
+-0.0458 at eight am
+-0.0458 at nine pm
+-0.0458 at six am
+-0.0458 brightness one hundred
+-0.0458 brightness sixty percent
+-0.5256 brightness to one
+-0.5202 brightness to sixty
+-0.5229 brightness to twenty
+-0.0458 brightness twenty percent
+-0.5235 change the brightness
+-0.5235 change the lights
+-0.5217 change the temperature
+-0.0458 color blue </s>
+-0.0458 color green </s>
+-0.0458 color red </s>
+-0.5302 countdown for one
+-0.5192 countdown for ten
+-0.5192 countdown for thirty
+-0.0458 create a reminder
+-0.0458 drink water </s>
+-0.0458 eight am </s>
+-0.0458 eighteen degrees </s>
+-0.0458 for eight am
+-0.0458 for nine pm
+-0.0458 for one minute
+-0.0458 for six am
+-0.0458 for ten seconds
+-0.0458 for thirty seconds
+-0.0458 hundred percent </s>
+-0.0458 increase the volume
+-0.0458 is it </s>
+-0.0458 kill the lights
+-0.0458 lights off </s>
+-0.0458 lights on </s>
+-0.5238 lights to blue
+-0.5238 lights to green
+-0.5211 lights to red
+-0.0458 list my reminders
+-0.0458 lower the volume
+-0.3495 make a call
+-0.3441 make a phone
+-0.3439 me the time
+-0.3497 me the weather
+-0.5210 me to drink
+-0.5156 me to exercise
+-0.5322 me to study
+-0.0458 me up at
+-0.0458 my message </s>
+-0.0458 my reminders </s>
+-0.0458 next song </s>
+-0.0458 nine pm </s>
+-0.0458 off the lights
+-0.0458 on the lights
+-0.0458 one hundred percent
+-0.0458 one minute </s>
+-0.0458 pause audio </s>
+-0.0458 pause song </s>
+-0.0458 phone call </s>
+-0.0458 play music </s>
+-0.0458 play next song
+-0.0458 play some music
+-0.0458 power on the
+-0.0458 remind me to
+-0.0458 reminder drink water
+-0.0458 reminder exercise </s>
+-0.0458 reminder study </s>
+-0.5229 reminder to drink
+-0.5229 reminder to exercise
+-0.5229 reminder to study
+-0.0458 send a message
+-0.0458 send my message
+-0.0458 set an alarm
+-0.5247 set the brightness
+-0.5229 set the lights
+-0.5211 set the temperature
+-0.0458 show my reminders
+-0.0458 six am </s>
+-0.0458 six degrees </s>
+-0.0458 sixty percent </s>
+-0.0458 skip song </s>
+-0.0458 some music </s>
+-0.0458 start a timer
+-0.0458 start music </s>
+-0.0458 stop playing </s>
+-0.0458 stop the music
+-0.0458 tell me the
+-0.0458 temperature eighteen degrees
+-0.5229 temperature to eighteen
+-0.2218 temperature to twenty
+-0.3495 temperature twenty six
+-0.3441 temperature twenty two
+-0.0458 ten seconds </s>
+-0.0458 the brightness to
+-0.4484 the lights </s>
+-0.2645 the lights to
+-0.0458 the music </s>
+-0.0458 the temperature to
+-0.0458 the time </s>
+-0.3454 the volume </s>
+-0.6492 the volume down
+-0.6492 the volume up
+-0.0458 the weather </s>
+-0.0458 thirty seconds </s>
+-0.0458 time is it
+-0.5247 timer for one
+-0.5247 timer for ten
+-0.5192 timer for thirty
+-0.0458 timer one minute
+-0.0458 timer ten seconds
+-0.0458 timer thirty seconds
+-0.0458 to blue </s>
+-0.0458 to drink water
+-0.0458 to eighteen degrees
+-0.0458 to exercise </s>
+-0.0458 to green </s>
+-0.0458 to one hundred
+-0.0458 to red </s>
+-0.0458 to sixty percent
+-0.0458 to study </s>
+-0.5247 to twenty percent
+-0.5220 to twenty six
+-0.5220 to twenty two
+-0.0458 turn off the
+-0.0458 turn on the
+-0.0458 turn the volume
+-0.0458 twenty percent </s>
+-0.0458 twenty six degrees
+-0.0458 twenty two degrees
+-0.0458 two degrees </s>
+-0.5192 up at eight
+-0.5247 up at nine
+-0.5247 up at six
+-0.0458 volume down </s>
+-0.0458 volume up </s>
+-0.0458 wake me up
+-0.0458 what time is
+-0.0458 whats the weather
+
+\end\
