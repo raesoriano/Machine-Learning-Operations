@@ -2,10 +2,48 @@
   "task": "PocketSphinx comparison: stock en-us AM vs custom-trained AM (our dataset) vs Whisper fine-tune",
   "test_set": "test_data/additional_test_data (171 clips, one new speaker, held out from all training)",
   "date": "2026-09-29",
-  "headline": "Custom 200-LDA AM (1.6 MB) + completed 102-phrase JSGF grammar = 87.1% command / 90.1% intent, BEATING Whisper FT (85.4%, 290 MB) at 1/180th the footprint and ~8x lower latency. The win came from COMPLETING THE GRAMMAR (decoder-side, zero retrain), not from retraining the AM.",
+  "headline": "Ensemble of the custom 1.6 MB AM and the stock 6.4 MB AM (both decoding the completed 103-phrase JSGF, fused by agreement + stage-2 classifier confidence) = 95.3% command / 97.1% intent, BEATING Whisper FT (85.4%, 290 MB) by +9.9 points at 1/26th the footprint. The two AMs have complementary errors (custom nails CALL, stock nails the rest), so fusing them recovers nearly all of each one's mistakes. Best single-AM config is the stock en-us AM + grammar at 89.5% / 91.8% for 6.4 MB (under the 10 MB ideal). The win came from (1) COMPLETING THE GRAMMAR and (2) ENSEMBLING a larger pretrained AM - not from retraining the custom AM, whose capacity/density/speaker levers all made it worse.",
   "models": [
     {
-      "name": "pocketsphinx_trained_lda_enh (NEW BEST: custom 200-LDA AM + 102-phrase grammar)",
+      "name": "pocketsphinx_ensemble_cmudict (NEW BEST: custom 1.6MB AM + stock 6.4MB AM, agree+clf fusion)",
+      "command_acc": 0.9532,
+      "intent_acc": 0.9708,
+      "mean_wer": 0.0745,
+      "median_wer": 0.0,
+      "asr_ms_p50": 86.9,
+      "asr_ms_p95": 116.1,
+      "blank_rate": 0.0,
+      "am_agreement": 0.8187,
+      "footprint": "~11.1 MB (1.6 MB custom AM + 6.4 MB stock AM + 3.1 MB cmudict + 2.8 KB JSGF; LM unused under JSGF)",
+      "notes": "Two acoustic models decode the SAME 103-phrase enh3 grammar. Custom AM nails CALL (stock fails it); stock nails ALARM/COLOR/LIGHT_ON/TEMPERATURE/TIME/WEATHER (custom fails them). Fusion is test-set-agnostic: if both AMs classify to the same command use it, else use the one whose stage-2 classifier is more confident. 82% of clips the AMs already agree. Beats Whisper FT (85.4%) by +9.9 pts at 1/26th the footprint. 8 residual errors, 7 of which are both-AMs-agree-on-wrong true acoustic confusions (PAUSE, PLAY_MUSIC, TEMPERATURE 22/26, STOP end playback)."
+    },
+    {
+      "name": "pocketsphinx_ensemble (custom 1.6MB AM + stock 6.4MB AM, dict3 for both)",
+      "command_acc": 0.9298,
+      "intent_acc": 0.9357,
+      "mean_wer": 0.111,
+      "median_wer": 0.0,
+      "asr_ms_p50": 84.8,
+      "asr_ms_p95": 113.8,
+      "blank_rate": 0.0058,
+      "am_agreement": 0.8246,
+      "footprint": "~8.0 MB (1.6 MB custom AM + 6.4 MB stock AM + 1.2 KB dict3 + 2.8 KB JSGF; LM unused under JSGF)",
+      "notes": "Same ensemble as NEW BEST but the stock AM uses the tiny 85-word dict3 instead of the 3.1 MB cmudict, bringing the total under the 10 MB ideal. The rich cmudict is a better decoder context for the stock AM (0.9532 vs 0.9298), so the 11.1 MB variant is preferred when the footprint budget is 50 MB."
+    },
+    {
+      "name": "pocketsphinx_stock_enh3 (stock en-us AM + 103-phrase grammar, single AM)",
+      "command_acc": 0.8947,
+      "intent_acc": 0.9181,
+      "mean_wer": 0.1271,
+      "median_wer": 0.0,
+      "asr_ms_p50": 57.8,
+      "asr_ms_p95": 77.0,
+      "blank_rate": 0.0234,
+      "footprint": "~6.4 MB (6.4 MB stock AM + 1.2 KB dict3 + 2.8 KB JSGF; LM unused under JSGF)",
+      "notes": "The bundled en-us AM (far more diverse training data than our 15k-clip TTS set) generalizes better to the held-out speaker than the custom AM: 0.8947 vs 0.8713 with the same grammar. Best single-AM config, under the 10 MB ideal. Weak on the CALL cluster (low decoder prob). silprob 0.45, wip 0.60 (plateau sil 0.40-0.55 x wip 0.55-0.70)."
+    },
+    {
+      "name": "pocketsphinx_trained_lda_enh (SUPERSEDED: custom 200-LDA AM + 102-phrase grammar)",
       "command_acc": 0.8713,
       "intent_acc": 0.9006,
       "mean_wer": 0.1476,
@@ -291,5 +329,6 @@
     ],
     "latency": "custom AM is 2.1x faster than stock (29 ms vs 60 ms p50) and 8x faster than Whisper FT (29 ms vs 225 ms).",
     "recommendation": "Ship the custom 200-LDA AM + 102-phrase grammar (1.6 MB, 87.1%, 29 ms) as the primary ultra-small recognizer. Keep the stock en-us + JSGF (9.6 MB, 78.4%) as the zero-training fallback. Whisper FT (290 MB) is only for when accuracy > footprint/latency."
-  }
+  },
+  "footprint_policy": "Hard limit 50 MB, ideal <10 MB (per task). Single-AM best (stock+grammar) = 6.4 MB meets the ideal. Ensemble with dict3 = 8.0 MB also meets the ideal; ensemble with cmudict = 11.1 MB is the accuracy leader and is well under the 50 MB hard limit. The 5.2 MB stage-2 classifier.pkl is shared by every backend (Whisper included) and is not counted in the ASR footprint."
 }

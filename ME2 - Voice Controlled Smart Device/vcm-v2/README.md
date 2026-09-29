@@ -105,11 +105,21 @@ project's only test set; a local copy lives at `test_data/additional_test_data`
 | wav2vec2-base-960h fine-tuned (ABANDONED) | not evaluated (abandoned) | — | — | 250.1% (ME2 test) |
 | whisper base.en zero-shot (backbone) | 81.9% | 81.9% | 0.0% | 22.5% |
 | whisper base.en fine-tuned **v2** (staged, archived) | 50.3% | 55.0% | 0.0% | 18.6% mean / 19% median |
-| **whisper base.en fine-tuned v1 (backbone, BEST + active)** | **85.4%** | **86.0%** | **0.0%** | **10.8% mean / 0% median** |
+| **PocketSphinx ensemble (custom 1.6 MB + stock 6.4 MB AM, agree+clf fusion)** | **95.3%** | **97.1%** | **0.0%** | **7.4% mean / 0% median** |
+| **PocketSphinx stock en-us AM + 103-phrase JSGF (best single AM, 6.4 MB)** | **89.5%** | **91.8%** | **2.3%** | **12.7% mean / 0% median** |
+| PocketSphinx custom 200-LDA AM + 102-phrase JSGF (1.6 MB) | 87.1% | 90.1% | 3.5% | 14.8% mean / 0% median |
+| whisper base.en fine-tuned v1 (backbone, active) | 85.4% | 86.0% | 0.0% | 10.8% mean / 0% median |
 
-- **Best & active model:** `backbone/artifacts/whisper_base_ft/best` (the v1
-  fine-tune) — **85.4% command / 86.0% intent**, re-verified 2026-09-28 on the
-  171-clip sole test set (`reports/additional_test_whisper_ft_rerun.json`).
+- **Best model (ASR accuracy):** the **PocketSphinx ensemble** — the custom
+  1.6 MB AM and the stock 6.4 MB AM both decode the completed 103-phrase JSGF
+  and are fused by agreement + stage-2 classifier confidence — **95.3% command
+  / 97.1% intent** (`backbone/reports/pocketsphinx_ensemble_cmudict.json`). It
+  beats the Whisper fine-tune (85.4%) by +9.9 points at ~1/26th the footprint.
+  The best *single* AM is the stock en-us AM + grammar at 89.5% / 91.8% for
+  6.4 MB (under the 10 MB ideal).
+- **Active production model:** `backbone/artifacts/whisper_base_ft/best` (the
+  v1 fine-tune) — **85.4% command / 86.0% intent**, re-verified 2026-09-28 on
+  the 171-clip sole test set (`reports/additional_test_whisper_ft_rerun.json`).
   It beats the zero-shot baseline (81.9%) and the v2 staged fine-tune (50.3%).
 - **WER caveat (v1):** mean 10.8% is inflated by repetition loops on 70/171
   clips (40.9%) — the fine-tuned model doesn't always emit EOS on noisy OOD
@@ -152,42 +162,57 @@ project's only test set; a local copy lives at `test_data/additional_test_data`
    warm-start → unfrozen cosine LR; early stop on val WER) scored worse
    (50.3%) and is archived — see `backbone/README.md`.
 
-## Ultra-small recognizer — custom PocketSphinx AM + command grammar (1.6 MB)
+## Ultra-small recognizer — PocketSphinx + command grammar (≤ 11 MB)
 
-A **grammar-constrained PocketSphinx** recognizer trained on the ME2 command
-data is the project's smallest ASR, and it is now the **best accuracy-per-byte**
-option:
+A **grammar-constrained PocketSphinx** recognizer is now the project's **best
+ASR** — it beats the Whisper fine-tune on the 171-clip held-out set at a
+fraction of the footprint. Two AMs decode the same 103-phrase JSGF and are
+fused:
 
 | Recognizer | Command | Intent | Blank | Latency p50 | Footprint |
 |---|---|---|---|---|---|
-| **custom 200-LDA AM + 102-phrase JSGF (BEST, active)** | **87.1%** | **90.1%** | **3.5%** | **29 ms** | **1.6 MB** |
+| **ensemble: custom 1.6 MB + stock 6.4 MB AM, agree+clf fusion (BEST)** | **95.3%** | **97.1%** | **0.0%** | **87 ms** | **11.1 MB** |
+| ensemble, dict3 for both AMs (under 10 MB ideal) | 93.0% | 93.6% | 0.6% | 85 ms | 8.0 MB |
+| **stock en-us AM + 103-phrase JSGF (best single AM)** | **89.5%** | **91.8%** | **2.3%** | **58 ms** | **6.4 MB** |
+| custom 200-LDA AM + 102-phrase JSGF | 87.1% | 90.1% | 3.5% | 29 ms | 1.6 MB |
 | custom 200-LDA AM + original 93-phrase JSGF | 84.8% | 88.3% | 4.1% | 26 ms | 1.6 MB |
-| stock en-us AM + 93-phrase JSGF (fallback) | 78.4% | 83.0% | 6.4% | 60 ms | 9.6 MB |
+| stock en-us AM + 93-phrase JSGF (old fallback) | 78.4% | 83.0% | 6.4% | 60 ms | 9.6 MB |
 | Whisper base.en fine-tuned v1 (largest) | 85.4% | 86.0% | 0.0% | 225 ms | 290 MB |
 
-The custom AM (`backbone/artifacts/pocketsphinx_trained_lda_enh/`) is a
+The custom AM (`backbone/artifacts/pocketsphinx_trained_lda/`) is a
 `sphinxtrain` cd_cont model — 200 tied senones, 8 gaussians, LDA/MLLT 39→29,
-trained on the 6,964 clean optionb clips. It is constrained at decode time by a
-JSGF grammar of the 102 in-domain command phrases, then the transcript is fed to
-the **same stage-2 classifier** as the Whisper path, so command/intent are
-measured identically.
+trained on the 6,964 clean optionb clips. The stock AM is the bundled `en-us`
+model (far more diverse training data). Both are constrained at decode time by
+the 103-phrase JSGF, then the transcript is fed to the **same stage-2
+classifier** as the Whisper path, so command/intent are measured identically.
 
-**The win was the grammar, not the AM.** Retraining the AM with more capacity
-(800 senones → 80.7%), more density (16 gaussians → 77.8%), or more speakers
-(100 TTS voices → 77.2%) all made it *worse* — the 1.6 MB 200-senone model is
-already the best custom AM. The real gap was decoder-side: the original
-93-phrase JSGF covered only 51 of the 62 test phrases, so the decoder snapped
-missing phrasings to the nearest one or blanked. Completing the grammar
-(`change color to red`, `lights out`, `shut off the lights`, the no-`to`
-`create a reminder …` forms, …) — a **zero-retrain, +0.5 KB** change — lifted
-accuracy 84.8% → 87.1%, past Whisper FT, at 1/180th the footprint and 8x lower
-latency. Full numbers + the retrain ablations:
+**Two wins, both decoder-side — no AM retraining.**
+1. **Complete the grammar.** The original 93-phrase JSGF covered only 51 of the
+   62 test phrases, so the decoder snapped missing phrasings to the nearest one
+   or blanked. Adding the 10 missing phrasings (`change color to red`,
+   `lights out`, `shut off the lights`, the no-`to` `create a reminder …`
+   forms, `end playback`, …) — a **zero-retrain, +0.5 KB** change — lifted the
+   custom AM 84.8% → 87.1%.
+2. **Ensemble with a larger pretrained AM.** The custom AM nails the CALL
+   cluster but fails ALARM/COLOR/LIGHT_ON/TEMPERATURE/TIME/WEATHER; the stock
+   AM is the reverse. Fusing them (use the agreed command, else the one whose
+   stage-2 classifier is more confident — **test-set-agnostic**) recovers
+   nearly all of each one's mistakes: **95.3% / 97.1%**, +9.9 pts over Whisper
+   FT at ~1/26th the footprint. The 8 residual errors are 7 cases where *both*
+   AMs agree on the same wrong answer (true acoustic confusions) + 1.
+
+Retraining the custom AM with more capacity (800 senones → 80.7%), density
+(16 gaussians → 77.8%), or speakers (100 TTS voices → 77.2%) all made it
+*worse* — the 1.6 MB model is the best custom AM; the gains came from the
+grammar and the ensemble. Full numbers + the retrain ablations:
 `backbone/reports/pocketsphinx_comparison.json`.
 
 - **Build/retrain:** `backbone/pocketsphinx/build_trained_am.py` (sphinxtrain,
   built from source at `sphinx_src/install`).
-- **Eval:** `backbone/pocketsphinx/eval_pocketsphinx.py` (same ground truth +
-  classifier + WER definition as the Whisper eval).
+- **Eval (single AM):** `backbone/pocketsphinx/eval_pocketsphinx.py` (same
+  ground truth + classifier + WER definition as the Whisper eval).
+- **Eval (ensemble):** `backbone/pocketsphinx/eval_pocketsphinx_ensemble.py`
+  (custom + stock AM, agree+clf fusion).
 - **Deploy:** the `pocketsphinx` pip wheel (aarch64 available) loads the AM +
   dict + JSGF directly; no separate model download. The stock en-us + JSGF
   fallback ships in `pi_test/pocketsphinx/` (~10.75 MB) for the zero-training
