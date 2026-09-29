@@ -1,0 +1,104 @@
+{
+  "model": "PocketSphinx ensemble (custom + stock, agree+clf fusion)",
+  "n_clips": 171,
+  "command_acc": 0.9532,
+  "intent_acc": 0.9708,
+  "wall_s": 23.7,
+  "per_folder": {
+    "ALARM": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "BRIGHTNESS": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "CALL": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "COLOR": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "CREATE_REMINDER": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "LIGHT_OFF": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "LIGHT_ON": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "LIST_REMINDERS": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "MESSAGE": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "NEXT": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "PAUSE": {
+      "n": 9,
+      "cmd_acc": 0.7778,
+      "intent_acc": 0.7778
+    },
+    "PLAY_MUSIC": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "STOP": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "TEMPERATURE": {
+      "n": 9,
+      "cmd_acc": 0.6667,
+      "intent_acc": 1.0
+    },
+    "TIME": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "TIMER": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "VOLUME_DOWN": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "VOLUME_UP": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "WEATHER": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    }
+  }
+}

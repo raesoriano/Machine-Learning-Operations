@@ -1,0 +1,5 @@
+pocketsphinx>=5.0.1
+scikit-learn>=1.3
+numpy>=1.24
+soundfile>=0.12
+sounddevice>=0.4

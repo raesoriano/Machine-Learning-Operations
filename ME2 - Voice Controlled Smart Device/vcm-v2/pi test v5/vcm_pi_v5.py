@@ -1,0 +1,423 @@
+#!/usr/bin/env python3
+"""pi test v5 -- ME2 smart-device voice command listener WITH spoken responses.
+
+The full loop the user asked for:
+
+    wait for a command  ->  run the model  ->  classify  ->  play the matching
+    TTS wav  ->  wait for the next command  ...  (until Ctrl-C)
+
+The model is the BEST one from the vcm-v2 work: the **PocketSphinx ensemble**
+(custom 1.6 MB LDA AM + stock 6.4 MB en-us AM, both decoding the same 103-phrase
+JSGF command grammar, fused by agreement / stage-2-classifier confidence).
+It scores **95.3% command / 97.1% intent** on the 171-clip held-out set
+(`test_data/additional_test_data`, one new speaker) -- see
+`backbone/reports/pocketsphinx_ensemble_cmudict.json`.
+
+Once a command is classified, the device "answers" by playing the matching
+response WAV from the TTS repo (16 kHz mono 16-bit, Piper en_US-lessac-medium).
+The 31 commands map onto the 19 response phrases; the REJECT / unknown class
+plays the generated "can you repeat that?" (`19_repeat.wav`).
+
+This folder is self-contained: acoustic models, dictionary, JSGF grammar, the
+stage-2 classifier, the `vcm`/`vcm2` code, and the response WAVs all live here.
+No Whisper / ONNX / torch needed -- just pocketsphinx + sklearn + numpy.
+
+Usage
+-----
+    python vcm_pi_v5.py                 # live mic: listen -> classify -> speak
+    python vcm_pi_v5.py --file clip.wav # classify one file, print the response
+    python vcm_pi_v5.py --test          # run the 171-clip held-out set
+    python vcm_pi_v5.py --no-play       # (mic) classify + print, skip playback
+
+Stop with Ctrl-C at any time.
+"""
+import argparse
+import json
+import os
+import sys
+import time
+import wave
+
+import numpy as np
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _HERE)          # so `import vcm` / `import vcm2` resolve locally
+
+from vcm2.classifier import load_classifier, predict      # noqa: E402
+from vcm2.ground_truth import build_ground_truth          # noqa: E402
+
+# --------------------------------------------------------------------------
+# paths (all relative to this folder)
+# --------------------------------------------------------------------------
+CUSTOM_HMM = os.path.join(_HERE, "am", "custom")
+CUSTOM_LM = os.path.join(CUSTOM_HMM, "vcm.lm.bin")
+STOCK_HMM = os.path.join(_HERE, "am", "stock")
+STOCK_DICT = os.path.join(_HERE, "am", "stock_enus", "cmudict-en-us.dict")
+STOCK_LM = os.path.join(_HERE, "am", "stock_enus", "en-us.lm.bin")
+DICT3 = os.path.join(_HERE, "dict3")
+JSGF = os.path.join(_HERE, "vcm_commands_enh3.jsgf")
+CLASSIFIER = os.path.join(_HERE, "classifier.pkl")
+RESP_DIR = os.path.join(_HERE, "responses")
+TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "test_data",
+                                          "additional_test_data"))
+
+# tuned decode params (identical to the eval that produced the 95.3% report)
+CUSTOM_EXTRA = {"-silprob": "0.65", "-wip": "0.65"}
+STOCK_EXTRA = {"-silprob": "0.45", "-wip": "0.60"}
+
+# A freshly-created PocketSphinx decoder needs a few real-speech utterances to
+# lock in (its feature/AGC state adapts over the first decodes). We re-decode
+# the FIRST real command WARMUP_REPS times and take the converged result; this
+# both fixes the first command and warms the decoder for all that follow.
+WARMUP_REPS = 4
+
+# --------------------------------------------------------------------------
+# command -> response WAV (from the TTS repo). 31 commands + REJECT.
+# Several commands share a phrase (e.g. all brightness -> "setting brightness").
+# 00_yes.wav is kept as a spare generic ack (not bound to a command).
+# --------------------------------------------------------------------------
+RESPONSE_WAV = {
+    "PLAY_MUSIC": "01_playing_music.wav",
+    "WEATHER": "02_current_weather.wav",
+    "TIME": "03_current_time.wav",
+    "LIGHT_ON": "04_switching_lights.wav",
+    "LIGHT_OFF": "04_switching_lights.wav",
+    "BRIGHTNESS_20": "16_setting_brightness.wav",
+    "BRIGHTNESS_60": "16_setting_brightness.wav",
+    "BRIGHTNESS_100": "16_setting_brightness.wav",
+    "COLOR_RED": "17_changing_color.wav",
+    "COLOR_GREEN": "17_changing_color.wav",
+    "COLOR_BLUE": "17_changing_color.wav",
+    "TIMER_10s": "13_setting_timer.wav",
+    "TIMER_30s": "13_setting_timer.wav",
+    "TIMER_1m": "13_setting_timer.wav",
+    "ALARM_6_00AM": "14_setting_alarm.wav",
+    "ALARM_8_00AM": "14_setting_alarm.wav",
+    "ALARM_9_00PM": "14_setting_alarm.wav",
+    "TEMPERATURE_18": "15_changing_temperature.wav",
+    "TEMPERATURE_22": "15_changing_temperature.wav",
+    "TEMPERATURE_26": "15_changing_temperature.wav",
+    "PAUSE": "05_pausing.wav",
+    "STOP": "06_stopping_playback.wav",
+    "NEXT": "07_next_song.wav",
+    "VOLUME_UP": "08_volume_up.wav",
+    "VOLUME_DOWN": "09_volume_down.wav",
+    "CALL": "10_calling.wav",
+    "MESSAGE": "11_sending_message.wav",
+    "LIST_REMINDERS": "12_reminders_list.wav",
+    "CREATE_REMINDER_DRINK_WATER": "18_creating_reminder.wav",
+    "CREATE_REMINDER_EXERCISE": "18_creating_reminder.wav",
+    "CREATE_REMINDER_STUDY": "18_creating_reminder.wav",
+    "REJECT": "19_repeat.wav",
+}
+
+# command -> intent (same map as backbone/pocketsphinx/eval_pocketsphinx.py)
+_INTENT_OF = {
+    "PLAY_MUSIC": "play_music", "WEATHER": "ask_question", "TIME": "ask_question",
+    "LIGHT_ON": "lights_switch", "LIGHT_OFF": "lights_switch",
+    "BRIGHTNESS_20": "lights_adjust", "BRIGHTNESS_60": "lights_adjust",
+    "BRIGHTNESS_100": "lights_adjust",
+    "COLOR_RED": "lights_adjust", "COLOR_GREEN": "lights_adjust",
+    "COLOR_BLUE": "lights_adjust",
+    "TIMER_10s": "set_timer", "TIMER_30s": "set_timer", "TIMER_1m": "set_timer",
+    "ALARM_6_00AM": "set_alarm", "ALARM_8_00AM": "set_alarm",
+    "ALARM_9_00PM": "set_alarm",
+    "TEMPERATURE_18": "set_temperature", "TEMPERATURE_22": "set_temperature",
+    "TEMPERATURE_26": "set_temperature",
+    "PAUSE": "media_control", "STOP": "media_control", "NEXT": "media_control",
+    "VOLUME_UP": "media_control", "VOLUME_DOWN": "media_control",
+    "LIST_REMINDERS": "reminders_lists",
+    "CREATE_REMINDER_DRINK_WATER": "reminders_lists",
+    "CREATE_REMINDER_EXERCISE": "reminders_lists",
+    "CREATE_REMINDER_STUDY": "reminders_lists",
+    "CALL": "call", "MESSAGE": "reminders_lists",
+    "REJECT": "reject",
+}
+
+
+# --------------------------------------------------------------------------
+# PocketSphinx ensemble (the best model)
+# --------------------------------------------------------------------------
+def _make_decoder(hmm, dictionary, lm, jsgf, extra):
+    from pocketsphinx import Config, Decoder
+    cfg = Config()
+    cfg.set_string("-hmm", hmm)
+    cfg.set_string("-dict", dictionary)
+    cfg.set_string("-lm", lm)
+    cfg.set_string("-logfn", "/dev/null")
+    cfg.set_string("-wip", "0.65")
+    for k, v in (extra or {}).items():
+        cfg.set_string(k, v)
+    dec = Decoder(cfg)
+    if jsgf:
+        with open(jsgf) as f:
+            dec.add_jsgf_string("vcm", f.read())
+        dec.activate_search("vcm")
+    return dec
+
+
+def _decode_pcm(dec, pcm: bytes):
+    """Feed 16 kHz mono 16-bit PCM bytes; return (transcript, utt_prob)."""
+    dec.start_utt()
+    chunk = 4000 * 2  # 4000 samples * 2 bytes
+    for i in range(0, len(pcm), chunk):
+        dec.process_raw(pcm[i:i + chunk], False, False)
+    dec.end_utt()
+    hyp = dec.hyp()
+    text = (hyp.hypstr or "").strip() if hyp else ""
+    return text, dec.get_prob()
+
+
+class Ensemble:
+    """custom AM + stock AM, same JSGF grammar, agree/confidence fusion."""
+
+    def __init__(self):
+        print("building ensemble decoders (custom + stock) ...", flush=True)
+        self.dec_c = _make_decoder(CUSTOM_HMM, DICT3, CUSTOM_LM, JSGF, CUSTOM_EXTRA)
+        self.dec_s = _make_decoder(STOCK_HMM, STOCK_DICT, STOCK_LM, JSGF, STOCK_EXTRA)
+        self.clf = load_classifier(CLASSIFIER)
+        print("ready.", flush=True)
+
+    def classify_warm(self, pcm: bytes, reps: int = 1):
+        """Classify; when reps>1, decode that many times and return the LAST
+        result (converged). Used to warm a freshly-created decoder on the
+        first real command (see WARMUP_REPS)."""
+        out = None
+        for _ in range(max(1, reps)):
+            out = self.classify(pcm)
+        return out
+
+    def classify(self, pcm: bytes):
+        """16 kHz mono 16-bit PCM -> (command, intent, transcript, clf_prob)."""
+        tc, _pc = _decode_pcm(self.dec_c, pcm)
+        ts, _ps = _decode_pcm(self.dec_s, pcm)
+        cc, cpc = predict(self.clf, tc)
+        cs, cps = predict(self.clf, ts)
+        # fusion: agreement, else the more confident stage-2 classifier
+        if cc == cs:
+            cmd, transcript, cprob = cc, tc, cpc
+        elif cpc >= cps:
+            cmd, transcript, cprob = cc, tc, cpc
+        else:
+            cmd, transcript, cprob = cs, ts, cps
+        return cmd, _INTENT_OF.get(cmd, "unknown"), transcript, cprob
+
+
+# --------------------------------------------------------------------------
+# audio helpers
+# --------------------------------------------------------------------------
+def read_pcm16(path: str) -> bytes:
+    """Read a 16 kHz mono 16-bit WAV -> raw PCM bytes."""
+    with wave.open(path, "rb") as w:
+        assert w.getframerate() == 16000, f"expected 16 kHz, got {w.getframerate()}"
+        assert w.getsampwidth() == 2, f"expected 16-bit, got {w.getsampwidth()}"
+        return w.readframes(w.getnframes())
+
+
+def float32_to_pcm16(audio: np.ndarray) -> bytes:
+    x = np.clip(audio, -1.0, 1.0) * 32767.0
+    return x.astype(np.int16).tobytes()
+
+
+def play_wav(path: str, enabled: bool = True) -> None:
+    """Play a WAV (blocking). Degrades to a printed note if no audio device."""
+    if not enabled:
+        print(f"  >> [no-play] {os.path.basename(path)}")
+        return
+    try:
+        import soundfile as sf
+        import sounddevice as sd
+        data, sr = sf.read(path, dtype="float32")
+        sd.play(data, sr)
+        sd.wait()
+    except Exception as e:  # noqa: BLE001 - headless / no PortAudio
+        print(f"  >> [no audio device: {type(e).__name__}] would play "
+              f"{os.path.basename(path)}")
+
+
+# --------------------------------------------------------------------------
+# VAD (energy-based, adaptive noise floor) -- same as pi_test/vcm_pi.py
+# --------------------------------------------------------------------------
+class VAD:
+    FRAME_S = 0.030
+    END_S = 0.60          # silence to end an utterance
+    MAX_S = 12.0
+
+    def __init__(self, threshold=0.0035):
+        self.threshold = threshold
+        self.reset()
+
+    def reset(self):
+        self.noise = 0.001
+        self.buf = []
+        self.silence = 0.0
+        self.speaking = False
+
+    def rms(self, frame):
+        return float(np.sqrt(np.mean(frame ** 2)) + 1e-9)
+
+    def push(self, frame):
+        """feed one frame; returns 'speech-start' | 'speech-end' | None."""
+        r = self.rms(frame)
+        if not self.speaking:
+            self.noise = 0.95 * self.noise + 0.05 * r
+            if r > max(self.threshold, 3.0 * self.noise):
+                self.speaking = True
+                self.buf = [frame]
+                self.silence = 0.0
+                return "speech-start"
+            return None
+        self.buf.append(frame)
+        dur = len(self.buf) * self.FRAME_S
+        if r < self.threshold:
+            self.silence += self.FRAME_S
+        else:
+            self.silence = 0.0
+        if self.silence >= self.END_S or dur >= self.MAX_S:
+            self.speaking = False
+            return "speech-end"
+        return None
+
+    def audio(self):
+        a = np.concatenate(self.buf)
+        self.buf = []
+        return a
+
+
+# --------------------------------------------------------------------------
+# the loop: wait -> classify -> speak -> wait ...
+# --------------------------------------------------------------------------
+def run_mic(args):
+    import sounddevice as sd
+    model = Ensemble()
+    vad = VAD()
+    state = {"busy": False, "audio": None}
+    frame = int(16000 * VAD.FRAME_S)
+    n = 0
+
+    def cb(indata, nframes, t, status):
+        if status or state["busy"]:
+            return
+        ev = vad.push(indata[:, 0].astype(np.float32))
+        if ev == "speech-end":
+            a = vad.audio()
+            if len(a) < 16000 * 0.3:      # < 300 ms: ignore
+                return
+            state["audio"] = a
+            state["busy"] = True          # main thread takes over
+
+    print("listening on mic ... Ctrl-C to stop")
+    print("say a command; ~0.6 s of silence ends the utterance.\n")
+    with sd.InputStream(samplerate=16000, channels=1, dtype="float32",
+                        blocksize=frame, callback=cb):
+        try:
+            while True:
+                if not state["busy"]:
+                    time.sleep(0.01)
+                    continue
+                a = state["audio"]
+                state["audio"] = None
+                vad.reset()
+                n += 1
+                reps = WARMUP_REPS if n == 1 else 1   # warm the fresh decoder
+                t0 = time.perf_counter()
+                cmd, intent, transcript, cprob = model.classify_warm(
+                    float32_to_pcm16(a), reps=reps)
+                e2e = (time.perf_counter() - t0) * 1000.0
+                wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
+                print(f"[{time.strftime('%H:%M:%S')}] ── utterance #{n} "
+                      f"({len(a) / 16000:.2f} s) ─────────────────────")
+                print(f"  transcript : {transcript!r}")
+                print(f"  command    : {cmd}  (prob {cprob:.3f})   "
+                      f"intent: {intent}")
+                print(f"  E2E {e2e:.0f} ms")
+                print(f"  >> playing {wav}")
+                play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
+                state["busy"] = False     # re-arm: wait for the next command
+        except KeyboardInterrupt:
+            pass
+    print(f"\nstopped after {n} command(s).")
+
+
+def run_file(args):
+    model = Ensemble()
+    pcm = read_pcm16(args.file)
+    t0 = time.perf_counter()
+    cmd, intent, transcript, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
+    e2e = (time.perf_counter() - t0) * 1000.0
+    wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
+    print(f"  file       : {args.file}")
+    print(f"  transcript : {transcript!r}")
+    print(f"  command    : {cmd}  (prob {cprob:.3f})   intent: {intent}")
+    print(f"  E2E {e2e:.0f} ms")
+    print(f"  >> playing {wav}")
+    play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
+
+
+def run_test(args):
+    model = Ensemble()
+    rows = build_ground_truth(args.data)
+    print(f"{len(rows)} clips in {args.data}\n")
+    correct = intent_correct = 0
+    per_folder = {}
+    t0 = time.perf_counter()
+    for k, r in enumerate(rows):
+        gold_intent = _INTENT_OF.get(r["gold"], "unknown")
+        pcm = read_pcm16(r["path"])
+        cmd, intent, transcript, cprob = model.classify(pcm)
+        ok = cmd == r["gold"]
+        iok = intent == gold_intent
+        correct += ok
+        intent_correct += iok
+        f = per_folder.setdefault(r["folder"], {"n": 0, "cmd": 0, "intent": 0})
+        f["n"] += 1
+        f["cmd"] += ok
+        f["intent"] += iok
+        mark = "  " if ok else "!!"
+        print(f"{mark} {r['folder']:16s} {r['spoken']!r:34s} -> "
+              f"{cmd:28s} (gold {r['gold']:28s}) [{RESPONSE_WAV.get(cmd, '?')}]")
+    n = len(rows)
+    wall = time.perf_counter() - t0
+    report = {
+        "model": "PocketSphinx ensemble (custom + stock, agree+clf fusion)",
+        "n_clips": n,
+        "command_acc": round(correct / n, 4),
+        "intent_acc": round(intent_correct / n, 4),
+        "wall_s": round(wall, 1),
+        "per_folder": {k: {"n": v["n"],
+                           "cmd_acc": round(v["cmd"] / v["n"], 4),
+                           "intent_acc": round(v["intent"] / v["n"], 4)}
+                       for k, v in sorted(per_folder.items())},
+    }
+    out = os.path.join(_HERE, "test_v5_report.json")
+    with open(out, "w") as f:
+        json.dump(report, f, indent=2)
+    print(f"\ncommand_acc {report['command_acc']:.4f}  "
+          f"intent_acc {report['intent_acc']:.4f}  "
+          f"({wall:.1f} s, {n / wall:.1f} clips/s)")
+    print(f"report -> {out}")
+
+
+def main():
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--file", help="classify a single wav file and exit")
+    ap.add_argument("--test", action="store_true",
+                    help="run the 171-clip held-out test set and exit")
+    ap.add_argument("--data", default=TEST_DATA,
+                    help="test-set directory (for --test)")
+    ap.add_argument("--no-play", action="store_true",
+                    help="print the response instead of playing it")
+    args = ap.parse_args()
+
+    if args.file:
+        run_file(args)
+    elif args.test:
+        run_test(args)
+    else:
+        run_mic(args)
+
+
+if __name__ == "__main__":
+    main()
