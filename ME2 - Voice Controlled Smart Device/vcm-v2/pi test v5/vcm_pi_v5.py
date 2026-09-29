@@ -75,6 +75,12 @@ STOCK_EXTRA = {"-silprob": "0.45", "-wip": "0.60"}
 # both fixes the first command and warms the decoder for all that follow.
 WARMUP_REPS = 4
 
+# After the device finishes speaking (or playing a canned response), it ignores
+# the mic for this many seconds before accepting the next command, so the tail
+# or echo of the response can't be heard as a new command. (The mic is already
+# gated while the response plays; this covers the brief moment after it ends.)
+COOLDOWN_S = 0.5
+
 # --------------------------------------------------------------------------
 # command -> response WAV (from the TTS repo). 31 commands + REJECT.
 # Several commands share a phrase (e.g. all brightness -> "setting brightness").
@@ -478,8 +484,7 @@ def run_mic(args):
                 print(f"[{time.strftime('%H:%M:%S')}] ── utterance #{n} "
                       f"({len(a) / 16000:.2f} s) ─────────────────────")
                 print(f"  transcript : {transcript!r}")
-                print(f"  command    : {cmd}  (prob {cprob:.3f})   "
-                      f"intent: {intent}")
+                print(f"  command    : {cmd}   intent: {intent}")
                 print(f"  E2E {e2e:.0f} ms")
                 if cmd == "TIME":
                     # dynamic response: say the ACTUAL current time (UTC+8)
@@ -491,6 +496,8 @@ def run_mic(args):
                     print(f"  >> playing {wav}")
                     play_wav(os.path.join(RESP_DIR, wav),
                              enabled=not args.no_play)
+                time.sleep(COOLDOWN_S)    # ignore the mic briefly after the
+                                          # response ends (tail / echo guard)
                 state["busy"] = False     # re-arm: wait for the next command
         except KeyboardInterrupt:
             pass
@@ -505,7 +512,7 @@ def run_file(args):
     e2e = (time.perf_counter() - t0) * 1000.0
     print(f"  file       : {args.file}")
     print(f"  transcript : {transcript!r}")
-    print(f"  command    : {cmd}  (prob {cprob:.3f})   intent: {intent}")
+    print(f"  command    : {cmd}   intent: {intent}")
     print(f"  E2E {e2e:.0f} ms")
     if cmd == "TIME":
         text = time_response_text()
