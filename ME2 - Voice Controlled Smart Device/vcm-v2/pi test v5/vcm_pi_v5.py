@@ -3,8 +3,14 @@
 
 The full loop the user asked for:
 
-    wait for a command  ->  run the model  ->  classify  ->  play the matching
-    TTS wav  ->  wait for the next command  ...  (until Ctrl-C)
+    say "hey rhasspy"  ->  wait for a command  ->  run the model  ->
+    classify  ->  play the matching TTS wav  ->  wait for the next wake word
+    ...  (until Ctrl-C)
+
+A **wake word** ("hey rhasspy", openWakeWord) gates the whole pipeline. The
+grammar-constrained decoder no longer runs continuously -- it only arms after
+the wake word fires, which is what kills the ghost commands that a noisy mic
+used to produce (noise can no longer decode into a command on its own).
 
 The model is the BEST one from the vcm-v2 work: the **PocketSphinx ensemble**
 (custom 1.6 MB LDA AM + stock 6.4 MB en-us AM, both decoding the same 103-phrase
@@ -19,15 +25,16 @@ The 31 commands map onto the 19 response phrases; the REJECT / unknown class
 plays the generated "can you repeat that?" (`19_repeat.wav`).
 
 This folder is self-contained: acoustic models, dictionary, JSGF grammar, the
-stage-2 classifier, the `vcm`/`vcm2` code, and the response WAVs all live here.
-No Whisper / ONNX / torch needed -- just pocketsphinx + sklearn + numpy.
+stage-2 classifier, the `vcm`/`vcm2` code, the response WAVs, and the
+openWakeWord "hey rhasspy" model (in `wakeword/`) all live here.
 
 Usage
 -----
-    python vcm_pi_v5.py                 # live mic: listen -> classify -> speak
+    python vcm_pi_v5.py                 # live mic: wake word -> command -> speak
     python vcm_pi_v5.py --file clip.wav # classify one file, print the response
-    python vcm_pi_v5.py --test          # run the 171-clip held-out set
+    python vcm_pi_v5.py --test          # run the held-out test set
     python vcm_pi_v5.py --no-play       # (mic) classify + print, skip playback
+    python vcm_pi_v5.py --wake-threshold 0.6   # stricter wake-word gate
 
 Stop with Ctrl-C at any time.
 """
@@ -81,6 +88,21 @@ WARMUP_REPS = 4
 # or echo of the response can't be heard as a new command. (The mic is already
 # gated while the response plays; this covers the brief moment after it ends.)
 COOLDOWN_S = 0.5
+
+# --------------------------------------------------------------------------
+# wake word ("hey rhasspy", openWakeWord) -- the gate that kills ghost commands
+# --------------------------------------------------------------------------
+# The decoder no longer runs continuously. The openWakeWord "hey rhasspy" model
+# (204 KB ONNX, bundled in ./wakeword) watches the mic at all times; only once
+# it fires does the VAD + PocketSphinx ensemble arm for the actual command.
+# Noise / a zoom call can't produce a command on its own anymore, because the
+# grammar-constrained decoder simply isn't listening until the wake word.
+WAKEWORD_MODEL = os.path.join(_HERE, "wakeword", "hey_rhasspy_v0.1.onnx")
+WAKE_THRESHOLD = 0.5    # openWakeWord score 0..1; "hey rhasspy" peaks ~0.8-0.9,
+                        # noise and other phrases stay < 0.01 (verified)
+WAKE_WINDOW = 5         # rolling 5 x 80 ms frames (0.4 s) the peak is taken over
+COMMAND_WINDOW_S = 5.0  # after the wake word, wait this long for a command,
+                        # then go back to waiting for the wake word
 
 # --------------------------------------------------------------------------
 # command -> response WAV (from the TTS repo). 31 commands + REJECT.
@@ -394,6 +416,149 @@ def time_response_text() -> str:
 # speech starts getting split (2 clips). Raise --gate if ghost commands
 # persist on a noisier mic; lower it if quiet commands get dropped.
 # --------------------------------------------------------------------------
+class WakeWord:
+    """openWakeWord "hey rhasspy" detector, fed 80 ms (1280-sample) 16 kHz
+    int16 frames. Returns the peak score over a rolling WAKE_WINDOW frames."""
+
+    def __init__(self, model_path: str, threshold: float = WAKE_THRESHOLD):
+        from openwakeword.model import Model
+        self.threshold = threshold
+        self.model = Model(wakeword_model_paths=[model_path])
+        self._scores = []
+
+    def reset(self):
+        self.model.reset()
+        self._scores = []
+
+    def push(self, block16: np.ndarray) -> float:
+        """Feed one 1280-sample int16 block; returns the rolling peak score."""
+        s = self.model.predict(block16)
+        v = float(max(s.values()))
+        self._scores.append(v)
+        if len(self._scores) > WAKE_WINDOW:
+            self._scores.pop(0)
+        return max(self._scores)
+
+    def fired(self, peak: float) -> bool:
+        return peak >= self.threshold
+
+
+class StreamDecimate:
+    """48 kHz -> 16 kHz streaming lowpass decimator (factor 3).
+
+    The Pi mic delivers 48 kHz but the wake-word model wants 16 kHz. Resampling
+    each 30 ms callback independently corrupts the signal (filter edges reset
+    every callback -> the model sees noise). This keeps the FIR filter state
+    across callbacks, so the stream is sample-accurate.
+    """
+
+    def __init__(self, factor: int = 3, ntaps: int = 33):
+        from scipy.signal import firwin
+        self.factor = factor
+        self.taps = firwin(ntaps, 1.0 / factor, window="hamming")
+        self.zi = np.zeros(len(self.taps) - 1)
+        self.idx = 0
+
+    def push(self, x: np.ndarray) -> np.ndarray:
+        from scipy.signal import lfilter
+        y, self.zi = lfilter(self.taps, 1.0, x, zi=self.zi)
+        out = y[self.idx::self.factor]
+        self.idx = (self.idx + len(x)) % self.factor
+        return out.astype(np.float32)
+
+
+class WakeGate:
+    """Two-stage state machine: WAKE (listen for 'hey rhasspy') -> COMMAND
+    (listen for the actual command) -> WAKE.
+
+    The mic callback feeds it native-rate audio; it resamples to 16 kHz,
+    accumulates 80 ms blocks for the wake detector, and hands 30 ms frames to
+    the command VAD once armed.
+    """
+
+    WAKE, COMMAND = "wake", "command"
+
+    def __init__(self, sr: int, wake: WakeWord, vad, gate_rms: float = 0.0):
+        self.sr = sr
+        self.wake = wake
+        self.vad = vad
+        self.gate_rms = gate_rms
+        self.state = self.WAKE
+        # 48 kHz (the Pi mic) -> 16 kHz via a stateful decimator. 16 kHz passes
+        # straight through. Any other rate falls back to a per-callback
+        # resample (best effort; the Pi is 48 kHz, so this is rarely used).
+        self._dec = StreamDecimate(3) if sr == 48000 else None
+        self._passthrough = (sr == 16000)
+        self._acc = np.zeros(0, np.float32)     # 16 kHz accumulator
+        self._armed_at = 0.0
+        self._fired = False
+        self.last_audio = None                  # captured command (16 kHz)
+
+    def push(self, frame: np.ndarray, now: float):
+        """Feed one native-rate float32 frame (sr * 0.030 samples).
+        Returns 'wake' | 'command' | None. On 'command', `last_audio` holds
+        the captured utterance at 16 kHz (resample before decoding)."""
+        if self.state == self.WAKE:
+            return self._push_wake(frame)
+        # COMMAND state
+        if now - self._armed_at > COMMAND_WINDOW_S:
+            self._to_wake()                     # discard any partial utterance
+            return None
+        ev = self.vad.push(frame)
+        if ev == "speech-end":
+            a = self.vad.audio()                # clears the VAD buffer
+            if len(a) >= self.sr * 0.3:         # >= 300 ms: a real command
+                self._to_wake()
+                self.last_audio = a
+                return "command"
+            # too short (the wake word's own tail / a blip): discard and stay
+            # armed, so the real command that follows is still captured.
+            self.vad.reset()
+            self.last_audio = None
+            return None
+        return None
+
+    def _push_wake(self, frame: np.ndarray):
+        if self._dec is not None:
+            r16 = self._dec.push(frame)
+        elif self._passthrough:
+            r16 = frame                      # already 16 kHz
+        else:
+            # other native rate: best-effort per-callback resample to 16 kHz
+            from scipy.signal import resample_poly
+            r16 = resample_poly(frame, 16000, self.sr).astype(np.float32)
+        self._acc = np.concatenate([self._acc, r16])
+        while len(self._acc) >= 1280:
+            block = self._acc[:1280]
+            self._acc = self._acc[1280:]
+            peak = self.wake.push((np.clip(block, -1.0, 1.0) * 32767)
+                                  .astype(np.int16))
+            if self.wake.fired(peak):
+                self._to_command()
+                return "wake"
+        return None
+
+    def _to_command(self):
+        self.state = self.COMMAND
+        self._armed_at = time.time()
+        self.vad.reset()
+        self.last_audio = None
+        self._fired = True
+
+    def _to_wake(self):
+        self.state = self.WAKE
+        self._fired = False
+        self.wake.reset()
+        self._acc = np.zeros(0, np.float32)
+        if self._dec is not None:
+            self._dec = StreamDecimate(3)
+        self.vad.reset()
+
+    @property
+    def armed(self):
+        return self.state == self.COMMAND
+
+
 class VAD:
     FRAME_S = 0.030
     END_S = 0.60          # trailing silence to end an utterance
@@ -462,7 +627,23 @@ def run_mic(args):
         sr = 16000
     if sr != 16000:
         print(f"mic native rate {sr} Hz -> resampling to 16000 Hz")
+
+    # wake word detector (openWakeWord "hey rhasspy")
+    wake = None
+    if os.path.exists(WAKEWORD_MODEL):
+        try:
+            wake = WakeWord(WAKEWORD_MODEL, threshold=args.wake_threshold)
+            print(f"wake word : 'hey rhasspy' (openWakeWord, "
+                  f"threshold {wake.threshold:.2f})")
+        except Exception as e:  # noqa: BLE001 - onnxruntime / model issue
+            print(f"  >> [wake word unavailable: {type(e).__name__}] "
+                  f"falling back to always-listen")
+    else:
+        print(f"  >> [wake word model not found: {WAKEWORD_MODEL}] "
+              f"falling back to always-listen")
+
     vad = VAD(sr, gate=args.gate)
+    gate = WakeGate(sr, wake, vad, gate_rms=vad.GATE) if wake is not None else None
     frame = int(sr * VAD.FRAME_S)
     n = 0
 
@@ -490,18 +671,38 @@ def run_mic(args):
     def cb(indata, nframes, t, status):
         if status or state["busy"]:
             return
-        ev = vad.push(indata[:, 0].astype(np.float32))
-        if ev == "speech-end":
-            a = vad.audio()
-            if len(a) < sr * 0.3:         # < 300 ms: ignore
-                return
-            if sr != 16000:
-                a = resample_poly(a, 16000, sr)
-            state["audio"] = a
-            state["busy"] = True          # main thread takes over
+        f = indata[:, 0].astype(np.float32)
+        if gate is not None:
+            ev = gate.push(f, time.time())
+            if ev == "wake":
+                print(f"\n[{time.strftime('%H:%M:%S')}] wake word detected "
+                      f"-- say your command now "
+                      f"(~{COMMAND_WINDOW_S:.0f} s window)")
+            elif ev == "command":
+                a = gate.last_audio
+                if a is None or len(a) < sr * 0.3:   # < 300 ms: ignore
+                    return
+                if sr != 16000:
+                    a = resample_poly(a, 16000, sr)
+                state["audio"] = a
+                state["busy"] = True       # main thread takes over
+        else:
+            ev = vad.push(f)
+            if ev == "speech-end":
+                a = vad.audio()
+                if len(a) < sr * 0.3:      # < 300 ms: ignore
+                    return
+                if sr != 16000:
+                    a = resample_poly(a, 16000, sr)
+                state["audio"] = a
+                state["busy"] = True       # main thread takes over
 
     print("listening on mic ... Ctrl-C to stop")
-    print("say a command; ~0.6 s of silence ends the utterance.\n")
+    if gate is not None:
+        print("say 'hey rhasspy', then your command; ~0.6 s of silence ends "
+              "the utterance.\n")
+    else:
+        print("say a command; ~0.6 s of silence ends the utterance.\n")
     with sd.InputStream(samplerate=sr, channels=1, dtype="float32",
                         blocksize=frame, callback=cb):
         try:
@@ -621,6 +822,10 @@ def main():
                          "default 0.05 (-26 dBFS), calibrated on the "
                          "171-clip test set. Raise it (e.g. 0.07) if a noisy "
                          "mic still triggers ghost commands.")
+    ap.add_argument("--wake-threshold", type=float, default=WAKE_THRESHOLD,
+                    help="openWakeWord score (0..1) that counts as the wake "
+                         "word; default 0.5. 'hey rhasspy' peaks ~0.8-0.9, "
+                         "noise stays < 0.01, so 0.5 is very safe.")
     args = ap.parse_args()
 
     if args.file:
