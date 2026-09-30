@@ -70,6 +70,7 @@ DICT3 = os.path.join(_HERE, "dict3")
 JSGF = os.path.join(_HERE, "vcm_commands_enh3.jsgf")
 CLASSIFIER = os.path.join(_HERE, "classifier.pkl")
 RESP_DIR = os.path.join(_HERE, "responses")
+YES_WAV = os.path.join(RESP_DIR, "00_yes.wav")   # "yes?" cue after the wake word
 TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "test_data",
                                           "additional_test_data"))
 
@@ -491,6 +492,7 @@ class WakeGate:
         self._passthrough = (sr == 16000)
         self._acc = np.zeros(0, np.float32)     # 16 kHz accumulator
         self._armed_at = 0.0
+        self._ignore_until = 0.0                # wake tail ignored until this time
         self._fired = False
         self.last_audio = None                  # captured command (16 kHz)
 
@@ -501,6 +503,8 @@ class WakeGate:
         if self.state == self.WAKE:
             return self._push_wake(frame)
         # COMMAND state
+        if now < self._ignore_until:
+            return None          # wake word's own tail: not a command
         if now - self._armed_at > COMMAND_WINDOW_S:
             self._to_wake()                     # discard any partial utterance
             return None
@@ -541,6 +545,7 @@ class WakeGate:
     def _to_command(self):
         self.state = self.COMMAND
         self._armed_at = time.time()
+        self._ignore_until = self._armed_at + 0.4   # skip the wake word's tail
         self.vad.reset()
         self.last_audio = None
         self._fired = True
@@ -614,7 +619,7 @@ def run_mic(args):
     import sounddevice as sd
     from scipy.signal import resample_poly
     model = Ensemble()
-    state = {"busy": False, "audio": None}
+    state = {"busy": False, "audio": None, "cue": False, "muted": False}
 
     # Pi mics (USB / I2S) usually only support 44.1/48 kHz, so opening the
     # stream at 16 kHz fails with "Invalid sample rate". Capture at the
@@ -630,17 +635,28 @@ def run_mic(args):
 
     # wake word detector (openWakeWord "hey rhasspy")
     wake = None
-    if os.path.exists(WAKEWORD_MODEL):
+    if getattr(args, "no_wake", False):
+        print("wake word : DISABLED (--no-wake) -- always listening")
+    elif not os.path.exists(WAKEWORD_MODEL):
+        print("  >> [wake word model not found] "
+              f"{WAKEWORD_MODEL}\n"
+              "     falling back to ALWAYS-LISTEN (no wake word). "
+              "Run: git lfs pull")
+    elif os.path.getsize(WAKEWORD_MODEL) < 1000:
+        # A real model is ~200 KB; a sub-KB file is an unfetched Git-LFS
+        # pointer, which is why the wake word would silently not load.
+        print(f"  >> [wake word model is a Git-LFS pointer, not the model "
+              f"({os.path.getsize(WAKEWORD_MODEL)} bytes)]\n"
+              "     falling back to ALWAYS-LISTEN (no wake word). "
+              "Run: git lfs pull")
+    else:
         try:
             wake = WakeWord(WAKEWORD_MODEL, threshold=args.wake_threshold)
             print(f"wake word : 'hey rhasspy' (openWakeWord, "
                   f"threshold {wake.threshold:.2f})")
         except Exception as e:  # noqa: BLE001 - onnxruntime / model issue
-            print(f"  >> [wake word unavailable: {type(e).__name__}] "
+            print(f"  >> [wake word unavailable: {type(e).__name__}: {e}] "
                   f"falling back to always-listen")
-    else:
-        print(f"  >> [wake word model not found: {WAKEWORD_MODEL}] "
-              f"falling back to always-listen")
 
     vad = VAD(sr, gate=args.gate)
     gate = WakeGate(sr, wake, vad, gate_rms=vad.GATE) if wake is not None else None
@@ -669,15 +685,16 @@ def run_mic(args):
         pass
 
     def cb(indata, nframes, t, status):
-        if status or state["busy"]:
+        if status or state["busy"] or state["muted"]:
             return
         f = indata[:, 0].astype(np.float32)
         if gate is not None:
             ev = gate.push(f, time.time())
             if ev == "wake":
-                print(f"\n[{time.strftime('%H:%M:%S')}] wake word detected "
-                      f"-- say your command now "
+                print(f"\n[{time.strftime('%H:%M:%S')}] wake word detected -- "
+                      f"'yes?' cue, then say your command "
                       f"(~{COMMAND_WINDOW_S:.0f} s window)")
+                state["cue"] = True            # main thread plays the cue
             elif ev == "command":
                 a = gate.last_audio
                 if a is None or len(a) < sr * 0.3:   # < 300 ms: ignore
@@ -707,6 +724,14 @@ def run_mic(args):
                         blocksize=frame, callback=cb):
         try:
             while True:
+                if state["cue"]:
+                    state["cue"] = False
+                    state["muted"] = True          # close the mic while "yes?"
+                                                  # plays (echo guard)
+                    print("  >> 'yes?' -- ready for your command")
+                    play_wav(YES_WAV, enabled=not args.no_play)
+                    state["muted"] = False
+                    continue
                 if not state["busy"]:
                     time.sleep(0.01)
                     continue
@@ -826,6 +851,8 @@ def main():
                     help="openWakeWord score (0..1) that counts as the wake "
                          "word; default 0.5. 'hey rhasspy' peaks ~0.8-0.9, "
                          "noise stays < 0.01, so 0.5 is very safe.")
+    ap.add_argument("--no-wake", action="store_true",
+                    help="disable the wake word and always listen (debugging)")
     args = ap.parse_args()
 
     if args.file:
