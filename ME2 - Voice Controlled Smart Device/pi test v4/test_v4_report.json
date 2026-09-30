@@ -1,0 +1,111 @@
+{
+  "model": "faster-whisper base.en + keyword gate + 31-class+REJECT classifier",
+  "n_clips": 176,
+  "command_acc": 0.8466,
+  "intent_acc": 0.8466,
+  "ood_rejected": "4/5",
+  "false_reject": 21,
+  "wall_s": 129.8,
+  "per_folder": {
+    "ALARM": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "BRIGHTNESS": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "CALL": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "COLOR": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "CREATE_REMINDER": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "LIGHT_OFF": {
+      "n": 9,
+      "cmd_acc": 0.7778,
+      "intent_acc": 0.7778
+    },
+    "LIGHT_ON": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "LIST_REMINDERS": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "MESSAGE": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "NEXT": {
+      "n": 9,
+      "cmd_acc": 0.7778,
+      "intent_acc": 0.7778
+    },
+    "PAUSE": {
+      "n": 9,
+      "cmd_acc": 0.1111,
+      "intent_acc": 0.1111
+    },
+    "PLAY_MUSIC": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "REJECT": {
+      "n": 5,
+      "cmd_acc": 0.8,
+      "intent_acc": 0.8
+    },
+    "STOP": {
+      "n": 9,
+      "cmd_acc": 0.6667,
+      "intent_acc": 0.6667
+    },
+    "TEMPERATURE": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "TIME": {
+      "n": 9,
+      "cmd_acc": 0.6667,
+      "intent_acc": 0.6667
+    },
+    "TIMER": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    },
+    "VOLUME_DOWN": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "VOLUME_UP": {
+      "n": 9,
+      "cmd_acc": 1.0,
+      "intent_acc": 1.0
+    },
+    "WEATHER": {
+      "n": 9,
+      "cmd_acc": 0.8889,
+      "intent_acc": 0.8889
+    }
+  }
+}
