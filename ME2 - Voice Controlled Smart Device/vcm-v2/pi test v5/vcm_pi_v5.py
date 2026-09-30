@@ -35,6 +35,16 @@ Usage
     python vcm_pi_v5.py --test          # run the held-out test set
     python vcm_pi_v5.py --no-play       # (mic) classify + print, skip playback
     python vcm_pi_v5.py --wake-threshold 0.6   # stricter wake-word gate
+    python vcm_pi_v5.py --command-window 1.5   # wait 1.5 s for the command
+
+Flow
+----
+    start  ->  STANDBY: wait for "hey rhasspy" (noise is ignored)
+             ->  play the "yes?" cue (mic muted while it plays)
+             ->  wait up to 1 s for you to START speaking
+                 (0.6 s of silence then ends the utterance)
+             ->  decode + classify + play the response
+             ->  0.5 s cooldown  ->  back to STANDBY
 
 Stop with Ctrl-C at any time.
 """
@@ -102,8 +112,8 @@ WAKEWORD_MODEL = os.path.join(_HERE, "wakeword", "hey_rhasspy_v0.1.onnx")
 WAKE_THRESHOLD = 0.5    # openWakeWord score 0..1; "hey rhasspy" peaks ~0.8-0.9,
                         # noise and other phrases stay < 0.01 (verified)
 WAKE_WINDOW = 5         # rolling 5 x 80 ms frames (0.4 s) the peak is taken over
-COMMAND_WINDOW_S = 5.0  # after the wake word, wait this long for a command,
-                        # then go back to waiting for the wake word
+COMMAND_WINDOW_S = 1.0  # after the 'yes?' cue, wait this long for the command
+                        # to START, then go back to waiting for the wake word
 
 # --------------------------------------------------------------------------
 # command -> response WAV (from the TTS repo). 31 commands + REJECT.
@@ -444,6 +454,36 @@ class WakeWord:
         return peak >= self.threshold
 
 
+def wake_selftest(model_path: str, threshold: float) -> tuple:
+    """Feed the bundled 'hey rhasspy' self-test wav through the model and
+    report (peak_score, passed). This proves the wake model actually loaded
+    and can fire -- a silent load failure (e.g. a missing onnxruntime / tflite
+    backend on the Pi) would otherwise leave the device always-listening and
+    produce ghost commands. Returns (0.0, False) if the fixture or model is
+    unavailable."""
+    import soundfile as sf
+    fixture = os.path.join(os.path.dirname(model_path),
+                           "selftest_hey_rhasspy.wav")
+    if not os.path.exists(fixture):
+        return 0.0, False
+    try:
+        a, sr = sf.read(fixture, dtype="float32")
+        if a.ndim > 1:
+            a = a.mean(axis=1)
+        if sr != 16000:
+            from scipy.signal import resample_poly
+            g = int(np.gcd(sr, 16000))
+            a = resample_poly(a, 16000 // g, sr // g).astype(np.float32)
+        ww = WakeWord(model_path, threshold=threshold)
+        pcm = (np.clip(a, -1.0, 1.0) * 32767).astype(np.int16)
+        peak = 0.0
+        for i in range(0, len(pcm) - 1279, 1280):
+            peak = max(peak, ww.push(pcm[i:i + 1280]))
+        return peak, peak >= threshold
+    except Exception:  # noqa: BLE001 - any load/inference failure
+        return 0.0, False
+
+
 class StreamDecimate:
     """48 kHz -> 16 kHz streaming lowpass decimator (factor 3).
 
@@ -469,21 +509,26 @@ class StreamDecimate:
 
 
 class WakeGate:
-    """Two-stage state machine: WAKE (listen for 'hey rhasspy') -> COMMAND
-    (listen for the actual command) -> WAKE.
+    """Three-stage state machine: WAKE (listen for 'hey rhasspy') -> CUE
+    (the "yes?" cue plays; mic muted) -> COMMAND (listen for the actual
+    command) -> WAKE.
 
     The mic callback feeds it native-rate audio; it resamples to 16 kHz,
     accumulates 80 ms blocks for the wake detector, and hands 30 ms frames to
-    the command VAD once armed.
+    the command VAD once armed. The command window (self.window seconds)
+    starts when the "yes?" cue FINISHES (cue_done), not when the wake word
+    fires, so the full window is available for the user to start speaking.
     """
 
-    WAKE, COMMAND = "wake", "command"
+    WAKE, CUE, COMMAND = "wake", "cue", "command"
 
-    def __init__(self, sr: int, wake: WakeWord, vad, gate_rms: float = 0.0):
+    def __init__(self, sr: int, wake: WakeWord, vad, gate_rms: float = 0.0,
+                 window: float = COMMAND_WINDOW_S):
         self.sr = sr
         self.wake = wake
         self.vad = vad
         self.gate_rms = gate_rms
+        self.window = window
         self.state = self.WAKE
         # 48 kHz (the Pi mic) -> 16 kHz via a stateful decimator. 16 kHz passes
         # straight through. Any other rate falls back to a per-callback
@@ -492,7 +537,6 @@ class WakeGate:
         self._passthrough = (sr == 16000)
         self._acc = np.zeros(0, np.float32)     # 16 kHz accumulator
         self._armed_at = 0.0
-        self._ignore_until = 0.0                # wake tail ignored until this time
         self._fired = False
         self.last_audio = None                  # captured command (16 kHz)
 
@@ -502,11 +546,16 @@ class WakeGate:
         the captured utterance at 16 kHz (resample before decoding)."""
         if self.state == self.WAKE:
             return self._push_wake(frame)
-        # COMMAND state
-        if now < self._ignore_until:
-            return None          # wake word's own tail: not a command
-        if now - self._armed_at > COMMAND_WINDOW_S:
-            self._to_wake()                     # discard any partial utterance
+        if self.state == self.CUE:
+            # The "yes?" cue is still playing (mic muted by the main thread).
+            # Nothing to do until cue_done() is called.
+            return None
+        # COMMAND state: the window is the time allowed for speech to START
+        # (self.window s after the cue). If it expires with no speech in
+        # progress, go back to standby; if speech is in progress, let it
+        # finish (the VAD's 0.6 s silence rule ends the utterance).
+        if now - self._armed_at > self.window and not self.vad.speaking:
+            self._to_wake()
             return None
         ev = self.vad.push(frame)
         if ev == "speech-end":
@@ -515,8 +564,8 @@ class WakeGate:
                 self._to_wake()
                 self.last_audio = a
                 return "command"
-            # too short (the wake word's own tail / a blip): discard and stay
-            # armed, so the real command that follows is still captured.
+            # too short (a blip / noise burst): discard and stay armed, so a
+            # real command that follows within the window is still captured.
             self.vad.reset()
             self.last_audio = None
             return None
@@ -538,17 +587,26 @@ class WakeGate:
             peak = self.wake.push((np.clip(block, -1.0, 1.0) * 32767)
                                   .astype(np.int16))
             if self.wake.fired(peak):
-                self._to_command()
+                self._to_cue()
                 return "wake"
         return None
 
-    def _to_command(self):
+    def _to_cue(self):
+        # Wake word fired. The main thread plays the "yes?" cue (mic muted)
+        # and then calls cue_done() to arm the command window.
+        self.state = self.CUE
+        self._fired = True
+        self.last_audio = None
+
+    def cue_done(self, now: float = None):
+        """Called by the main thread once the "yes?" cue has finished.
+        Arms the command window (self.window s for speech to start). The
+        wake word's own tail was already dropped: the mic is muted while the
+        cue plays, so no tail audio reaches the VAD."""
         self.state = self.COMMAND
-        self._armed_at = time.time()
-        self._ignore_until = self._armed_at + 0.4   # skip the wake word's tail
+        self._armed_at = time.time() if now is None else now
         self.vad.reset()
         self.last_audio = None
-        self._fired = True
 
     def _to_wake(self):
         self.state = self.WAKE
@@ -652,14 +710,33 @@ def run_mic(args):
     else:
         try:
             wake = WakeWord(WAKEWORD_MODEL, threshold=args.wake_threshold)
-            print(f"wake word : 'hey rhasspy' (openWakeWord, "
-                  f"threshold {wake.threshold:.2f})")
+            # PROVE the model actually loaded and can fire: feed the bundled
+            # 'hey rhasspy' fixture through it. A silent load failure (missing
+            # onnxruntime / tflite backend on the Pi) would otherwise leave
+            # the device always-listening -> ghost commands.
+            peak, ok = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
+            if ok:
+                print(f"wake word : 'hey rhasspy' (openWakeWord, "
+                      f"threshold {wake.threshold:.2f}) | self-test "
+                      f"score {peak:.2f} >= {args.wake_threshold:.2f} OK")
+            else:
+                print(f"  >> [wake word self-test FAILED: score {peak:.3f} "
+                      f"< {args.wake_threshold:.2f}]\n"
+                      "     The model loaded but does not fire. Falling back "
+                      "to ALWAYS-LISTEN.\n"
+                      "     Check: pip install -r requirements.txt "
+                      "(openwakeword==0.4.0)")
+                wake = None
         except Exception as e:  # noqa: BLE001 - onnxruntime / model issue
-            print(f"  >> [wake word unavailable: {type(e).__name__}: {e}] "
-                  f"falling back to always-listen")
+            print(f"  >> [wake word unavailable: {type(e).__name__}: {e}]\n"
+                  "     falling back to ALWAYS-LISTEN (no wake word).\n"
+                  "     Fix: pip install -r requirements.txt   "
+                  "(needs openwakeword==0.4.0 + onnxruntime)")
 
     vad = VAD(sr, gate=args.gate)
-    gate = WakeGate(sr, wake, vad, gate_rms=vad.GATE) if wake is not None else None
+    gate = (WakeGate(sr, wake, vad, gate_rms=vad.GATE,
+                     window=args.command_window)
+            if wake is not None else None)
     frame = int(sr * VAD.FRAME_S)
     n = 0
 
@@ -693,7 +770,7 @@ def run_mic(args):
             if ev == "wake":
                 print(f"\n[{time.strftime('%H:%M:%S')}] wake word detected -- "
                       f"'yes?' cue, then say your command "
-                      f"(~{COMMAND_WINDOW_S:.0f} s window)")
+                      f"({gate.window:.0f} s window)")
                 state["cue"] = True            # main thread plays the cue
             elif ev == "command":
                 a = gate.last_audio
@@ -716,10 +793,12 @@ def run_mic(args):
 
     print("listening on mic ... Ctrl-C to stop")
     if gate is not None:
-        print("say 'hey rhasspy', then your command; ~0.6 s of silence ends "
-              "the utterance.\n")
+        print(f"STANDBY -- say 'hey rhasspy' to wake the device, then speak "
+              f"your command within {gate.window:.0f} s of the 'yes?' cue. "
+              f"Noise is ignored while in standby.\n")
     else:
-        print("say a command; ~0.6 s of silence ends the utterance.\n")
+        print("ALWAYS-LISTEN (no wake word) -- say a command; ~0.6 s of "
+              "silence ends the utterance.\n")
     with sd.InputStream(samplerate=sr, channels=1, dtype="float32",
                         blocksize=frame, callback=cb):
         try:
@@ -731,6 +810,7 @@ def run_mic(args):
                     print("  >> 'yes?' -- ready for your command")
                     play_wav(YES_WAV, enabled=not args.no_play)
                     state["muted"] = False
+                    gate.cue_done()                # NOW start the 1 s window
                     continue
                 if not state["busy"]:
                     time.sleep(0.01)
@@ -851,11 +931,32 @@ def main():
                     help="openWakeWord score (0..1) that counts as the wake "
                          "word; default 0.5. 'hey rhasspy' peaks ~0.8-0.9, "
                          "noise stays < 0.01, so 0.5 is very safe.")
+    ap.add_argument("--command-window", type=float, default=COMMAND_WINDOW_S,
+                    help="seconds to wait (after the 'yes?' cue) for the "
+                         "command to start; default 1.0. If no speech "
+                         "starts in that time, the device returns to "
+                         "standby (waiting for the wake word).")
     ap.add_argument("--no-wake", action="store_true",
                     help="disable the wake word and always listen (debugging)")
+    ap.add_argument("--wake-check", action="store_true",
+                    help="run ONLY the wake-word self-test (load the model, "
+                         "feed the bundled 'hey rhasspy' fixture, print the "
+                         "score) and exit. Use this on the Pi to confirm the "
+                         "wake word can actually fire before going live.")
     args = ap.parse_args()
 
-    if args.file:
+    if args.wake_check:
+        peak, ok = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
+        print(f"self-test: score {peak:.3f} (threshold "
+              f"{args.wake_threshold:.2f}) -> {'PASS' if ok else 'FAIL'}")
+        if not ok:
+            print("The wake model is not firing. On the Pi this is almost "
+                  "always a dependency problem: openwakeword must be "
+                  "0.4.0 (0.5/0.6 need tflite-runtime, which has no "
+                  "Python 3.13 / aarch64 wheel). Run: "
+                  "pip install -r requirements.txt")
+        sys.exit(0 if ok else 1)
+    elif args.file:
         run_file(args)
     elif args.test:
         run_test(args)
