@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""pi test v5 -- ME2 smart-device voice command listener WITH spoken responses.
+"""pi test v3 -- ME2 smart-device voice command listener WITH spoken responses.
 
 The full loop the user asked for:
 
@@ -30,12 +30,12 @@ openWakeWord "hey rhasspy" model (in `wakeword/`) all live here.
 
 Usage
 -----
-    python vcm_pi_v5.py                 # live mic: wake word -> command -> speak
-    python vcm_pi_v5.py --file clip.wav # classify one file, print the response
-    python vcm_pi_v5.py --test          # run the held-out test set
-    python vcm_pi_v5.py --no-play       # (mic) classify + print, skip playback
-    python vcm_pi_v5.py --wake-threshold 0.6   # stricter wake-word gate
-    python vcm_pi_v5.py --command-window 1.5   # wait 1.5 s for the command
+    python vcm_pi_v3.py                 # live mic: wake word -> command -> speak
+    python vcm_pi_v3.py --file clip.wav # classify one file, print the response
+    python vcm_pi_v3.py --test          # run the held-out test set
+    python vcm_pi_v3.py --no-play       # (mic) classify + print, skip playback
+    python vcm_pi_v3.py --wake-threshold 0.6   # stricter wake-word gate
+    python vcm_pi_v3.py --command-window 1.5   # wait 1.5 s for the command
 
 Flow
 ----
@@ -467,7 +467,7 @@ class WakeWord:
 # we can self-heal: detect the pointer and download the real model.
 _WAKE_MODEL_RAW = ("https://github.com/raesoriano/Machine-Learning-Operations/"
                    "raw/main/ME2%20-%20Voice%20Controlled%20Smart%20Device/"
-                   "pi%20test%20v5/wakeword/hey_rhasspy_v0.1.onnx")
+                   "pi%20test%20v3/wakeword/hey_rhasspy_v0.1.onnx")
 
 
 def _heal_wake_model(model_path: str) -> str:
@@ -488,7 +488,7 @@ def _heal_wake_model(model_path: str) -> str:
     tmp = model_path + ".dl"
     try:
         req = urllib.request.Request(_WAKE_MODEL_RAW,
-                                     headers={"User-Agent": "vcm-pi-v5"})
+                                     headers={"User-Agent": "vcm-pi-v3"})
         with urllib.request.urlopen(req, timeout=60) as r:
             data = r.read()
         if len(data) < 10000:
@@ -1016,7 +1016,7 @@ def run_test(args):
                            "intent_acc": round(v["intent"] / v["n"], 4)}
                        for k, v in sorted(per_folder.items())},
     }
-    out = os.path.join(_HERE, "test_v5_report.json")
+    out = os.path.join(_HERE, "test_v3_report.json")
     with open(out, "w") as f:
         json.dump(report, f, indent=2)
     print(f"\ncommand_acc {report['command_acc']:.4f}  "

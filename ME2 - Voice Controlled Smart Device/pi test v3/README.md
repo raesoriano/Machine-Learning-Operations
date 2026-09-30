@@ -1,4 +1,4 @@
-# pi test v5 — ME2 voice command listener **with wake word + spoken responses**
+# pi test v3 — ME2 voice command listener **with wake word + spoken responses**
 
 The full interactive loop:
 
@@ -29,7 +29,7 @@ by **agreement**, or by the **more confident stage-2 classifier** when they
 disagree. **95.3% command / 97.1% intent** on the 171-clip held-out set
 (`data/additional_test_data`, one new speaker) — see
 `archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json` (171
-clips) and `test_v5_report.json` (176 clips incl. 5 REJECT, per-folder).
+clips) and `test_v3_report.json` (176 clips incl. 5 REJECT, per-folder).
 
 No Whisper / ONNX / torch — just `pocketsphinx` + `scikit-learn` + `numpy` +
 `openwakeword`, so it runs comfortably on a Pi.
@@ -44,7 +44,7 @@ No Whisper / ONNX / torch — just `pocketsphinx` + `scikit-learn` + `numpy` +
 | After fire | plays `responses/00_yes.wav` ("yes?"); the mic is **muted while it plays**, so the wake word's own tail can't be decoded as a command |
 | Command window | 1.0 s after the cue for speech to *start* (webrtcvad; 0.6 s of silence ends the utterance) |
 | Cooldown | 0.5 s after the response, back to STANDBY |
-| Self-test | `python vcm_pi_v5.py --wake-check` feeds the bundled fixture (`wakeword/selftest_hey_rhasspy.wav`) through the model and reports the exact failing step if it can't pass |
+| Self-test | `python vcm_pi_v3.py --wake-check` feeds the bundled fixture (`wakeword/selftest_hey_rhasspy.wav`) through the model and reports the exact failing step if it can't pass |
 | Self-heal | if the on-disk model is an unfetched Git-LFS pointer (sub-KB), it is auto-downloaded from GitHub's raw endpoint on startup (needs internet once); `git lfs pull` works too |
 
 **Dependency note:** `openwakeword` is pinned to **0.4.0** in
@@ -55,7 +55,7 @@ wheel for Python 3.13 / aarch64 (the Pi's environment) and will not install.
 
 | Path | What it is | Size |
 |---|---|---|
-| `vcm_pi_v5.py` | the listener: wake word → "yes?" → VAD → ensemble → classify → **play wav** → loop | 16 KB |
+| `vcm_pi_v3.py` | the listener: wake word → "yes?" → VAD → ensemble → classify → **play wav** → loop | 16 KB |
 | `wakeword/hey_rhasspy_v0.1.onnx` | openWakeWord "hey rhasspy" model (Git LFS; auto-heals if unfetched) | 204 KB |
 | `wakeword/selftest_hey_rhasspy.wav` | fixture for `--wake-check` | — |
 | `am/custom/` | custom 1.6 MB LDA acoustic model (+ its `vcm.lm.bin`) | ~1.7 MB |
@@ -67,7 +67,7 @@ wheel for Python 3.13 / aarch64 (the Pi's environment) and will not install.
 | `responses/` | the 19 TTS response WAVs + `00_yes.wav` cue + generated `19_repeat.wav` | ~1.4 MB |
 | `vcm/`, `vcm2/` | self-contained code (normalization, classifier, ground truth) | — |
 | `test_wake_flow.py` | wake-word gate test (synthetic 48 kHz stream through the Pi path) | — |
-| `test_v5_report.json` | 176-clip held-out eval (per-folder breakdown) | — |
+| `test_v3_report.json` | 176-clip held-out eval (per-folder breakdown) | — |
 | `requirements.txt` | deps (`openwakeword==0.4.0` pinned) | — |
 | `training/` | AM training + eval scripts (`build_trained_am.py`, `eval_pocketsphinx*.py`) | — |
 
@@ -111,14 +111,14 @@ pip install -r requirements.txt
 ## Run
 
 ```bash
-python vcm_pi_v5.py --wake-check          # self-test the wake model (do this first)
-python vcm_pi_v5.py                       # live mic: STANDBY → "hey rhasspy" → "yes?" → command → speak
-python vcm_pi_v5.py --file clip.wav       # classify one file, print + play the response
-python vcm_pi_v5.py --test                # run the held-out set (data/additional_test_data)
-python vcm_pi_v5.py --no-play             # (mic) classify + print, skip playback
-python vcm_pi_v5.py --wake-threshold 0.6  # stricter wake-word gate
-python vcm_pi_v5.py --command-window 1.5  # wait 1.5 s for the command
-python vcm_pi_v5.py --no-wake             # always-listen — DEBUGGING ONLY
+python vcm_pi_v3.py --wake-check          # self-test the wake model (do this first)
+python vcm_pi_v3.py                       # live mic: STANDBY → "hey rhasspy" → "yes?" → command → speak
+python vcm_pi_v3.py --file clip.wav       # classify one file, print + play the response
+python vcm_pi_v3.py --test                # run the held-out set (data/additional_test_data)
+python vcm_pi_v3.py --no-play             # (mic) classify + print, skip playback
+python vcm_pi_v3.py --wake-threshold 0.6  # stricter wake-word gate
+python vcm_pi_v3.py --command-window 1.5  # wait 1.5 s for the command
+python vcm_pi_v3.py --no-wake             # always-listen — DEBUGGING ONLY
 ```
 
 Stop with **Ctrl-C** at any time.
@@ -146,7 +146,7 @@ plus the response playback.
 
 A freshly-created PocketSphinx decoder needs a few **real-speech** utterances to
 lock in (its feature state adapts over the first decodes). A cold decoder can
-mis-decode the *first* command. `vcm_pi_v5.py` handles this with no bundled
+mis-decode the *first* command. `vcm_pi_v3.py` handles this with no bundled
 audio: it **re-decodes the first real command `WARMUP_REPS` (4) times and takes
 the converged result**, which both fixes that command and warms the decoder for
 all the ones that follow. (Warming with the Piper TTS voice was tried and
@@ -162,7 +162,7 @@ all the ones that follow. (Warming with the Piper TTS voice was tried and
 * The wake model (`wakeword/hey_rhasspy_v0.1.onnx`) is tracked via **Git LFS**.
   If the file on the Pi is a sub-KB pointer, the program auto-downloads the
   real model from GitHub on startup (internet needed once); `git lfs pull`
-  works too. Verify with `python vcm_pi_v5.py --wake-check`.
+  works too. Verify with `python vcm_pi_v3.py --wake-check`.
 * Known accuracy gap: a few confusable pairs still slip through (e.g.
   **TIME → PLAY_MUSIC**). Candidate fixes: grammar/LM tuning or reweighting
   the stage-2 classifier on the confusion pairs.

@@ -45,7 +45,7 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 _BACK = os.path.dirname(_HERE)
 _REPO = os.path.dirname(_BACK)
 _ME2 = os.path.dirname(_REPO)
-sys.path.insert(0, _BACK)   # pi test v5/ (the vcm2 package that ships with the model)
+sys.path.insert(0, _BACK)   # pi test v3/ (the vcm2 package that ships with the model)
 sys.path.insert(0, _HERE)   # training/ (eval_pocketsphinx)
 
 from vcm2.classifier import load_classifier, predict      # noqa: E402

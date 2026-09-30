@@ -11,7 +11,7 @@ from scipy.signal import resample_poly
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from vcm_pi_v5 import WakeWord  # noqa: E402
+from vcm_pi_v3 import WakeWord  # noqa: E402
 
 raw = "/tmp/hello_raw.wav"
 subprocess.run(["espeak", "-v", "en-us", "-s", "150", "-w", raw,

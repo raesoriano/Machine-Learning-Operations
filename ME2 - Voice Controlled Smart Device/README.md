@@ -21,11 +21,11 @@ command intents people give smart devices, runs **on-device in real time**
 
 Plus a reject class: **unknown** (anything else must be rejected, not guessed).
 
-## Current best model — `pi test v5/` (wake-word-gated PocketSphinx ensemble)
+## Current best model — `pi test v3/` (wake-word-gated PocketSphinx ensemble)
 
 The deployed model is the **PocketSphinx ensemble** from the vcm-v2 work, now
 gated by an **openWakeWord wake word** and closed the loop with **spoken TTS
-responses**. It is fully self-contained in `pi test v5/` and runs comfortably
+responses**. It is fully self-contained in `pi test v3/` and runs comfortably
 on a Pi 4/5 (no Whisper / ONNX / torch).
 
 **Flow (a three-stage state machine):**
@@ -46,7 +46,7 @@ STANDBY 0.5 s cooldown (response tail can't re-trigger), then wait
 ```
 
 The wake word is **mandatory**: if the model cannot load (missing file,
-unfetched Git-LFS pointer, failed self-test), `vcm_pi_v5.py` **refuses to
+unfetched Git-LFS pointer, failed self-test), `vcm_pi_v3.py` **refuses to
 start** with a loud error instead of silently falling back to always-listen.
 That fallback was the old behavior that produced *ghost commands* — noise
 decoded into commands on its own. With the gate, the grammar-constrained
@@ -57,14 +57,14 @@ background call can no longer produce a command.
 
 | Part | What it is | Where |
 |---|---|---|
-| Wake word | openWakeWord **"hey rhasspy"** (204 KB ONNX; scores ~0.8–0.9 on the phrase, ~0.002 on real mic noise; threshold 0.5) | `pi test v5/wakeword/hey_rhasspy_v0.1.onnx` |
-| VAD | webrtcvad (16 kHz, 0.6 s silence ends the utterance) | in `vcm_pi_v5.py` |
-| Acoustic model A | **custom** 1.6 MB LDA AM trained on the ME2 dataset (`-silprob 0.65 -wip 0.65`) | `pi test v5/am/custom/` |
-| Acoustic model B | **stock** 6.4 MB `en-us` AM (`-silprob 0.45 -wip 0.60`) | `pi test v5/am/stock/`, `am/stock_enus/` |
-| Grammar | the 103-phrase JSGF command grammar (both AMs decode the same grammar) | `pi test v5/vcm_commands_enh3.jsgf` |
-| Dictionary | word→phone dictionary for the custom AM | `pi test v5/dict3` |
-| Stage-2 classifier | text classifier over word (1,2) + char (2,5) n-grams, 31 commands + REJECT (5.2 MB) | `pi test v5/classifier.pkl` |
-| Responses | 19 TTS WAVs (Piper `en_US-lessac-medium`, 16 kHz mono) + the "yes?" cue | `pi test v5/responses/` |
+| Wake word | openWakeWord **"hey rhasspy"** (204 KB ONNX; scores ~0.8–0.9 on the phrase, ~0.002 on real mic noise; threshold 0.5) | `pi test v3/wakeword/hey_rhasspy_v0.1.onnx` |
+| VAD | webrtcvad (16 kHz, 0.6 s silence ends the utterance) | in `vcm_pi_v3.py` |
+| Acoustic model A | **custom** 1.6 MB LDA AM trained on the ME2 dataset (`-silprob 0.65 -wip 0.65`) | `pi test v3/am/custom/` |
+| Acoustic model B | **stock** 6.4 MB `en-us` AM (`-silprob 0.45 -wip 0.60`) | `pi test v3/am/stock/`, `am/stock_enus/` |
+| Grammar | the 103-phrase JSGF command grammar (both AMs decode the same grammar) | `pi test v3/vcm_commands_enh3.jsgf` |
+| Dictionary | word→phone dictionary for the custom AM | `pi test v3/dict3` |
+| Stage-2 classifier | text classifier over word (1,2) + char (2,5) n-grams, 31 commands + REJECT (5.2 MB) | `pi test v3/classifier.pkl` |
+| Responses | 19 TTS WAVs (Piper `en_US-lessac-medium`, 16 kHz mono) + the "yes?" cue | `pi test v3/responses/` |
 
 **Fusion:** the two decoders decode the same grammar; the final command is
 the one they **agree on**, or — when they disagree — the one with the
@@ -78,7 +78,7 @@ the one they **agree on**, or — when they disagree — the one with the
 | 176-clip set (171 + 5 REJECT clips) | 93.8% | 95.5% |
 
 Reports: `archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`
-(171-clip) and `pi test v5/test_v5_report.json` (176-clip, per-folder
+(171-clip) and `pi test v3/test_v3_report.json` (176-clip, per-folder
 breakdown).
 
 ### Spoken responses
@@ -86,16 +86,16 @@ breakdown).
 The 31 fine-grained commands map onto **19** TTS response phrases (several
 commands share a phrase); **REJECT / unknown → `19_repeat.wav`** ("can you
 repeat that?"). `00_yes.wav` ("yes?") is the post-wake-word cue, not bound to
-a command. Full mapping table in `pi test v5/README.md`.
+a command. Full mapping table in `pi test v3/README.md`.
 
 ### Install & run (on the Pi)
 
 ```bash
-cd "ME2 - Voice Controlled Smart Device/pi test v5"
+cd "ME2 - Voice Controlled Smart Device/pi test v3"
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt        # openwakeword==0.4.0 is pinned (0.5/0.6 need tflite-runtime, no Py3.13/aarch64 wheel)
-python vcm_pi_v5.py --wake-check       # self-test: feeds the bundled "hey rhasspy" fixture through the model
-python vcm_pi_v5.py                    # live: STANDBY -> "hey rhasspy" -> "yes?" -> command -> speak
+python vcm_pi_v3.py --wake-check       # self-test: feeds the bundled "hey rhasspy" fixture through the model
+python vcm_pi_v3.py                    # live: STANDBY -> "hey rhasspy" -> "yes?" -> command -> speak
 ```
 
 Useful flags: `--file clip.wav` (classify one file), `--test` (run the
@@ -132,8 +132,8 @@ rejected — a different speaker biases the decoder.)
 ```
 ME2 - Voice Controlled Smart Device/
 ├── README.md                     # this file
-├── pi test v5/                   # *** CURRENT BEST MODEL *** (wake-word-gated PocketSphinx ensemble)
-│   ├── vcm_pi_v5.py              #   listener: wake word -> "yes?" -> VAD -> ensemble -> classify -> speak
+├── pi test v3/                   # *** CURRENT BEST MODEL *** (wake-word-gated PocketSphinx ensemble)
+│   ├── vcm_pi_v3.py              #   listener: wake word -> "yes?" -> VAD -> ensemble -> classify -> speak
 │   ├── am/custom/                #   custom 1.6 MB LDA acoustic model (+ vcm.lm.bin)
 │   ├── am/stock/                 #   stock en-us acoustic model
 │   ├── am/stock_enus/            #   cmudict + en-us.lm.bin
@@ -145,7 +145,7 @@ ME2 - Voice Controlled Smart Device/
 │   ├── vcm/, vcm2/               #   self-contained code (normalization, classifier, ground truth)
 │   ├── training/                 #   AM training + eval scripts (build_trained_am.py, eval_*)
 │   ├── test_wake_flow.py         #   wake-word gate test (synthetic 48 kHz stream)
-│   ├── test_v5_report.json       #   176-clip held-out eval (per-folder)
+│   ├── test_v3_report.json       #   176-clip held-out eval (per-folder)
 │   └── requirements.txt
 ├── data/                         # ALL DATA (audio on shared storage, never committed)
 │   ├── additional_test_data/     #   held-out test set (171 clips + 5 REJECT, one new speaker)
@@ -245,7 +245,7 @@ dependency on the Pi. The vcm-v2 work is also where the PocketSphinx
 ensemble was discovered — its experiment reports live in
 `archived/vcm-v2/backbone/reports/`.
 
-### v3 — current: wake-word-gated PocketSphinx ensemble (`pi test v5/`)
+### v3 — current: wake-word-gated PocketSphinx ensemble (`pi test v3/`)
 
 95.3% / 97.1% (see above). The wake-word gate (added 2026-09-30) fixed the
 last remaining failure mode — ghost commands from a noisy mic — by making the
@@ -275,7 +275,7 @@ decoder arm only after "hey rhasspy".
       (custom + stock AM, agree+clf fusion) → **95.3% command / 97.1% intent**
       on the 171-clip held-out set; spoken TTS responses (31 commands → 19
       WAVs); openWakeWord "hey rhasspy" gate (mandatory, self-healing model
-      load, `--wake-check`); repo restructured around `pi test v5/`.
+      load, `--wake-check`); repo restructured around `pi test v3/`.
 - [ ] P5 RPi4/5 demo: VAD → VCM → parser → GPIO (LED/relay/buzzer/DHT11)
       (RPi service + simulator in `archived/deploy/`)
 - [ ] P9 accuracy pass on the remaining confusion pairs (e.g. TIME →

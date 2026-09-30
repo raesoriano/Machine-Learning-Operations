@@ -28,7 +28,7 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import vcm_pi_v5 as v5          # noqa: E402
+import vcm_pi_v3 as v3          # noqa: E402
 
 CUE_S = 0.67                    # length of 00_yes.wav
 
@@ -84,8 +84,8 @@ def feed(gate, stream, sr, window=1.0):
 
 
 def make_gate(sr, window=1.0):
-    return v5.WakeGate(sr, v5.WakeWord(v5.WAKEWORD_MODEL, threshold=0.5),
-                       v5.VAD(sr, gate=0.05), window=window)
+    return v3.WakeGate(sr, v3.WakeWord(v3.WAKEWORD_MODEL, threshold=0.5),
+                       v3.VAD(sr, gate=0.05), window=window)
 
 
 def main():

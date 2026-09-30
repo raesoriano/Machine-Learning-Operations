@@ -33,9 +33,9 @@ venv/
 # pi_test/pocketsphinx fallback (stock en-us AM + command JSGF, ~10.75 MB)
 # committed as regular files; the phone-LM is a .bin so re-include the dir.
 !pi_test/pocketsphinx/**
-# pi test v5 (self-contained ensemble listener: AMs, classifier, TTS responses)
+# pi test v3 (self-contained ensemble listener: AMs, classifier, TTS responses)
 # committed as regular files; the LM .bin files are re-included the same way.
-!pi test v5/**
+!pi test v3/**
 # The w2v2 raw state_dicts are intermediate (ignored); its loadable
 # model.safetensors is LFS-tracked.
 archive/w2v2_base/artifacts/*.pt
