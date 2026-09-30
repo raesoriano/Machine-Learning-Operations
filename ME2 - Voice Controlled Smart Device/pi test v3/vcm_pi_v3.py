@@ -60,6 +60,7 @@ import math
 import os
 import sys
 import time
+import urllib.parse
 import urllib.request
 import wave
 from datetime import datetime
@@ -416,8 +417,10 @@ def time_response_text() -> str:
 # dynamic WEATHER response (IP geolocation + Open-Meteo, then Piper TTS)
 #
 # 1. Location: the device's current location, looked up from its public IP
-#    (ipapi.co, free, no key). If the lookup fails (offline, blocked, or the
-#    IP is a private one), fall back to UP Diliman, Quezon City.
+#    (ip-api.com primary, ipinfo.io fallback; both free, no key). If the
+#    lookup fails (offline, blocked, or the IP is a private one), fall back
+#    to UP Diliman, Quezon City. The spoken name is **city-level** (e.g.
+#    "Quezon City", "Pasig") -- never a barangay.
 # 2. Weather: Open-Meteo (free, no API key) -- current conditions only.
 # 3. Spoken:  e.g. "Currently in Quezon City: partly cloudy, 29 degrees."
 #
@@ -438,19 +441,57 @@ def _http_json(url: str, timeout: int = WEATHER_HTTP_TIMEOUT):
         return None
 
 
-def _current_location(override: str | None = None):
-    """(name, lat, lon) of the device's current location.
+def _geocode(query: str):
+    """(name, lat, lon) for a place name via Open-Meteo geocoding.
 
-    `override` (e.g. from --weather-loc) wins. Otherwise look up the public
-    IP's location; on any failure fall back to UP Diliman, Quezon City.
+    Returns None if the service is unreachable or finds nothing.
+    """
+    url = ("https://geocoding-api.open-meteo.com/v1/search"
+           f"?name={urllib.parse.quote(query)}&count=1&language=en&format=json")
+    data = _http_json(url)
+    if data and data.get("results"):
+        r = data["results"][0]
+        name = (f"{r.get('name')}, {r.get('admin1')}"
+                if r.get("admin1") else r.get("name") or query)
+        return name, float(r["latitude"]), float(r["longitude"])
+    return None
+
+
+def _current_location(override: str | None = None):
+    """(name, lat, lon) of the device's current location, city-level.
+
+    `override` (e.g. from --weather-loc) wins -- it is geocoded so the
+    coordinates are real (e.g. 'Quezon City' -> 14.6488, 121.0509); if that
+    geocoding fails, UP Diliman coordinates are used. Otherwise look up the
+    public IP's location (ip-api.com, then ipinfo.io as a fallback); on any
+    failure fall back to UP Diliman, Quezon City.
+
+    The name is always reduced to the CITY level (e.g. "Quezon City",
+    "Pasig") -- never a barangay -- because free IP-geolocation databases
+    are unreliable at the barangay level (e.g. they reported "Guyong" for
+    this HPC's IP when the city is Quezon City).
     """
     if override:
-        return override, 14.6265, 121.0465
-    geo = _http_json("https://ipapi.co/json/")
-    if geo and geo.get("latitude") is not None and geo.get("longitude") is not None:
-        name = (geo.get("city") or geo.get("region") or geo.get("country_name")
-                or "your location")
-        return name, float(geo["latitude"]), float(geo["longitude"])
+        geo = _geocode(override)
+        if geo:
+            return geo
+        print(f"  >> [weather] could not geocode {override!r} -- using "
+              f"{WEATHER_FALLBACK[0]} coordinates")
+        return override, WEATHER_FALLBACK[1], WEATHER_FALLBACK[2]
+    # ip-api.com (free, no key, generous rate limit)
+    d = _http_json("http://ip-api.com/json/?fields=status,city,lat,lon")
+    if d and d.get("status") == "success" and d.get("lat") is not None:
+        name = (d.get("city") or d.get("regionName") or "your location")
+        return name, float(d["lat"]), float(d["lon"])
+    # ipinfo.io (free, no key) -- note: "loc" is a "lat,lon" string
+    d = _http_json("https://ipinfo.io/json")
+    if d and d.get("loc"):
+        try:
+            lat, lon = (float(x) for x in d["loc"].split(","))
+            name = d.get("city") or d.get("region") or "your location"
+            return name, lat, lon
+        except (ValueError, AttributeError):
+            pass
     print("  >> [weather] IP location lookup failed -- using "
           f"{WEATHER_FALLBACK[0]}")
     return WEATHER_FALLBACK

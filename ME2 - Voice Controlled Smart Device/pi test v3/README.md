@@ -172,7 +172,7 @@ Piper TTS (the same `en_US-lessac-low` voice used for `19_repeat.wav`):
 | Command | What it does |
 |---|---|
 | `TIME` | Says the actual current time (UTC+8, Asia/Manila): *"It is 5:42 PM."* |
-| `WEATHER` | Looks up the device's **current location** from its public IP (`ipapi.co`, free, no key), fetches the current conditions from **Open-Meteo** (free, no key), and speaks them: *"Currently in Quezon City: partly cloudy, 29 degrees Celsius, feels like 33."* |
+| `WEATHER` | Looks up the device's **current location** from its public IP (`ip-api.com`, with `ipinfo.io` as a fallback; both free, no key), fetches the current conditions from **Open-Meteo** (free, no key), and speaks them: *"Currently in Quezon City: partly cloudy, 29 degrees Celsius, feels like 33."* The spoken name is **city-level** (e.g. "Quezon City", "Pasig") — never a barangay, because free IP-geolocation databases are unreliable below city level. |
 
 **Location fallback:** if the IP lookup fails (offline, blocked, private IP),
 the weather is fetched for **UP Diliman, Quezon City** instead and the device
