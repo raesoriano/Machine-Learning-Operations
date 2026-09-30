@@ -248,6 +248,16 @@ python vcm_pi_v3.py --music-test
 
 This resolves the playlist, starts mpv, plays ~12 s, skips a track,
 raises the volume, and stops. If you hear music, the seven voice commands
+
+**Spoken responses (canned WAVs + Piper TTS):** responses are played by a
+**separate-process player** (mpv, then paplay/aplay/ffplay as fallbacks),
+not in-process `sounddevice`. On the Pi, opening an output stream with
+`sd.play` while the mic input stream is open fails with `PortAudioError`
+(the mic keeps working, but every response goes silent). A subprocess opens
+its own audio stream — the same reason the mpv music playback works — so
+responses and music now both play reliably. If no external player is found,
+the code falls back to in-process `sd.play` (fine on headless dev machines
+or when the mic is not open).
 will work.
 
 **Setup (once, on the Pi):**

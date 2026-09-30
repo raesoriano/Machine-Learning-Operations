@@ -272,17 +272,74 @@ def float32_to_pcm16(audio: np.ndarray) -> bytes:
     return x.astype(np.int16).tobytes()
 
 
-def play_wav(path: str, enabled: bool = True) -> None:
+_PLAYER_CACHE = None
+
+
+def _pick_player():
+    """Return (name, argv_prefix) for the first available external audio
+    player, or None.
+
+    Responses are played by a SEPARATE-PROCESS player, not in-process
+    sd.play: on the Pi, opening an output stream with sd.play while the mic
+    input stream is open fails with PortAudioError. A subprocess (mpv, the
+    same one that plays the music) opens its own stream, which is why the
+    music works. mpv is preferred -- it is installed (music) and handles
+    resampling + PipeWire; paplay/aplay/ffplay are fallbacks for machines
+    without mpv.
+    """
+    global _PLAYER_CACHE
+    if _PLAYER_CACHE is not None:
+        return _PLAYER_CACHE
+    import shutil
+    candidates = [
+        ("mpv",    ["mpv", "--no-video", "--really-quiet", "--no-terminal"]),
+        ("paplay", ["paplay"]),
+        ("aplay",  ["aplay", "-q"]),
+        ("ffplay", ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet"]),
+    ]
+    chosen = None
+    for name, argv in candidates:
+        if shutil.which(name):
+            chosen = (name, argv)
+            break
+    _PLAYER_CACHE = chosen
+    return chosen
+
+
+def _play_wav_proc(path: str) -> None:
+    """Play a WAV via a separate-process player (blocking)."""
+    player = _pick_player()
+    if player is None:
+        raise RuntimeError("no external audio player found")
+    name, argv = player
+    subprocess.run(argv + [path], check=True,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def play_wav(path: str, enabled: bool = True) -> bool:
     """Play a WAV (blocking). Degrades to a printed note if no audio device.
 
-    Pi speakers (USB / I2S) usually only support 44.1/48 kHz, so opening the
-    stream at the wav's 16 kHz fails with "Invalid sample rate". Play at the
-    device's native rate, resampling in software; fall back to 16 kHz if the
-    native rate is also rejected.
+    Returns True if the audio was actually played. Prefers a separate-process
+    player (mpv/paplay/aplay) because on the Pi an in-process sd.play output
+    stream fails (PortAudioError) while the mic input stream is open -- a
+    subprocess opens its own stream, which is why the mpv music playback
+    works. Falls back to in-process sd.play (works on headless dev machines /
+    when the mic is not open).
     """
     if not enabled:
         print(f"  >> [no-play] {os.path.basename(path)}")
-        return
+        return False
+    # 1) Separate-process player (robust on the Pi).
+    if _pick_player() is not None:
+        try:
+            _play_wav_proc(path)
+            return True
+        except Exception as e:  # noqa: BLE001
+            print(f"  >> [player failed: {type(e).__name__}] "
+                  f"falling back to in-process")
+    # 2) In-process sd.play fallback. Pi speakers (USB / I2S) usually only
+    #    support 44.1/48 kHz, so play at the device's native rate, resampling
+    #    in software; fall back to 16 kHz if the native rate is rejected.
     try:
         import soundfile as sf
         import sounddevice as sd
@@ -303,7 +360,7 @@ def play_wav(path: str, enabled: bool = True) -> None:
             try:
                 sd.play(d, target)
                 sd.wait()
-                return
+                return True
             except Exception as e:
                 last_err = e
         print(f"  >> [playback failed: {type(last_err).__name__}] would play "
@@ -311,6 +368,7 @@ def play_wav(path: str, enabled: bool = True) -> None:
     except Exception as e:  # noqa: BLE001 - headless / no PortAudio
         print(f"  >> [no audio device: {type(e).__name__}] would play "
               f"{os.path.basename(path)}")
+    return False
 
 
 # --------------------------------------------------------------------------
@@ -378,32 +436,25 @@ def speak(text: str, enabled: bool = True) -> None:
         print(f"  >> [TTS unavailable] would say: {text!r}")
         return
     import io
-    import soundfile as sf
-    import sounddevice as sd
+    import tempfile
     buf = io.BytesIO()
     with wave.open(buf, "wb") as w:
         voice.synthesize_wav(text, w)
     buf.seek(0)
-    data, sr = sf.read(buf, dtype="float32")
+    # Write to a temp file and play via play_wav() so the SAME separate-
+    # process player is used (in-process sd.play fails on the Pi while the
+    # mic stream is open -- see play_wav's docstring).
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     try:
-        out_sr = int(sd.query_devices(sd.default.device[1], "output")
-                     ["default_samplerate"])
-    except Exception:
-        out_sr = sr
-    last_err = None
-    for target in dict.fromkeys([out_sr, 16000]):
-        d = data
-        if target != sr:
-            g = int(np.gcd(sr, target))
-            d = resample_poly(data, int(target) // g, int(sr) // g)
+        tmp.write(buf.read())
+        tmp.close()
+        if not play_wav(tmp.name, enabled=enabled):
+            print(f"  >> would say: {text!r}")
+    finally:
         try:
-            sd.play(d, target)
-            sd.wait()
-            return
-        except Exception as e:
-            last_err = e
-    print(f"  >> [playback failed: {type(last_err).__name__}] would say: "
-          f"{text!r}")
+            os.unlink(tmp.name)
+        except OSError:
+            pass
 
 
 def time_response_text() -> str:
