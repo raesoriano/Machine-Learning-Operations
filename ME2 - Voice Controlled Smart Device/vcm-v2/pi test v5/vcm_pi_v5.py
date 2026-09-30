@@ -460,6 +460,57 @@ class WakeWord:
         return peak >= self.threshold
 
 
+# The wake model is tracked in Git LFS. On a machine where `git lfs pull`
+# never ran (or git-lfs isn't installed), the file on disk is a ~131-byte
+# text pointer, not the 204 KB model -- and the wake word silently can't
+# fire. GitHub serves the real LFS object transparently at the raw URL, so
+# we can self-heal: detect the pointer and download the real model.
+_WAKE_MODEL_RAW = ("https://github.com/raesoriano/Machine-Learning-Operations/"
+                   "raw/main/ME2%20-%20Voice%20Controlled%20Smart%20Device/"
+                   "vcm-v2/pi%20test%20v5/wakeword/hey_rhasspy_v0.1.onnx")
+
+
+def _heal_wake_model(model_path: str) -> str:
+    """Return '' if the model file is usable, else a status string.
+
+    If the file is missing or is an unfetched Git-LFS pointer (sub-KB), try
+    to download the real model from GitHub's raw endpoint (which serves the
+    LFS object directly). This makes the device self-sufficient on the Pi:
+    no `git lfs pull` / git-lfs install required.
+    """
+    import urllib.parse
+    if os.path.exists(model_path) and os.path.getsize(model_path) >= 1000:
+        return ""
+    why = ("not found" if not os.path.exists(model_path)
+           else f"is a {os.path.getsize(model_path)}-byte Git-LFS pointer")
+    print(f">> wake word model {why} -- downloading the real model "
+          f"from GitHub ...")
+    tmp = model_path + ".dl"
+    try:
+        req = urllib.request.Request(_WAKE_MODEL_RAW,
+                                     headers={"User-Agent": "vcm-pi-v5"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            data = r.read()
+        if len(data) < 10000:
+            return (f"download returned only {len(data)} bytes (expected "
+                    "~204081) -- not the model. Run `git lfs pull` in the "
+                    "repo, then retry")
+        with open(tmp, "wb") as f:
+            f.write(data)
+        os.replace(tmp, model_path)
+        print(f">> wake word model downloaded OK ({len(data)} bytes)")
+        return ""
+    except Exception as e:  # noqa: BLE001
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except OSError:
+            pass
+        return (f"auto-download failed: {type(e).__name__}: {e} -- run "
+                "`git lfs pull` in the repo (or copy the 204 KB "
+                "hey_rhasspy_v0.1.onnx into wakeword/), then retry")
+
+
 def wake_selftest(model_path: str, threshold: float) -> tuple:
     """Feed the bundled 'hey rhasspy' self-test wav through the model and
     report (peak_score, passed, reason). This proves the wake model actually
@@ -468,6 +519,9 @@ def wake_selftest(model_path: str, threshold: float) -> tuple:
     always-listening and produce ghost commands. `reason` names the exact
     step that failed so the Pi output is actionable."""
     import soundfile as sf
+    heal = _heal_wake_model(model_path)
+    if heal:
+        return 0.0, False, heal
     if not os.path.exists(model_path):
         return 0.0, False, f"model file not found: {model_path}"
     size = os.path.getsize(model_path)
@@ -756,18 +810,19 @@ def run_mic(args):
     if getattr(args, "no_wake", False):
         print("wake word : DISABLED (--no-wake) -- always listening "
               "(DEBUG ONLY)")
-    elif not os.path.exists(WAKEWORD_MODEL):
-        _abort_no_wake(
-            f"wake word model not found: {WAKEWORD_MODEL}",
-            "run `git lfs pull` in the repo, then restart")
-    elif os.path.getsize(WAKEWORD_MODEL) < 1000:
-        # A real model is ~200 KB; a sub-KB file is an unfetched Git-LFS
-        # pointer, which is why the wake word would not load.
-        _abort_no_wake(
-            f"wake word model is a Git-LFS pointer, not the model "
-            f"({os.path.getsize(WAKEWORD_MODEL)} bytes)",
-            "run `git lfs pull` in the repo, then restart")
     else:
+        # Self-heal: if the model file is missing or is an unfetched
+        # Git-LFS pointer (sub-KB), download the real model from GitHub's
+        # raw endpoint (serves the LFS object directly) -- no `git lfs
+        # pull` / git-lfs install needed on the Pi.
+        if (not os.path.exists(WAKEWORD_MODEL)
+                or os.path.getsize(WAKEWORD_MODEL) < 1000):
+            heal = _heal_wake_model(WAKEWORD_MODEL)
+            if heal:
+                _abort_no_wake(
+                    f"wake word model: {heal}",
+                    "run `git lfs pull` in the repo (or copy the 204 KB "
+                    "hey_rhasspy_v0.1.onnx into wakeword/), then restart")
         try:
             wake = WakeWord(WAKEWORD_MODEL, threshold=args.wake_threshold)
             # PROVE the model actually loaded and can fire: feed the bundled
@@ -1016,8 +1071,10 @@ def main():
         if not ok:
             print("The wake model is not firing. The detail line above says "
                   "exactly which step failed (missing model / LFS pointer / "
-                  "import / load / inference). Most common fixes: "
-                  "`git lfs pull` (model files are stored in Git LFS) and "
+                  "import / load / inference). The program already tries to "
+                  "auto-download the model from GitHub when it finds an "
+                  "unfetched LFS pointer. Remaining fixes: `git lfs pull` "
+                  "(model files are stored in Git LFS) and "
                   "`pip install -r requirements.txt` (openwakeword==0.4.0 + "
                   "onnxruntime).")
         sys.exit(0 if ok else 1)
