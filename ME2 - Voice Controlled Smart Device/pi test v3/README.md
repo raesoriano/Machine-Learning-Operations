@@ -101,12 +101,36 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 
 (`00_yes.wav` — "yes?" — is kept as a spare generic ack, not bound to a command.)
 
+## Getting just this folder (sparse checkout)
+
+The full repo is large (data + archived models). On the Pi, clone only this
+folder:
+
+```bash
+git clone --filter=blob:none --sparse https://github.com/raesoriano/Machine-Learning-Operations.git
+cd Machine-Learning-Operations
+git sparse-checkout set "ME2 - Voice Controlled Smart Device/pi test v3"
+```
+
+(Already have a full clone? Just `cd "ME2 - Voice Controlled Smart Device/pi test v3"`
+— no need to re-clone.)
+
 ## Install (on the Pi)
 
 ```bash
-pip install -r requirements.txt
+cd "ME2 - Voice Controlled Smart Device/pi test v3"
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt        # THIS folder's requirements — torch-free
 # mic: usually works out of the box; for USB mics check `arecord -l`
 ```
+
+> **Do NOT install PyTorch on the Pi.** The repo-root `requirements.txt` (and
+> `setup_env.sh`) is the GPU *training* stack for ME1 / the old CTC model — it
+> pulls in `torch`, `torchvision`, `torchaudio`, `transformers`, `lightning`,
+> `gradio`, etc. (a ~2 GB footprint). The current model (`pi test v3`) needs
+> none of that: it runs on `pocketsphinx` + `scikit-learn` + `openwakeword`
+> only. Always install from **this folder's** `requirements.txt`, never the
+> repo-root one, and never run `bash setup_env.sh` on the Pi.
 
 ## Run
 

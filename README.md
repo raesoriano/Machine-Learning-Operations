@@ -35,6 +35,12 @@ Then activate it:
 conda activate /path/to/env
 ```
 
+> **ME2 (`pi test v3`) does NOT need this env.** The deployed voice-command
+> model is torch-free (`pocketsphinx` + `scikit-learn` + `openwakeword`) and
+> ships its own `ME2 - Voice Controlled Smart Device/pi test v3/requirements.txt`.
+> On a Raspberry Pi, install only that file — never this root `requirements.txt`
+> or `setup_env.sh` (they pull in a ~2 GB PyTorch stack). See the ME2 README.
+
 ## Hardware
 
 Exercises run on a **DGX cluster** node with **8× NVIDIA A100-SXM4-40GB**.
