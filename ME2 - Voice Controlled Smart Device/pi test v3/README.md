@@ -105,8 +105,9 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 ¹ **Dynamic:** WEATHER and TIME ignore the canned WAV and speak a live answer
 via Piper TTS — see [Dynamic responses](#dynamic-responses-time-weather).
 
-² **Real playback:** the six media commands (PLAY_MUSIC, PAUSE, STOP, NEXT,
-VOLUME_UP, VOLUME_DOWN) ignore the canned WAV and actually control a YouTube
+² **Real playback:** the seven media commands (PLAY_MUSIC, PAUSE, STOP, NEXT,
+PREVIOUS, VOLUME_UP, VOLUME_DOWN) ignore the canned WAV and actually control a
+YouTube
 playlist via **mpv + yt-dlp**, then speak a live confirmation — see
 [Music (YouTube playlist)](#music-youtube-playlist).
 
@@ -130,7 +131,7 @@ git sparse-checkout set "ME2 - Voice Controlled Smart Device/pi test v3"
 cd "ME2 - Voice Controlled Smart Device/pi test v3"
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt        # THIS folder's requirements — torch-free
-# music (the six media commands) needs mpv — a SYSTEM package, not pip:
+# music (the seven media commands) needs mpv — a SYSTEM package, not pip:
 sudo apt install mpv
 # mic: usually works out of the box; for USB mics check `arecord -l`
 ```
@@ -198,8 +199,9 @@ python vcm_pi_v3.py --weather-loc "UP Diliman, Quezon City"
 
 ## Music (YouTube playlist)
 
-The six media commands — `PLAY_MUSIC`, `PAUSE`, `STOP`, `NEXT`, `VOLUME_UP`,
-`VOLUME_DOWN` — do **not** just play an acknowledgement WAV. They actually
+The seven media commands — `PLAY_MUSIC`, `PAUSE`, `STOP`, `NEXT`, `PREVIOUS`,
+`VOLUME_UP`, `VOLUME_DOWN` — do **not** just play an acknowledgement WAV. They
+actually
 control a **YouTube playlist**, and then speak a live confirmation with Piper
 TTS.
 
@@ -209,12 +211,22 @@ TTS.
 | `PAUSE` | Pauses playback | "paused" |
 | `STOP` | Pauses and rewinds to the start of the current track | "stopped" |
 | `NEXT` | Skips to the next track in the playlist | "next song" |
+| `PREVIOUS` | Skips back to the previous track | "previous song" |
 | `VOLUME_UP` | Steps volume **up** one level | "volume 75 percent" |
 | `VOLUME_DOWN` | Steps volume **down** one level | "volume 50 percent" |
 
 **Volume is discrete:** it moves in fixed steps through
 **0 → 25 → 50 → 75 → 100 %** (starting at 50 % by default, or whatever
 `--volume` sets). It never goes above 100 % or below 0 %.
+
+**"Previous" is routed from the transcript, not the classifier.** "previous
+song" is in the JSGF grammar (so the decoder can hear it), but the 31-class
+stage-2 model was trained without a PREVIOUS class and would misroute the
+phrase to PLAY_MUSIC. The live loop therefore checks the decoded transcript
+for "previous" and routes it to PREVIOUS itself (it prints
+`(routed PREVIOUS from transcript)` when it does). At a playlist boundary the
+device says "that's the first/last song in the playlist" instead of skipping
+past the end.
 
 **How it works:** **yt-dlp** first resolves the YouTube playlist into a
 plain `playlist.m3u` next to the script (fast, flat — no per-track
@@ -235,7 +247,7 @@ python vcm_pi_v3.py --music-test
 ```
 
 This resolves the playlist, starts mpv, plays ~12 s, skips a track,
-raises the volume, and stops. If you hear music, the six voice commands
+raises the volume, and stops. If you hear music, the seven voice commands
 will work.
 
 **Setup (once, on the Pi):**

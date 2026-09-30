@@ -43,6 +43,7 @@ public <command> =
     play music |
     play next song |
     play some music |
+    previous song |
     power on the lights |
     remind me to drink water |
     remind me to exercise |

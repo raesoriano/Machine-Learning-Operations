@@ -58,7 +58,9 @@ import argparse
 import json
 import math
 import os
+import subprocess
 import sys
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -558,7 +560,7 @@ _WEATHER_CODES = {
 # persist on a noisier mic; lower it if quiet commands get dropped.
 # --------------------------------------------------------------------------
 # --------------------------------------------------------------------------
-# MUSIC -- drive a YouTube playlist with the six media commands
+# MUSIC -- drive a YouTube playlist with the seven media commands
 #
 # play_music / pause / stop / next / volume_up / volume_down now ACTUALLY
 # control playback (they no longer just play a canned "acknowledgement" WAV).
@@ -587,9 +589,10 @@ _WEATHER_CODES = {
 DEFAULT_PLAYLIST = ("https://www.youtube.com/watch?v=Q-jz864NQS4"
                     "&list=PLd9fevitX97w&index=3")
 
-# the six commands that drive real playback (instead of a canned WAV)
+# the seven commands that drive real playback (instead of a canned WAV)
 MUSIC_COMMANDS = frozenset(
-    {"PLAY_MUSIC", "PAUSE", "STOP", "NEXT", "VOLUME_UP", "VOLUME_DOWN"})
+    {"PLAY_MUSIC", "PAUSE", "STOP", "NEXT", "PREVIOUS",
+     "VOLUME_UP", "VOLUME_DOWN"})
 
 
 class MusicPlayer:
@@ -609,6 +612,8 @@ class MusicPlayer:
         self._sock = None
         self._log = None
         self._reader_thread = None
+        self._pending = {}
+        self._pending_lock = threading.Lock()
         self._paused = False
         self._vol_idx = (self.VOLUME_STEPS.index(start_volume)
                          if start_volume in self.VOLUME_STEPS else 2)
@@ -641,7 +646,6 @@ class MusicPlayer:
         the .m3u ourselves -- this is more reliable than relying on
         yt-dlp's own playlist-file naming, which silently writes nothing
         for a plain `-o` on a playlist URL."""
-        import subprocess
         ytdlp = self._ytdlp_cmd()
         if ytdlp is None:
             print("  >> [music] yt-dlp not found -- install with "
@@ -678,7 +682,6 @@ class MusicPlayer:
     def _start(self):
         """Resolve the playlist, launch mpv on it; wait for the IPC
         socket. True on OK."""
-        import threading
         if not self._bin("mpv"):
             print("  >> [music] mpv not found -- install with "
                   "`sudo apt install mpv`")
@@ -753,6 +756,12 @@ class MusicPlayer:
                     msg = json.loads(line)
                 except Exception:  # noqa: BLE001
                     continue
+                if "request_id" in msg:      # reply to a _query() call
+                    with self._pending_lock:
+                        ev = self._pending.pop(msg["request_id"], None)
+                    if ev is not None:
+                        ev.reply = msg
+                        ev.set()
                 err = msg.get("error")
                 if err not in (None, "success"):
                     print(f"  >> [mpv] {err}")
@@ -773,13 +782,44 @@ class MusicPlayer:
             self._sock = None
             return False
 
+    def _query(self, *command, timeout=2.0):
+        """Send a JSON command and wait for mpv's reply (request_id match).
+
+        Returns the reply dict, or None if the player is gone / no reply in
+        time. Lets next/previous detect the playlist boundary (mpv answers
+        playlist-next/-prev at the end with an error instead of skipping)."""
+        if self.proc is None or self.proc.poll() is not None:
+            return None
+        if self._sock is None:
+            self._connect()
+        if self._sock is None:
+            return None
+        rid = int(time.time() * 1000) % 10**9
+        ev = threading.Event()
+        with self._pending_lock:
+            self._pending[rid] = ev
+        try:
+            self._sock.sendall(
+                (json.dumps({"command": list(command),
+                             "request_id": rid}) + "\n").encode())
+        except Exception:  # noqa: BLE001
+            with self._pending_lock:
+                self._pending.pop(rid, None)
+            self._sock = None
+            return None
+        if not ev.wait(timeout):
+            with self._pending_lock:
+                self._pending.pop(rid, None)
+            return None
+        return getattr(ev, "reply", None)
+
     def _set_volume(self, pct):
         self._cmd("set_property", "volume", pct)
 
     def _running(self):
         return self.proc is not None and self.proc.poll() is None
 
-    # -- the six voice commands ------------------------------------------
+    # -- the seven voice commands ------------------------------------------
     def play_music(self):
         if not self._running():
             if self._start():
@@ -810,8 +850,18 @@ class MusicPlayer:
     def next(self):
         if not self._running():
             return "nothing is playing"
-        self._cmd("playlist-next")
+        reply = self._query("playlist-next")
+        if reply and reply.get("error") not in (None, "success"):
+            return "that's the last song in the playlist"
         return "next song"
+
+    def previous(self):
+        if not self._running():
+            return "nothing is playing"
+        reply = self._query("playlist-prev")
+        if reply and reply.get("error") not in (None, "success"):
+            return "that's the first song in the playlist"
+        return "previous song"
 
     def volume_up(self):
         if self._vol_idx < len(self.VOLUME_STEPS) - 1:
@@ -836,6 +886,7 @@ class MusicPlayer:
             "PAUSE": self.pause,
             "STOP": self.stop,
             "NEXT": self.next,
+            "PREVIOUS": self.previous,
             "VOLUME_UP": self.volume_up,
             "VOLUME_DOWN": self.volume_down,
         }.get(cmd, lambda: "music command not recognized")()
@@ -1222,7 +1273,7 @@ def run_mic(args):
     model = Ensemble()
     state = {"busy": False, "audio": None, "cue": False, "muted": False}
 
-    # music player (mpv + yt-dlp) -- the six media commands drive this
+    # music player (mpv + yt-dlp) -- the seven media commands drive this
     playlist = getattr(args, "playlist", None) or DEFAULT_PLAYLIST
     player = MusicPlayer(
         playlist,
@@ -1380,6 +1431,16 @@ def run_mic(args):
                 print(f"  transcript : {transcript!r}")
                 print(f"  command    : {cmd}   intent: {intent}")
                 print(f"  E2E {e2e:.0f} ms")
+                # "previous song" is in the JSGF grammar but NOT a trained
+                # classifier class (the 31-class model has no PREVIOUS), so
+                # the stage-2 model can never emit it -- it misroutes the
+                # phrase to PLAY_MUSIC. Route it from the decoded transcript
+                # instead: "previous song" is the only grammar phrase that
+                # contains "previous", so the match is unambiguous.
+                if "previous" in transcript.lower():
+                    cmd, intent = "PREVIOUS", "media_control"
+                    print("  (routed PREVIOUS from transcript -- not a "
+                          "trained class)")
                 if cmd == "TIME":
                     # dynamic response: say the ACTUAL current time (UTC+8)
                     text = time_response_text()
@@ -1392,7 +1453,7 @@ def run_mic(args):
                     print(f"  >> saying (Piper TTS): {text!r}")
                     speak(text, enabled=not args.no_play)
                 elif cmd in MUSIC_COMMANDS:
-                    # REAL playback: the six media commands drive the
+                    # REAL playback: the seven media commands drive the
                     # YouTube playlist (mpv + yt-dlp), then the spoken
                     # confirmation is synthesized (Piper TTS).
                     text = player.dispatch(cmd)
@@ -1483,7 +1544,7 @@ def run_test(args):
 def run_music_test(args):
     """No-mic smoke test for the music pipeline: resolve the playlist,
     start mpv, let it play for ~12 s, then stop. If you hear music, the
-    six voice commands will work."""
+    seven voice commands will work."""
     playlist = getattr(args, "playlist", None) or DEFAULT_PLAYLIST
     player = MusicPlayer(
         playlist,
@@ -1500,6 +1561,8 @@ def run_music_test(args):
     print("  (played 12 s -- did you hear music?)")
     print(f"  >> {player.dispatch('NEXT')}")
     time.sleep(5)
+    print(f"  >> {player.dispatch('PREVIOUS')}")
+    time.sleep(3)
     print(f"  >> {player.dispatch('VOLUME_UP')}")
     time.sleep(3)
     print(f"  >> {player.dispatch('STOP')}")
