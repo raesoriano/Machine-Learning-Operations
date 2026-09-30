@@ -16,8 +16,8 @@ The model is the BEST one from the vcm-v2 work: the **PocketSphinx ensemble**
 (custom 1.6 MB LDA AM + stock 6.4 MB en-us AM, both decoding the same 103-phrase
 JSGF command grammar, fused by agreement / stage-2-classifier confidence).
 It scores **95.3% command / 97.1% intent** on the 171-clip held-out set
-(`test_data/additional_test_data`, one new speaker) -- see
-`backbone/reports/pocketsphinx_ensemble_cmudict.json`.
+(`data/additional_test_data`, one new speaker) -- see
+`archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`.
 
 Once a command is classified, the device "answers" by playing the matching
 response WAV from the TTS repo (16 kHz mono 16-bit, Piper en_US-lessac-medium).
@@ -87,7 +87,7 @@ JSGF = os.path.join(_HERE, "vcm_commands_enh3.jsgf")
 CLASSIFIER = os.path.join(_HERE, "classifier.pkl")
 RESP_DIR = os.path.join(_HERE, "responses")
 YES_WAV = os.path.join(RESP_DIR, "00_yes.wav")   # "yes?" cue after the wake word
-TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "test_data",
+TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "data",
                                           "additional_test_data"))
 
 # tuned decode params (identical to the eval that produced the 95.3% report)
@@ -467,7 +467,7 @@ class WakeWord:
 # we can self-heal: detect the pointer and download the real model.
 _WAKE_MODEL_RAW = ("https://github.com/raesoriano/Machine-Learning-Operations/"
                    "raw/main/ME2%20-%20Voice%20Controlled%20Smart%20Device/"
-                   "vcm-v2/pi%20test%20v5/wakeword/hey_rhasspy_v0.1.onnx")
+                   "pi%20test%20v5/wakeword/hey_rhasspy_v0.1.onnx")
 
 
 def _heal_wake_model(model_path: str) -> str:

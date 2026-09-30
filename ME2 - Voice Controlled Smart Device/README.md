@@ -21,64 +21,119 @@ command intents people give smart devices, runs **on-device in real time**
 
 Plus a reject class: **unknown** (anything else must be rejected, not guessed).
 
-## Approach (decided 2026-09-27)
+## Current best model — `pi test v5/` (wake-word-gated PocketSphinx ensemble)
 
-**Option A — tiny CTC encoder → greedy decode → deterministic parser → (intent, slots).**
-A ~1M-param CTC encoder emits a short transcript from a **constrained 185-word
-vocab**; a pure-Python parser maps the transcript to (intent, slots). Slot
-values ("6 AM", "22 degrees") come from the transcript, which a flat
-classifier cannot do. (Option B = 32-class CRNN classifier, kept as the
-comparison baseline; Option C = hybrid, only if needed.)
+The deployed model is the **PocketSphinx ensemble** from the vcm-v2 work, now
+gated by an **openWakeWord wake word** and closed the loop with **spoken TTS
+responses**. It is fully self-contained in `pi test v5/` and runs comfortably
+on a Pi 4/5 (no Whisper / ONNX / torch).
 
-**Training target (Plan A):** the CTC target is the row's **transcript** —
-the words the audio actually says — not the canonical phrase. Training on the
-canonical target (the pre-Plan-A recipe) capped train exact-match at ~17%
-because the audio->text mapping was inconsistent ("Alarm 6 AM" -> "set an
-alarm for six am"). With transcript targets the mapping is consistent, the
-parser recovers (intent, slots), and the benchmark compares (intent, slots)
-after parsing, so paraphrase variety in the audio is fine.
+**Flow (a three-stage state machine):**
 
-## Model design
+```
+STANDBY  "hey rhasspy" detector (openWakeWord, always on, ~3 ms/frame)
+   │  score ≥ 0.5 over a rolling 0.4 s window
+   ▼
+CUE     play "yes?" (00_yes.wav) — the mic is muted while it plays,
+        so the wake word's own tail can never be decoded as a command
+   ▼
+COMMAND wait up to 1.0 s for speech to START (webrtcvad; 0.6 s of
+        silence ends the utterance) → ensemble decode → stage-2
+        classify → play the matching response WAV
+   ▼
+STANDBY 0.5 s cooldown (response tail can't re-trigger), then wait
+        for the next wake word
+```
 
-**Pipeline:** `16 kHz audio -> log-mel [T,40] -> TCN encoder -> CTC logits
-[T,186] -> greedy CTC collapse -> transcript -> parser -> (intent, slots)`.
+The wake word is **mandatory**: if the model cannot load (missing file,
+unfetched Git-LFS pointer, failed self-test), `vcm_pi_v5.py` **refuses to
+start** with a loud error instead of silently falling back to always-listen.
+That fallback was the old behavior that produced *ghost commands* — noise
+decoded into commands on its own. With the gate, the grammar-constrained
+decoder simply isn't listening until the wake word fires, so noise and a
+background call can no longer produce a command.
 
-* **Audio standard: 16 kHz everywhere.** Every dataset in the manifest
-  (OptionB, Fluent Speech Commands, GSCv2, SLURP, LibriSpeech) is 16 kHz mono
-  PCM_16; the RPi mic captures at 16 kHz; the VAD runs at 16 kHz. The mel
-  filters are capped at 8 kHz, so 16 kHz Nyquist is exactly sufficient.
-  `vcm/features.py` is the **single source of truth** for features — training,
-  the ONNX runtime, and the RPi service all import the same `log_mel()`, so
-  train/serve features can never drift. (The loader resamples only as a
-  defensive no-op; nothing in the real pipeline resamples.)
-* **Features:** 25 ms Hann window, 10 ms hop, 40 log-mel filters
-  (50 Hz–8 kHz), `log1p` scaling, `n_fft=512`.
-* **Encoder (`model/model_def.py`):** Conv1d stem (40→128, k=5) + 4 residual
-  GRU-free TCN blocks (dilated 1/2/4/8, k=3) + Linear(128→186). ~1M params;
-  float32 ≈ 1.2 MB, int8 ≈ 0.36 MB — well under the 10 MB RPi budget.
-* **CTC:** blank=0, words 1..185. Loss = `nn.functional.ctc_loss`
-  (log-softmax, zero_infinity). Greedy decode = argmax per frame, remove
-  blanks, merge repeats (`model/decode.py`); a small beam search is available
-  for hard cases. Because the output head only has |VOCAB|+1 units, the model
-  can *only* emit command words — the constrained decoding that makes this a
-  "pure" VCM.
-* **Training recipe (v4/v5):** AdamW (lr 3e-4, wd 1e-4), batch 64, 300-epoch
-  cap with early stopping (patience 24 on val CTC) and ReduceLROnPlateau
-  (factor 0.5, patience 6, min 1e-5). Cosine decay was tried first (v2/v3)
-  and killed by early stopping while LR was still 68–96% of peak — the
-  plateau scheduler is what lets the model finish fitting the data.
-  Precomputed log-mel `.npz` features (scripts/build_train_features.py) make
-  training I/O-free.
-* **Rejection:** not a CTC class — the benchmark scores OOD rows by whether
-  the decoded transcript parses to a valid command (false-accept rate).
+### Components
+
+| Part | What it is | Where |
+|---|---|---|
+| Wake word | openWakeWord **"hey rhasspy"** (204 KB ONNX; scores ~0.8–0.9 on the phrase, ~0.002 on real mic noise; threshold 0.5) | `pi test v5/wakeword/hey_rhasspy_v0.1.onnx` |
+| VAD | webrtcvad (16 kHz, 0.6 s silence ends the utterance) | in `vcm_pi_v5.py` |
+| Acoustic model A | **custom** 1.6 MB LDA AM trained on the ME2 dataset (`-silprob 0.65 -wip 0.65`) | `pi test v5/am/custom/` |
+| Acoustic model B | **stock** 6.4 MB `en-us` AM (`-silprob 0.45 -wip 0.60`) | `pi test v5/am/stock/`, `am/stock_enus/` |
+| Grammar | the 103-phrase JSGF command grammar (both AMs decode the same grammar) | `pi test v5/vcm_commands_enh3.jsgf` |
+| Dictionary | word→phone dictionary for the custom AM | `pi test v5/dict3` |
+| Stage-2 classifier | text classifier over word (1,2) + char (2,5) n-grams, 31 commands + REJECT (5.2 MB) | `pi test v5/classifier.pkl` |
+| Responses | 19 TTS WAVs (Piper `en_US-lessac-medium`, 16 kHz mono) + the "yes?" cue | `pi test v5/responses/` |
+
+**Fusion:** the two decoders decode the same grammar; the final command is
+the one they **agree on**, or — when they disagree — the one with the
+**higher stage-2 classifier confidence** (test-set-agnostic).
+
+### Results
+
+| Set | Command | Intent |
+|---|:---:|:---:|
+| 171-clip held-out set, one new speaker (`data/additional_test_data`) | **95.3%** | **97.1%** |
+| 176-clip set (171 + 5 REJECT clips) | 93.8% | 95.5% |
+
+Reports: `archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`
+(171-clip) and `pi test v5/test_v5_report.json` (176-clip, per-folder
+breakdown).
+
+### Spoken responses
+
+The 31 fine-grained commands map onto **19** TTS response phrases (several
+commands share a phrase); **REJECT / unknown → `19_repeat.wav`** ("can you
+repeat that?"). `00_yes.wav` ("yes?") is the post-wake-word cue, not bound to
+a command. Full mapping table in `pi test v5/README.md`.
+
+### Install & run (on the Pi)
+
+```bash
+cd "ME2 - Voice Controlled Smart Device/pi test v5"
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt        # openwakeword==0.4.0 is pinned (0.5/0.6 need tflite-runtime, no Py3.13/aarch64 wheel)
+python vcm_pi_v5.py --wake-check       # self-test: feeds the bundled "hey rhasspy" fixture through the model
+python vcm_pi_v5.py                    # live: STANDBY -> "hey rhasspy" -> "yes?" -> command -> speak
+```
+
+Useful flags: `--file clip.wav` (classify one file), `--test` (run the
+held-out set), `--no-play`, `--wake-threshold 0.6` (stricter gate),
+`--command-window 1.5` (wait longer for the command), `--no-wake`
+(always-listen, **debugging only**).
+
+The wake model is stored in Git LFS. If the file on disk is an unfetched
+pointer (sub-KB), the program **auto-downloads** the real 204 KB model from
+GitHub's raw endpoint on startup (needs internet once); `git lfs pull` works
+too. `--wake-check` reports the exact failing step (missing file / LFS
+pointer / import / load / inference) if it can't pass.
+
+### Latency & decoder warm-up
+
+Ensemble decode is **~90–120 ms** end-to-end per command on a Pi 5 CPU
+(eval `asr_ms_p50 ≈ 87 ms`), plus response playback. A freshly created
+PocketSphinx decoder needs a few real-speech utterances to lock in, so the
+**first** real command is re-decoded `WARMUP_REPS` (4) times and the
+converged result is taken — this fixes the first command and warms the
+decoder for all that follow. (Warming with the Piper TTS voice was tried and
+rejected — a different speaker biases the decoder.)
+
+### Known limitations
+
+* A few confusable pairs still slip through, e.g. **TIME → PLAY_MUSIC**
+  (both are short, single-intent phrases). Candidate fixes: grammar/LM
+  tuning, or reweighting the stage-2 classifier on the confusion pairs.
+* The wake word must be audible over background noise (a loud zoom call can
+  mask it) — that is the inherent trade-off of gating on a spoken phrase.
 
 ## Repository layout
 
 ```
 ME2 - Voice Controlled Smart Device/
 ├── README.md                     # this file
-├── pi test v5/                   # *** CURRENT BEST MODEL *** (PocketSphinx ensemble, runs on Pi)
-│   ├── vcm_pi_v5.py              #   listener: wake word -> VAD -> ensemble -> classify -> speak
+├── pi test v5/                   # *** CURRENT BEST MODEL *** (wake-word-gated PocketSphinx ensemble)
+│   ├── vcm_pi_v5.py              #   listener: wake word -> "yes?" -> VAD -> ensemble -> classify -> speak
 │   ├── am/custom/                #   custom 1.6 MB LDA acoustic model (+ vcm.lm.bin)
 │   ├── am/stock/                 #   stock en-us acoustic model
 │   ├── am/stock_enus/            #   cmudict + en-us.lm.bin
@@ -89,7 +144,8 @@ ME2 - Voice Controlled Smart Device/
 │   ├── responses/                #   19 TTS response WAVs (+ 00_yes.wav cue)
 │   ├── vcm/, vcm2/               #   self-contained code (normalization, classifier, ground truth)
 │   ├── training/                 #   AM training + eval scripts (build_trained_am.py, eval_*)
-│   ├── test_wake_flow.py         #   wake-word gate test
+│   ├── test_wake_flow.py         #   wake-word gate test (synthetic 48 kHz stream)
+│   ├── test_v5_report.json       #   176-clip held-out eval (per-folder)
 │   └── requirements.txt
 ├── data/                         # ALL DATA (audio on shared storage, never committed)
 │   ├── additional_test_data/     #   held-out test set (171 clips + 5 REJECT, one new speaker)
@@ -147,34 +203,22 @@ the raw datasets, so they are also ignored.
 
 Regenerate: `python3 data/scripts/build_manifest.py` (from this folder).
 
-## Status / plan
+## Model history
 
-- [x] P0 dataset: migration to ME2, GSCv2 extraction, 31→10 mapping from
-      metadata, positive/negative manifest, frozen test set, git tracking
-- [x] P6 move VCM code into ME2 (single project home) — this repo is the
-      only home for the project; the old `Voice-Controlled-Smart-Device`
-      folder is retired
-- [x] P2 train tiny CTC on the manifest (HPC A100), ONNX int8 < 2 MB —
-      Plan A (transcript targets) + 16 kHz pipeline; final model in
-      `model/checkpoints/me2_v5/` (int8 0.48 MB)
-- [x] P3 benchmark: per-intent/command accuracy, slot F1, OOD rejection
-      rate, latency/RTF (harness in `benchmark/`, numbers in `reports/`)
-- [x] P4 validate on frozen test v1 (final numbers in `reports/`)
-- [ ] P5 RPi4/5 demo: VAD → VCM → parser → GPIO (LED/relay/buzzer/DHT11)
-      (RPi service + simulator in `deploy/`)
-- [x] P7 (2026-09-28) VCM v2 backbone: the from-scratch CTC underfits even
-      its own in-domain data (47.7% WER on the ME2 test split), so the
-      standalone `VCM-v2` repo explored a **pretrained Whisper base.en** ASR
-      backbone + the same 31-command classifier. Migrated into `vcm-v2/`
-      (this folder). Best result: **85.4% command / 86.0% intent** on the
-      held-out 171-clip new-speaker set (vs 24.6% for every from-scratch
-      attempt, 81.9% zero-shot). See `vcm-v2/README.md` + `vcm-v2/MIGRATION.md`.
+The current best model above won by a wide margin over two earlier attempts.
+Both are frozen in `archived/` with their full reports.
 
-## Results
+### v1 — from-scratch tiny CTC encoder (`archived/model/`, `me2_v5`)
 
-**Frozen test v1** (11,492 rows: 6,470 in-domain + 5,022 OOD), final `me2_v5`
-model (int8 ONNX). Full per-intent breakdown in
-`reports/me2_v5_frozen_int8.json`.
+**Pipeline:** `16 kHz audio -> log-mel [T,40] -> TCN encoder -> CTC logits
+[T,186] -> greedy CTC collapse -> transcript -> parser -> (intent, slots)`.
+A ~1M-param TCN (Conv1d stem + 4 dilated residual blocks) emits a short
+transcript from a constrained 185-word vocab; a pure-Python parser maps it to
+(intent, slots). 40 log-mel filters, 25 ms window / 10 ms hop, `n_fft=512`.
+Training: AdamW (lr 3e-4), precomputed log-mel `.npz`, early stopping on val
+CTC. int8 ONNX ≈ 0.48 MB; p50 latency 14.2 ms on CPU.
+
+**Frozen test v1** (11,492 rows: 6,470 in-domain + 5,022 OOD):
 
 | Metric | Pre-Plan-A (v2) | **me2_v5 (final)** |
 |--------|:---:|:---:|
@@ -185,44 +229,54 @@ model (int8 ONNX). Full per-intent breakdown in
 | OOD rejection rate | 49.8% | **73.7%** |
 | WER (transcript-level) | 63.6% | 81.6% |
 
-Per-intent exact match (me2_v5): call 86.6%, media_control 67.4%,
-lights_adjust 54.7%, set_timer 49.4%, reminders 45.5%, ask_question 40.1%,
-set_alarm 35.7%, lights_switch 34.6%, set_temperature 24.4%, play_music 15.0%.
+Full per-intent breakdown in `archived/reports/me2_v5_frozen_int8.json`.
+**Why it lost:** it underfit even its own in-domain data (47.7% WER on the
+ME2 test split) — a ~1M-param encoder can't learn the 31 commands from
+~50k rows when most classes have a few hundred examples.
 
-> **Note on the benchmark gold:** the frozen v1 slot labels were generated by
-> an early parser revision. The parser is the project's contract ("golden
-> rule"), so the gold slots were re-derived from the current parser
-> (`gold_source: parser-canonical`; the original is preserved as
-> `frozen_test_v1_original.jsonl`). The parser's *intent* agrees with the
-> manifest on 100% of in-domain rows and rejects 100% of OOD rows, so a
-> perfect model now scores 100% and the numbers above are self-consistent.
+### v2 — pretrained Whisper `base.en` backbone (`archived/vcm-v2/`)
 
-### Inference performance (CPU, int8 ONNX, 300-row sample)
+Fine-tuned a pretrained Whisper base.en ASR backbone + the same 31-command
+classifier. **85.4% command / 86.0% intent** on the held-out 171-clip
+new-speaker set (vs 24.6% for every from-scratch attempt, 81.9% zero-shot).
+**Why it was superseded:** 85.4% was good, but the PocketSphinx ensemble
+(95.3%) beat it by ~10 points while being ~10× smaller, with no torch/ONNX
+dependency on the Pi. The vcm-v2 work is also where the PocketSphinx
+ensemble was discovered — its experiment reports live in
+`archived/vcm-v2/backbone/reports/`.
 
-`reports/me2_v5_latency.json` — the same CPU-only ONNX Runtime path the RPi
-service uses, so these numbers transfer (RPi is slower than the HPC x86 CPU,
-but the margins are large):
+### v3 — current: wake-word-gated PocketSphinx ensemble (`pi test v5/`)
 
-| Metric | Value | RPi target |
-|--------|:---:|:---:|
-| Latency p50 | **14.2 ms** | ≤ 500 ms |
-| Latency p95 | 53.7 ms | — |
-| Latency p99 | 105.5 ms | — |
-| RTF (real-time factor) | **0.0068** | ≤ 0.5 |
-| Throughput | 52.4 utt/s | — |
+95.3% / 97.1% (see above). The wake-word gate (added 2026-09-30) fixed the
+last remaining failure mode — ghost commands from a noisy mic — by making the
+decoder arm only after "hey rhasspy".
 
-Model size: float32 ≈ 1.7 MB, **int8 ≈ 0.48 MB** (budget ≤ 10 MB).
+## Status / plan
 
-### Known limitations / next steps
-
-The pipeline is complete end-to-end (audio → features → CTC → parser →
-intent/slots) and real-time, but in-domain exact match (44%) is the main
-optimization target. Levers, in expected order of impact:
-1. **Longer/better training** — the v5 run early-stopped at epoch 101 while
-   val CTC was still falling (2.01); a tuned patience + LR schedule should
-   lift it.
-2. **Data augmentation** — the manifest carries clean+noisy variants; training
-   on both (currently a single pass) adds robustness.
-3. **Per-intent balancing** — set_temperature (24%) and play_music (15%) are
-   the weakest; both are data/format-driven (few OptionB-only rows; the
-   play_music query slot was a parser bug, now fixed).
+- [x] P0 dataset: migration to ME2, GSCv2 extraction, 31→10 mapping from
+      metadata, positive/negative manifest, frozen test set, git tracking
+- [x] P6 move VCM code into ME2 (single project home) — this repo is the
+      only home for the project; the old `Voice-Controlled-Smart-Device`
+      folder is retired
+- [x] P2 train tiny CTC on the manifest (HPC A100), ONNX int8 < 2 MB —
+      Plan A (transcript targets) + 16 kHz pipeline; final model in
+      `archived/model/checkpoints/me2_v5/` (int8 0.48 MB)
+- [x] P3 benchmark: per-intent/command accuracy, slot F1, OOD rejection
+      rate, latency/RTF (harness in `archived/benchmark/`, numbers in
+      `archived/reports/`)
+- [x] P4 validate on frozen test v1 (final numbers in `archived/reports/`)
+- [x] P7 (2026-09-28) VCM v2 backbone: the from-scratch CTC underfits even
+      its own in-domain data (47.7% WER on the ME2 test split), so the
+      standalone `VCM-v2` repo explored a **pretrained Whisper base.en** ASR
+      backbone + the same 31-command classifier. Best result: **85.4% command
+      / 86.0% intent** on the held-out 171-clip new-speaker set. Now in
+      `archived/vcm-v2/`.
+- [x] P8 (2026-09-29/30) **current best model**: PocketSphinx ensemble
+      (custom + stock AM, agree+clf fusion) → **95.3% command / 97.1% intent**
+      on the 171-clip held-out set; spoken TTS responses (31 commands → 19
+      WAVs); openWakeWord "hey rhasspy" gate (mandatory, self-healing model
+      load, `--wake-check`); repo restructured around `pi test v5/`.
+- [ ] P5 RPi4/5 demo: VAD → VCM → parser → GPIO (LED/relay/buzzer/DHT11)
+      (RPi service + simulator in `archived/deploy/`)
+- [ ] P9 accuracy pass on the remaining confusion pairs (e.g. TIME →
+      PLAY_MUSIC): grammar/LM tuning or stage-2 classifier reweighting

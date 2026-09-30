@@ -45,8 +45,8 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 _BACK = os.path.dirname(_HERE)
 _REPO = os.path.dirname(_BACK)
 _ME2 = os.path.dirname(_REPO)
-sys.path.insert(0, _ME2)
-sys.path.insert(0, os.path.join(_REPO, "archive", "ctc_v8"))
+sys.path.insert(0, _BACK)   # pi test v5/ (the vcm2 package that ships with the model)
+sys.path.insert(0, _HERE)   # training/ (local modules)
 
 from vcm2.classifier import load_classifier, predict      # noqa: E402
 from vcm2.ground_truth import build_ground_truth          # noqa: E402
@@ -141,7 +141,7 @@ def main():
     ap.add_argument("--dict", required=True)
     ap.add_argument("--lm", required=True)
     ap.add_argument("--jsgf", default=None)
-    ap.add_argument("--data", default=os.path.join(_REPO, "test_data",
+    ap.add_argument("--data", default=os.path.join(_REPO, "data",
                                                    "additional_test_data"))
     ap.add_argument("--report", default=None)
     ap.add_argument("--extra", default=None,

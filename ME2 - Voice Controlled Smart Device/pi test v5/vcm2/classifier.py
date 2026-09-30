@@ -34,7 +34,7 @@ from .normalize import normalize
 
 REJECT = "REJECT"
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ARTIFACT = os.path.join(_HERE, "..", "artifacts", "classifier.pkl")
+_ARTIFACT = os.path.join(_HERE, "..", "classifier.pkl")
 
 # Chosen config (val-validated; see reports/tune_results.json).
 CONFIG = dict(word_ngram=(1, 2), char_ngram=(2, 5),

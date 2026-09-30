@@ -110,7 +110,7 @@ if __name__ == "__main__":
     import sys
     d = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "..", "additional_test_data")
+        "..", "data", "additional_test_data")
     d = os.path.normpath(d)
     rows = build_ground_truth(d)
     from collections import Counter

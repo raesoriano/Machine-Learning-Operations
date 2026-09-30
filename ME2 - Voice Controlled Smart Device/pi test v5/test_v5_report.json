@@ -3,7 +3,7 @@
   "n_clips": 176,
   "command_acc": 0.9375,
   "intent_acc": 0.9545,
-  "wall_s": 25.1,
+  "wall_s": 34.1,
   "per_folder": {
     "ALARM": {
       "n": 9,
