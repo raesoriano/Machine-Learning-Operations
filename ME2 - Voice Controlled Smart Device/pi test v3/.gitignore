@@ -1,0 +1,6 @@
+# runtime artifacts (created on the Pi when the device runs)
+mpv.sock
+mpv.log
+tts/
+__pycache__/
+*.pyc

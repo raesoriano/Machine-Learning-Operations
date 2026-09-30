@@ -55,7 +55,7 @@ wheel for Python 3.13 / aarch64 (the Pi's environment) and will not install.
 
 | Path | What it is | Size |
 |---|---|---|
-| `vcm_pi_v3.py` | the listener: wake word → "yes?" → VAD → ensemble → classify → **play wav** → loop | 16 KB |
+| `vcm_pi_v3.py` | the listener: wake word → "yes?" → VAD → ensemble → classify → **play wav / drive the music player / speak a live answer** → loop | 24 KB |
 | `wakeword/hey_rhasspy_v0.1.onnx` | openWakeWord "hey rhasspy" model (Git LFS; auto-heals if unfetched) | 204 KB |
 | `wakeword/selftest_hey_rhasspy.wav` | fixture for `--wake-check` | — |
 | `am/custom/` | custom 1.6 MB LDA acoustic model (+ its `vcm.lm.bin`) | ~1.7 MB |
@@ -67,6 +67,7 @@ wheel for Python 3.13 / aarch64 (the Pi's environment) and will not install.
 | `responses/` | the 19 TTS response WAVs + `00_yes.wav` cue + generated `19_repeat.wav` | ~1.4 MB |
 | `vcm/`, `vcm2/` | self-contained code (normalization, classifier, ground truth) | — |
 | `test_wake_flow.py` | wake-word gate test (synthetic 48 kHz stream through the Pi path) | — |
+| `mpv.log` | mpv's output (created at runtime when music plays; track-load errors land here) | — |
 | `test_v3_report.json` | 176-clip held-out eval (per-folder breakdown) | — |
 | `requirements.txt` | deps (`openwakeword==0.4.0` pinned) | — |
 | `training/` | AM training + eval scripts (`build_trained_am.py`, `eval_pocketsphinx*.py`) | — |
@@ -79,15 +80,15 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 
 | WAV | Says | Commands |
 |---|---|---|
-| `01_playing_music` | playing music | PLAY_MUSIC |
+| `01_playing_music` | playing music | PLAY_MUSIC ² |
 | `02_current_weather` | here's the current weather | WEATHER ¹ |
 | `03_current_time` | here's the current time | TIME ¹ |
 | `04_switching_lights` | switching the lights | LIGHT_ON, LIGHT_OFF |
-| `05_pausing` | pausing | PAUSE |
-| `06_stopping_playback` | stopping playback | STOP |
-| `07_next_song` | playing the next song | NEXT |
-| `08_volume_up` | increasing the volume | VOLUME_UP |
-| `09_volume_down` | decreasing the volume | VOLUME_DOWN |
+| `05_pausing` | pausing | PAUSE ² |
+| `06_stopping_playback` | stopping playback | STOP ² |
+| `07_next_song` | playing the next song | NEXT ² |
+| `08_volume_up` | increasing the volume | VOLUME_UP ² |
+| `09_volume_down` | decreasing the volume | VOLUME_DOWN ² |
 | `10_calling` | calling | CALL |
 | `11_sending_message` | sending a message | MESSAGE |
 | `12_reminders_list` | here are your reminders | LIST_REMINDERS |
@@ -103,6 +104,11 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 
 ¹ **Dynamic:** WEATHER and TIME ignore the canned WAV and speak a live answer
 via Piper TTS — see [Dynamic responses](#dynamic-responses-time-weather).
+
+² **Real playback:** the six media commands (PLAY_MUSIC, PAUSE, STOP, NEXT,
+VOLUME_UP, VOLUME_DOWN) ignore the canned WAV and actually control a YouTube
+playlist via **mpv + yt-dlp**, then speak a live confirmation — see
+[Music (YouTube playlist)](#music-youtube-playlist).
 
 ## Getting just this folder (sparse checkout)
 
@@ -124,6 +130,8 @@ git sparse-checkout set "ME2 - Voice Controlled Smart Device/pi test v3"
 cd "ME2 - Voice Controlled Smart Device/pi test v3"
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt        # THIS folder's requirements — torch-free
+# music (the six media commands) needs mpv — a SYSTEM package, not pip:
+sudo apt install mpv
 # mic: usually works out of the box; for USB mics check `arecord -l`
 ```
 
@@ -147,6 +155,8 @@ python vcm_pi_v3.py --wake-threshold 0.6  # stricter wake-word gate
 python vcm_pi_v3.py --command-window 1.5  # wait 1.5 s for the command
 python vcm_pi_v3.py --no-wake             # always-listen — DEBUGGING ONLY
 python vcm_pi_v3.py --weather-loc "UP Diliman, Quezon City"  # pin the WEATHER location
+python vcm_pi_v3.py --playlist "https://www.youtube.com/playlist?list=PL..."  # change the playlist
+python vcm_pi_v3.py --volume 75            # start the music at 75 %
 ```
 
 Stop with **Ctrl-C** at any time.
@@ -185,6 +195,45 @@ To pin a location name (e.g. while testing away from home):
 ```bash
 python vcm_pi_v3.py --weather-loc "UP Diliman, Quezon City"
 ```
+
+## Music (YouTube playlist)
+
+The six media commands — `PLAY_MUSIC`, `PAUSE`, `STOP`, `NEXT`, `VOLUME_UP`,
+`VOLUME_DOWN` — do **not** just play an acknowledgement WAV. They actually
+control a **YouTube playlist**, and then speak a live confirmation with Piper
+TTS.
+
+| Command | What it does | Spoken |
+|---|---|---|
+| `PLAY_MUSIC` | Starts the playlist (resumes if paused) | "playing the playlist" |
+| `PAUSE` | Pauses playback | "paused" |
+| `STOP` | Pauses and rewinds to the start of the current track | "stopped" |
+| `NEXT` | Skips to the next track in the playlist | "next song" |
+| `VOLUME_UP` | Steps volume **up** one level | "volume 75 percent" |
+| `VOLUME_DOWN` | Steps volume **down** one level | "volume 50 percent" |
+
+**Volume is discrete:** it moves in fixed steps through
+**0 → 25 → 50 → 75 → 100 %** (starting at 50 % by default, or whatever
+`--volume` sets). It never goes above 100 % or below 0 %.
+
+**How it works:** the playlist is played by **mpv** (a headless command-line
+player) fed by **yt-dlp**, which resolves the YouTube playlist URL. mpv runs
+as a separate process with a JSON IPC socket, so each command is a one-line
+message over that socket and playback never blocks the mic loop. The default
+playlist is the one built into the code; change it with `--playlist`.
+
+**Setup (once, on the Pi):**
+
+```bash
+sudo apt install mpv        # the player (system package, NOT a pip package)
+pip install yt-dlp          # already in this folder's requirements.txt
+```
+
+**Graceful degradation:** if `mpv` or `yt-dlp` is missing, the music commands
+say *"music is not available right now"* (or *"nothing is playing"*) instead
+of crashing — the rest of the device (lights, weather, time, …) keeps working.
+mpv's own output is logged to `mpv.log` next to the script if a track fails to
+load.
 
 ## Latency (Pi 5, CPU)
 

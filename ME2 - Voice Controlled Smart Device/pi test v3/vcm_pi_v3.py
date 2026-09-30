@@ -557,6 +557,234 @@ _WEATHER_CODES = {
 # speech starts getting split (2 clips). Raise --gate if ghost commands
 # persist on a noisier mic; lower it if quiet commands get dropped.
 # --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# MUSIC -- drive a YouTube playlist with the six media commands
+#
+# play_music / pause / stop / next / volume_up / volume_down now ACTUALLY
+# control playback (they no longer just play a canned "acknowledgement" WAV).
+# The player is **mpv** (a headless command-line player) fed by **yt-dlp**,
+# which resolves the YouTube playlist URL. mpv is launched with a JSON IPC
+# UNIX socket; each command is a one-line JSON message sent over that socket.
+#
+#   * volume is stepped through discrete levels: 0 / 25 / 50 / 75 / 100 %
+#   * if mpv or yt-dlp is missing, every command degrades to a spoken
+#     "unavailable" message -- the rest of the device keeps working.
+#
+# Install once on the Pi:
+#   sudo apt install mpv          # system player (NOT a pip package)
+#   pip install yt-dlp            # into the venv (added to requirements.txt)
+# --------------------------------------------------------------------------
+DEFAULT_PLAYLIST = ("https://www.youtube.com/watch?v=Q-jz864NQS4"
+                    "&list=PLd9fevitX97w&index=3")
+
+# the six commands that drive real playback (instead of a canned WAV)
+MUSIC_COMMANDS = frozenset(
+    {"PLAY_MUSIC", "PAUSE", "STOP", "NEXT", "VOLUME_UP", "VOLUME_DOWN"})
+
+
+class MusicPlayer:
+    """Controls a YouTube playlist via mpv (JSON IPC) + yt-dlp.
+
+    All methods are safe to call from the main thread; mpv runs as a separate
+    process so playback never blocks the mic loop. If mpv / yt-dlp are not
+    installed, the methods return a short "unavailable" message instead of
+    raising, so the device degrades gracefully.
+    """
+    VOLUME_STEPS = (0, 25, 50, 75, 100)
+
+    def __init__(self, playlist_url, socket_path, start_volume=50):
+        self.url = playlist_url
+        self.sock_path = socket_path
+        self.proc = None
+        self._sock = None
+        self._log = None
+        self._reader_thread = None
+        self._vol_idx = (self.VOLUME_STEPS.index(start_volume)
+                         if start_volume in self.VOLUME_STEPS else 2)
+
+    # -- mpv lifecycle ----------------------------------------------------
+    def _bin(self, name):
+        import shutil
+        return shutil.which(name)
+
+    def _start(self):
+        """Launch mpv on the playlist; wait for the IPC socket. True on OK."""
+        import subprocess
+        import threading
+        if not self._bin("mpv"):
+            print("  >> [music] mpv not found -- install with "
+                  "`sudo apt install mpv`")
+            return False
+        if not self._bin("yt-dlp"):
+            print("  >> [music] yt-dlp not found -- install with "
+                  "`pip install yt-dlp`")
+            return False
+        try:
+            if os.path.exists(self.sock_path):
+                os.remove(self.sock_path)
+        except OSError:
+            pass
+        log = open(os.path.join(_HERE, "mpv.log"), "ab")
+        cmd = [
+            self._bin("mpv"),
+            f"--input-ipc-server={self.sock_path}",
+            "--no-video",
+            "--really-quiet",
+            self.url,
+        ]
+        try:
+            self.proc = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=log,
+                start_new_session=True)
+        except Exception as e:  # noqa: BLE001
+            print(f"  >> [music] failed to start mpv: {e}")
+            return False
+        self._log = log
+        for _ in range(50):  # up to ~5 s for the socket to appear
+            if os.path.exists(self.sock_path):
+                break
+            time.sleep(0.1)
+        if not os.path.exists(self.sock_path):
+            print("  >> [music] mpv started but the IPC socket never appeared")
+            return False
+        self._connect()
+        self._reader_thread = threading.Thread(target=self._reader,
+                                               daemon=True)
+        self._reader_thread.start()
+        self._set_volume(self.VOLUME_STEPS[self._vol_idx])
+        return True
+
+    def _connect(self):
+        import socket as _socket
+        try:
+            if self._sock is not None:
+                self._sock.close()
+            s = _socket.socket(_socket.AF_UNIX, _socket.SOCK_STREAM)
+            s.connect(self.sock_path)
+            self._sock = s
+        except Exception:  # noqa: BLE001
+            self._sock = None
+
+    def _reader(self):
+        """Drain mpv's IPC output (background thread); log real errors only."""
+        buf = b""
+        while True:
+            try:
+                chunk = self._sock.recv(4096)
+            except Exception:  # noqa: BLE001
+                break
+            if not chunk:
+                break
+            buf += chunk
+            while b"\n" in buf:
+                line, buf = buf.split(b"\n", 1)
+                try:
+                    msg = json.loads(line)
+                except Exception:  # noqa: BLE001
+                    continue
+                err = msg.get("error")
+                if err not in (None, "success"):
+                    print(f"  >> [mpv] {err}")
+
+    def _cmd(self, *command):
+        """Send one JSON command to mpv (the reader thread handles replies)."""
+        if self.proc is None or self.proc.poll() is not None:
+            return False
+        if self._sock is None:
+            self._connect()
+        if self._sock is None:
+            return False
+        try:
+            self._sock.sendall(
+                (json.dumps({"command": list(command)}) + "\n").encode())
+            return True
+        except Exception:  # noqa: BLE001
+            self._sock = None
+            return False
+
+    def _set_volume(self, pct):
+        self._cmd("set_property", "volume", pct)
+
+    def _running(self):
+        return self.proc is not None and self.proc.poll() is None
+
+    # -- the six voice commands ------------------------------------------
+    def play_music(self):
+        if not self._running():
+            if self._start():
+                return "playing the playlist"
+            return "music is not available right now"
+        self._cmd("set_property", "pause", False)
+        return "playing the playlist"
+
+    def pause(self):
+        if not self._running():
+            return "nothing is playing"
+        self._cmd("set_property", "pause", True)
+        return "paused"
+
+    def stop(self):
+        if not self._running():
+            return "nothing is playing"
+        self._cmd("set_property", "pause", True)
+        self._cmd("set_property", "time-pos", 0)
+        return "stopped"
+
+    def next(self):
+        if not self._running():
+            return "nothing is playing"
+        self._cmd("playlist-next")
+        return "next song"
+
+    def volume_up(self):
+        if self._vol_idx < len(self.VOLUME_STEPS) - 1:
+            self._vol_idx += 1
+        pct = self.VOLUME_STEPS[self._vol_idx]
+        if self._running():
+            self._set_volume(pct)
+        return f"volume {pct} percent"
+
+    def volume_down(self):
+        if self._vol_idx > 0:
+            self._vol_idx -= 1
+        pct = self.VOLUME_STEPS[self._vol_idx]
+        if self._running():
+            self._set_volume(pct)
+        return f"volume {pct} percent"
+
+    def dispatch(self, cmd):
+        """Map a classified command to a music action; return spoken text."""
+        return {
+            "PLAY_MUSIC": self.play_music,
+            "PAUSE": self.pause,
+            "STOP": self.stop,
+            "NEXT": self.next,
+            "VOLUME_UP": self.volume_up,
+            "VOLUME_DOWN": self.volume_down,
+        }.get(cmd, lambda: "music command not recognized")()
+
+    def shutdown(self):
+        """Stop mpv and clean up (called on Ctrl-C)."""
+        try:
+            if self._running():
+                self._cmd("quit")
+                time.sleep(0.2)
+                if self._running():
+                    self.proc.terminate()
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            if self._sock is not None:
+                self._sock.close()
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            if os.path.exists(self.sock_path):
+                os.remove(self.sock_path)
+        except OSError:
+            pass
+
+
 class WakeWord:
     """openWakeWord "hey rhasspy" detector, fed 80 ms (1280-sample) 16 kHz
     int16 frames. Returns the peak score over a rolling WAKE_WINDOW frames."""
@@ -917,6 +1145,14 @@ def run_mic(args):
     model = Ensemble()
     state = {"busy": False, "audio": None, "cue": False, "muted": False}
 
+    # music player (mpv + yt-dlp) -- the six media commands drive this
+    playlist = getattr(args, "playlist", None) or DEFAULT_PLAYLIST
+    player = MusicPlayer(
+        playlist,
+        socket_path=os.path.join(_HERE, "mpv.sock"),
+        start_volume=getattr(args, "volume", 50))
+    print(f"music      : {playlist}")
+
     # Pi mics (USB / I2S) usually only support 44.1/48 kHz, so opening the
     # stream at 16 kHz fails with "Invalid sample rate". Capture at the
     # device's native rate and resample each finished utterance to 16 kHz
@@ -1078,6 +1314,13 @@ def run_mic(args):
                     text = weather_response_text(getattr(args, "weather_loc", None))
                     print(f"  >> saying (Piper TTS): {text!r}")
                     speak(text, enabled=not args.no_play)
+                elif cmd in MUSIC_COMMANDS:
+                    # REAL playback: the six media commands drive the
+                    # YouTube playlist (mpv + yt-dlp), then the spoken
+                    # confirmation is synthesized (Piper TTS).
+                    text = player.dispatch(cmd)
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
                 else:
                     wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
                     print(f"  >> playing {wav}")
@@ -1088,6 +1331,7 @@ def run_mic(args):
                 state["busy"] = False     # re-arm: wait for the next command
         except KeyboardInterrupt:
             pass
+    player.shutdown()
     print(f"\nstopped after {n} command(s).")
 
 
@@ -1189,6 +1433,15 @@ def main():
                          "instead of IP geolocation (e.g. 'UP Diliman, "
                          "Quezon City'). The coordinates always fall back "
                          "to UP Diliman when an override is given.")
+    ap.add_argument("--playlist", default=None,
+                    help="YouTube playlist URL for the music commands "
+                         "(play_music / pause / stop / next / volume_up / "
+                         "volume_down). Default: the built-in playlist.")
+    ap.add_argument("--volume", type=int, default=50,
+                    choices=list(MusicPlayer.VOLUME_STEPS),
+                    help="initial music volume, one of 0/25/50/75/100 "
+                         "(percent). volume_up / volume_down step through "
+                         "these levels.")
     ap.add_argument("--no-wake", action="store_true",
                     help="disable the wake word and always listen. "
                          "DEBUGGING ONLY -- without the wake word the "
