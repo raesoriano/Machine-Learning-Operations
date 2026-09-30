@@ -205,7 +205,7 @@ TTS.
 
 | Command | What it does | Spoken |
 |---|---|---|
-| `PLAY_MUSIC` | Starts the playlist (resumes if paused) | "playing the playlist" |
+| `PLAY_MUSIC` | Starts the playlist (resumes if paused) | "playing the playlist" / "resuming the playlist" |
 | `PAUSE` | Pauses playback | "paused" |
 | `STOP` | Pauses and rewinds to the start of the current track | "stopped" |
 | `NEXT` | Skips to the next track in the playlist | "next song" |
@@ -216,11 +216,27 @@ TTS.
 **0 → 25 → 50 → 75 → 100 %** (starting at 50 % by default, or whatever
 `--volume` sets). It never goes above 100 % or below 0 %.
 
-**How it works:** the playlist is played by **mpv** (a headless command-line
-player) fed by **yt-dlp**, which resolves the YouTube playlist URL. mpv runs
-as a separate process with a JSON IPC socket, so each command is a one-line
-message over that socket and playback never blocks the mic loop. The default
-playlist is the one built into the code; change it with `--playlist`.
+**How it works:** **yt-dlp** first resolves the YouTube playlist into a
+plain `playlist.m3u` next to the script (fast, flat — no per-track
+metadata). **mpv** (a headless command-line player) then plays that file,
+with each YouTube track loaded through its bundled ytdl hook (which also
+uses yt-dlp). mpv runs as a separate process with a JSON IPC socket, so
+each voice command is a one-line message over that socket and playback
+never blocks the mic loop. Resolving the playlist up front is deliberate:
+on a Pi, mpv handed a raw YouTube *playlist* URL often loads nothing,
+which is why the old version could say "playing the playlist" while the
+speaker stayed silent. The default playlist is the one built into the
+code; change it with `--playlist`.
+
+**Verify it before going live (no mic needed):**
+
+```bash
+python vcm_pi_v3.py --music-test
+```
+
+This resolves the playlist, starts mpv, plays ~12 s, skips a track,
+raises the volume, and stops. If you hear music, the six voice commands
+will work.
 
 **Setup (once, on the Pi):**
 
@@ -229,11 +245,12 @@ sudo apt install mpv        # the player (system package, NOT a pip package)
 pip install yt-dlp          # already in this folder's requirements.txt
 ```
 
-**Graceful degradation:** if `mpv` or `yt-dlp` is missing, the music commands
-say *"music is not available right now"* (or *"nothing is playing"*) instead
-of crashing — the rest of the device (lights, weather, time, …) keeps working.
-mpv's own output is logged to `mpv.log` next to the script if a track fails to
-load.
+**Graceful degradation:** if `mpv` or `yt-dlp` is missing, or the playlist
+cannot be resolved (offline / playlist gone), the music commands say
+*"music is not available right now"* (or *"nothing is playing"*) instead
+of crashing — the rest of the device (lights, weather, time, …) keeps
+working. mpv's own output is logged to `mpv.log` next to the script if a
+track fails to load.
 
 ## Latency (Pi 5, CPU)
 

@@ -562,13 +562,23 @@ _WEATHER_CODES = {
 #
 # play_music / pause / stop / next / volume_up / volume_down now ACTUALLY
 # control playback (they no longer just play a canned "acknowledgement" WAV).
-# The player is **mpv** (a headless command-line player) fed by **yt-dlp**,
-# which resolves the YouTube playlist URL. mpv is launched with a JSON IPC
-# UNIX socket; each command is a one-line JSON message sent over that socket.
+#
+# How it works: **yt-dlp** resolves the YouTube playlist once (flat, fast)
+# into a plain `playlist.m3u` next to this script; **mpv** (a headless
+# command-line player) plays that file and exposes a JSON IPC UNIX socket,
+# so each voice command is a one-line JSON message and playback never
+# blocks the mic loop. mpv plays each YouTube track through its bundled
+# ytdl hook (which also shells out to yt-dlp).
+#
+# Why the .m3u step: on a Pi, mpv handed a raw YouTube *playlist* URL
+# often loads nothing (its ytdl hook is unreliable for playlist URLs), so
+# the old version said "playing the playlist" while the speaker stayed
+# silent. Resolving up front makes the failure visible (the command then
+# says "music is not available right now") and playback reliable.
 #
 #   * volume is stepped through discrete levels: 0 / 25 / 50 / 75 / 100 %
-#   * if mpv or yt-dlp is missing, every command degrades to a spoken
-#     "unavailable" message -- the rest of the device keeps working.
+#   * if mpv or yt-dlp is missing, or the playlist cannot be resolved,
+#     every command degrades to a spoken "unavailable" message.
 #
 # Install once on the Pi:
 #   sudo apt install mpv          # system player (NOT a pip package)
@@ -599,6 +609,7 @@ class MusicPlayer:
         self._sock = None
         self._log = None
         self._reader_thread = None
+        self._paused = False
         self._vol_idx = (self.VOLUME_STEPS.index(start_volume)
                          if start_volume in self.VOLUME_STEPS else 2)
 
@@ -607,17 +618,77 @@ class MusicPlayer:
         import shutil
         return shutil.which(name)
 
-    def _start(self):
-        """Launch mpv on the playlist; wait for the IPC socket. True on OK."""
+    def _ytdlp_cmd(self):
+        """Return the yt-dlp invocation as a list, or None if missing.
+        Prefers the yt-dlp executable on PATH (the venv's bin dir); falls
+        back to `python -m yt_dlp` (same interpreter as this script) so
+        it works even when only the module is installed."""
+        exe = self._bin("yt-dlp")
+        if exe:
+            return [exe]
+        try:
+            import yt_dlp  # noqa: F401
+            return [sys.executable, "-m", "yt_dlp"]
+        except ImportError:
+            return None
+
+    def _resolve_playlist(self):
+        """Resolve the YouTube playlist to a local playlist.m3u (fast,
+        flat -- no per-track metadata). Returns the m3u path, or None if
+        yt-dlp failed (offline / playlist gone / network blocked).
+
+        We ask yt-dlp for one bare URL per line (`--print url`) and write
+        the .m3u ourselves -- this is more reliable than relying on
+        yt-dlp's own playlist-file naming, which silently writes nothing
+        for a plain `-o` on a playlist URL."""
         import subprocess
+        ytdlp = self._ytdlp_cmd()
+        if ytdlp is None:
+            print("  >> [music] yt-dlp not found -- install with "
+                  "`pip install yt-dlp`")
+            return None
+        m3u = os.path.join(_HERE, "playlist.m3u")
+        try:
+            r = subprocess.run(
+                ytdlp + ["--flat-playlist", "--no-warnings",
+                         "--playlist-items", "1-200",
+                         "--print", "url", self.url],
+                capture_output=True, text=True, timeout=120)
+        except Exception as e:  # noqa: BLE001
+            print(f"  >> [music] playlist resolve failed: {e}")
+            return None
+        urls = [l.strip() for l in (r.stdout or "").splitlines()
+                if l.strip() and "youtube" in l]
+        if r.returncode != 0 or not urls:
+            tail = (r.stderr or r.stdout or "").strip().splitlines()
+            print(f"  >> [music] playlist resolve failed: "
+                  f"{tail[-1] if tail else 'no tracks returned'}")
+            return None
+        try:
+            with open(m3u, "w", encoding="utf-8") as f:
+                f.write("#EXTM3U\n")
+                for u in urls:
+                    f.write(f"#EXTINF:-1,\n{u}\n")
+        except OSError as e:
+            print(f"  >> [music] could not write {m3u}: {e}")
+            return None
+        print(f"  >> [music] playlist resolved: {len(urls)} tracks -> {m3u}")
+        return m3u
+
+    def _start(self):
+        """Resolve the playlist, launch mpv on it; wait for the IPC
+        socket. True on OK."""
         import threading
         if not self._bin("mpv"):
             print("  >> [music] mpv not found -- install with "
                   "`sudo apt install mpv`")
             return False
-        if not self._bin("yt-dlp"):
+        if self._ytdlp_cmd() is None:
             print("  >> [music] yt-dlp not found -- install with "
                   "`pip install yt-dlp`")
+            return False
+        m3u = self._resolve_playlist()
+        if m3u is None:
             return False
         try:
             if os.path.exists(self.sock_path):
@@ -630,7 +701,7 @@ class MusicPlayer:
             f"--input-ipc-server={self.sock_path}",
             "--no-video",
             "--really-quiet",
-            self.url,
+            m3u,
         ]
         try:
             self.proc = subprocess.Popen(
@@ -712,15 +783,20 @@ class MusicPlayer:
     def play_music(self):
         if not self._running():
             if self._start():
+                self._paused = False
                 return "playing the playlist"
             return "music is not available right now"
-        self._cmd("set_property", "pause", False)
-        return "playing the playlist"
+        if self._paused:
+            self._cmd("set_property", "pause", False)
+            self._paused = False
+            return "resuming the playlist"
+        return "the playlist is already playing"
 
     def pause(self):
         if not self._running():
             return "nothing is playing"
         self._cmd("set_property", "pause", True)
+        self._paused = True
         return "paused"
 
     def stop(self):
@@ -728,6 +804,7 @@ class MusicPlayer:
             return "nothing is playing"
         self._cmd("set_property", "pause", True)
         self._cmd("set_property", "time-pos", 0)
+        self._paused = True
         return "stopped"
 
     def next(self):
@@ -1403,6 +1480,34 @@ def run_test(args):
     print(f"report -> {out}")
 
 
+def run_music_test(args):
+    """No-mic smoke test for the music pipeline: resolve the playlist,
+    start mpv, let it play for ~12 s, then stop. If you hear music, the
+    six voice commands will work."""
+    playlist = getattr(args, "playlist", None) or DEFAULT_PLAYLIST
+    player = MusicPlayer(
+        playlist,
+        socket_path=os.path.join(_HERE, "mpv.sock"),
+        start_volume=getattr(args, "volume", 50))
+    print(f"music test : {playlist}")
+    msg = player.dispatch("PLAY_MUSIC")
+    print(f"  >> {msg}")
+    if "not available" in msg:
+        print("  FAILED -- see the [music] lines above (and mpv.log).")
+        player.shutdown()
+        sys.exit(1)
+    time.sleep(12)
+    print("  (played 12 s -- did you hear music?)")
+    print(f"  >> {player.dispatch('NEXT')}")
+    time.sleep(5)
+    print(f"  >> {player.dispatch('VOLUME_UP')}")
+    time.sleep(3)
+    print(f"  >> {player.dispatch('STOP')}")
+    player.shutdown()
+    print("  music test done -- mpv.log has the full player output.")
+    sys.exit(0)
+
+
 def main():
     ap = argparse.ArgumentParser(
         description=__doc__,
@@ -1453,6 +1558,11 @@ def main():
                          "feed the bundled 'hey rhasspy' fixture, print the "
                          "score) and exit. Use this on the Pi to confirm the "
                          "wake word can actually fire before going live.")
+    ap.add_argument("--music-test", action="store_true",
+                    help="test the music pipeline WITHOUT the mic: resolve "
+                         "the playlist, start mpv, play for ~12 s, then "
+                         "stop and exit. Use this on the Pi to confirm "
+                         "sound actually comes out before going live.")
     args = ap.parse_args()
 
     if args.wake_check:
@@ -1474,6 +1584,8 @@ def main():
         run_file(args)
     elif args.test:
         run_test(args)
+    elif args.music_test:
+        run_music_test(args)
     else:
         run_mic(args)
 
