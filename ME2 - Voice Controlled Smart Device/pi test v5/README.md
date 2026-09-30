@@ -22,8 +22,8 @@ The **best model** from the vcm-v2 work — the **PocketSphinx ensemble**:
 decode the *same* 103-phrase JSGF command grammar; the final command is chosen
 by **agreement**, or by the **more confident stage-2 classifier** when they
 disagree. **95.3% command / 97.1% intent** on the 171-clip held-out set
-(`test_data/additional_test_data`, one new speaker) — see
-`backbone/reports/pocketsphinx_ensemble_cmudict.json`.
+(`data/additional_test_data`, one new speaker) — see
+`archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`.
 
 No Whisper / ONNX / torch — just `pocketsphinx` + `scikit-learn` + `numpy`, so
 it runs comfortably on a Pi.
@@ -42,6 +42,7 @@ it runs comfortably on a Pi.
 | `responses/` | the 19 TTS response WAVs + generated `19_repeat.wav` | ~1.4 MB |
 | `vcm/`, `vcm2/` | self-contained code (normalization, classifier, ground truth) | — |
 | `requirements.txt` | deps | — |
+| `training/` | AM training + eval scripts (`build_trained_am.py`, `eval_pocketsphinx*.py`) | — |
 
 ## Response mapping (31 commands → 19 WAVs)
 
@@ -120,7 +121,8 @@ all the ones that follow. (Warming with the Piper TTS voice was tried and
 ## Notes
 
 * Audio is **not** committed (ME2 policy); `--test` reads
-  `../test_data/additional_test_data`, which you copy in from the sandbox/ME2
+  `../data/additional_test_data` (the held-out set now lives in the ME2
+  `data/` folder), which you copy in from the sandbox/ME2
   dataset as before.
 * The response WAVs are 16 kHz mono 16-bit — the same format as the mic path,
   so no conversion is needed to play them.

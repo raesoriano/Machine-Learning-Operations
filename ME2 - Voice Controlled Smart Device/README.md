@@ -77,56 +77,45 @@ after parsing, so paraphrase variety in the audio is fine.
 ```
 ME2 - Voice Controlled Smart Device/
 ├── README.md                     # this file
-├── PLAN.md                       # full project plan (taxonomy, work packages, targets)
-├── COLLECTIVE_TASKS.md           # 5 work packages, roles, acceptance criteria
-├── vcm/                          # the "golden rule" contract (single source of truth)
-│   ├── features.py               #   log-mel recipe @ 16 kHz — train = serve, no drift
-│   ├── vocab.py                  #   constrained 185-word vocab (blank=0, words 1..185)
-│   ├── parser.py                 #   deterministic transcript -> (intent, slots)
-│   ├── slot_space.py             #   closed slot values (colors, times, contacts, ...)
-│   └── canonical.py, numbers.py  #   canonical phrases, spoken-number handling
-├── model/                        # the VCM (PyTorch)
-│   ├── model_def.py              #   TCN CTC encoder (128ch/4blk, ~1M params)
-│   ├── decode.py                 #   greedy + beam CTC decode (shared by all runtimes)
-│   ├── train.py                  #   trainer (features fast-path, ReduceLROnPlateau)
-│   ├── configs/                  #   tiny / full / v4 recipes (yaml)
-│   └── checkpoints/me2_v5/       #   final model: best.pt + vcm.onnx + vcm_int8.onnx
-├── scripts/                      # build_train_features.py (Plan A), vocab analysis, ...
-├── benchmark/                    # frozen + synthetic harness, metrics, ONNX/torch backends
-├── deploy/                       # ONNX conversion + int8 quantize, RPi service, simulator
-├── demo/                         # mock smart-home dashboard (browser demo)
-├── vcm-v2/                       # VCM v2: pretrained Whisper ASR backbone (migrated 2026-09-28)
-│   ├── README.md, MIGRATION.md   #   pipeline docs + migration notes + results
-│   ├── backbone/                 #   ACTIVE: Whisper fine-tune + 31-cmd classifier (git-lfs models)
-│   ├── archive/ctc_v8/           #   frozen from-scratch CTC pipeline (me2_v8)
-│   └── archive/w2v2_base/        #   frozen abandoned wav2vec2-base CTC attempt
-├── tools/check_grammar.py        # CI gate: every row must round-trip through the parser
-└── data/
-    ├── .gitignore                # audio ignored; manifests+metadata tracked
-    ├── manifests/                # P0 deliverables (tracked)
-    │   ├── positive_negative_manifest.csv   # 82,778 rows (49,786 pos / 32,992 neg)
-    │   ├── frozen_test_v1.jsonl             # frozen benchmark test set (11,492 rows)
-    │   └── summary.json
-    ├── scripts/
-    │   └── build_manifest.py     # regenerates the above from raw sources
-    ├── optionb/                  # Mark dataset (31 class dirs + FLAGGED/, audio not tracked)
-    │   ├── manifest.csv          # 21,224 rows: 17,924 optionb + 3,300 external curated
-    │   ├── labels.json, slots.json, dataset_design.txt, OPTIONB_DATA_SUMMARY.md
-    ├── external/                 # external datasets (audio not tracked)
-    │   ├── slurp/                #   real 72,395 + synth 10,272 FLAC + parquet + metadata
-    │   ├── fluent_speech_commands/  # full 30,043 WAV + curated 900
-    │   ├── google_speech_commands_v2/  # 105,835 WAV (100k cmds + 5,835 bg noise)
-    │   ├── librispeech/          #   1,500 curated FLAC (OOD speech)
-    │   ├── librispeech_test_clean/  # 2,620 FLAC (1,120 held out for frozen OOD test)
-    │   └── DATASETS.md           # sources, licenses, re-download
-    └── metadata/
-        ├── standalone/           # semantic mapping of all external datasets
-        │   ├── mapping_rules.json    # the mapping policy (per dataset, per label)
-        │   ├── dataset_mapping.csv   # 277,528 row-level decisions (git-ignored, 32 MB)
-        │   ├── processed_metadata.csv# 67,189 included rows (git-ignored, 14 MB)
-        │   └── plan_stats.json, dataset_inspection.*, standalone_reports/
-        ├── moonshine/            # Moonshine baseline utterance list
-        └── additional_data_requirements.md   # D1–D5 deficiency analysis
+├── pi test v5/                   # *** CURRENT BEST MODEL *** (PocketSphinx ensemble, runs on Pi)
+│   ├── vcm_pi_v5.py              #   listener: wake word -> VAD -> ensemble -> classify -> speak
+│   ├── am/custom/                #   custom 1.6 MB LDA acoustic model (+ vcm.lm.bin)
+│   ├── am/stock/                 #   stock en-us acoustic model
+│   ├── am/stock_enus/            #   cmudict + en-us.lm.bin
+│   ├── dict3                     #   word->phone dictionary for the custom AM
+│   ├── vcm_commands_enh3.jsgf    #   the 103-phrase command grammar
+│   ├── classifier.pkl            #   stage-2 text classifier (31 commands + REJECT)
+│   ├── wakeword/                 #   openWakeWord "hey rhasspy" model + self-test fixture
+│   ├── responses/                #   19 TTS response WAVs (+ 00_yes.wav cue)
+│   ├── vcm/, vcm2/               #   self-contained code (normalization, classifier, ground truth)
+│   ├── training/                 #   AM training + eval scripts (build_trained_am.py, eval_*)
+│   ├── test_wake_flow.py         #   wake-word gate test
+│   └── requirements.txt
+├── data/                         # ALL DATA (audio on shared storage, never committed)
+│   ├── additional_test_data/     #   held-out test set (171 clips + 5 REJECT, one new speaker)
+│   ├── manifests/                #   P0 deliverables (tracked)
+│   ├── optionb/                  #   Mark dataset (31 class dirs, audio not tracked)
+│   ├── external/                 #   external datasets (audio not tracked)
+│   ├── metadata/                 #   semantic mapping of all external datasets
+│   ├── features/                 #   precomputed log-mel features (git-ignored, regenerable)
+│   └── scripts/, templates/
+└── archived/                     # everything that is NOT the current best model
+    ├── model/                    #   old CTC VCM (PyTorch) + checkpoints/me2_v5
+    ├── benchmark/                #   frozen + synthetic harness, metrics, ONNX/torch backends
+    ├── deploy/                   #   ONNX conversion + int8 quantize, RPi service, simulator
+    ├── demo/                     #   mock smart-home dashboard
+    ├── scripts/                  #   feature/vocab build scripts
+    ├── reports/                  #   historical training/eval reports
+    ├── tools/                    #   check_grammar.py CI gate
+    ├── vcm/                      #   the "golden rule" contract (features, vocab, parser)
+    ├── PLAN.md, COLLECTIVE_TASKS.md
+    └── vcm-v2/                   #   superseded VCM v2 (Whisper backbone + old pi_test)
+        ├── backbone/             #     Whisper fine-tune pipeline + PocketSphinx experiments
+        ├── pi_test/              #     old Whisper-ONNX Pi listener
+        ├── test_data/            #     (test set now consolidated into data/additional_test_data)
+        ├── archive/ctc_v8/       #     frozen from-scratch CTC pipeline
+        ├── archive/w2v2_base/    #     frozen abandoned wav2vec2-base CTC attempt
+        └── README.md, MIGRATION.md
 ```
 
 Audio lives on shared storage and is **never committed** (see `data/.gitignore`).
