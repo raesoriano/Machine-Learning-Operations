@@ -80,8 +80,8 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 | WAV | Says | Commands |
 |---|---|---|
 | `01_playing_music` | playing music | PLAY_MUSIC |
-| `02_current_weather` | here's the current weather | WEATHER |
-| `03_current_time` | here's the current time | TIME |
+| `02_current_weather` | here's the current weather | WEATHER ¹ |
+| `03_current_time` | here's the current time | TIME ¹ |
 | `04_switching_lights` | switching the lights | LIGHT_ON, LIGHT_OFF |
 | `05_pausing` | pausing | PAUSE |
 | `06_stopping_playback` | stopping playback | STOP |
@@ -100,6 +100,9 @@ them (several commands share a phrase). `REJECT` / unknown → **`19_repeat.wav`
 | `19_repeat` | can you repeat that? | **REJECT** (unknown / no command) |
 
 (`00_yes.wav` — "yes?" — is kept as a spare generic ack, not bound to a command.)
+
+¹ **Dynamic:** WEATHER and TIME ignore the canned WAV and speak a live answer
+via Piper TTS — see [Dynamic responses](#dynamic-responses-time-weather).
 
 ## Getting just this folder (sparse checkout)
 
@@ -143,6 +146,7 @@ python vcm_pi_v3.py --no-play             # (mic) classify + print, skip playbac
 python vcm_pi_v3.py --wake-threshold 0.6  # stricter wake-word gate
 python vcm_pi_v3.py --command-window 1.5  # wait 1.5 s for the command
 python vcm_pi_v3.py --no-wake             # always-listen — DEBUGGING ONLY
+python vcm_pi_v3.py --weather-loc "UP Diliman, Quezon City"  # pin the WEATHER location
 ```
 
 Stop with **Ctrl-C** at any time.
@@ -158,6 +162,28 @@ Stop with **Ctrl-C** at any time.
   E2E 92 ms
   >> playing 04_switching_lights.wav
 [14:32:12] STANDBY — say "hey rhasspy" ...
+```
+
+## Dynamic responses (TIME, WEATHER)
+
+Two commands do **not** play a canned WAV — they synthesize a live answer with
+Piper TTS (the same `en_US-lessac-low` voice used for `19_repeat.wav`):
+
+| Command | What it does |
+|---|---|
+| `TIME` | Says the actual current time (UTC+8, Asia/Manila): *"It is 5:42 PM."* |
+| `WEATHER` | Looks up the device's **current location** from its public IP (`ipapi.co`, free, no key), fetches the current conditions from **Open-Meteo** (free, no key), and speaks them: *"Currently in Quezon City: partly cloudy, 29 degrees Celsius, feels like 33."* |
+
+**Location fallback:** if the IP lookup fails (offline, blocked, private IP),
+the weather is fetched for **UP Diliman, Quezon City** instead and the device
+still answers. If the weather service itself is unreachable, it says
+*"I could not reach the weather service right now."* — the lookup is bounded
+(10 s per request) so a dead network never hangs the device.
+
+To pin a location name (e.g. while testing away from home):
+
+```bash
+python vcm_pi_v3.py --weather-loc "UP Diliman, Quezon City"
 ```
 
 ## Latency (Pi 5, CPU)

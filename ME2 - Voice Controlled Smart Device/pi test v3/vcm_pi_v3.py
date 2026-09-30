@@ -413,6 +413,89 @@ def time_response_text() -> str:
 
 
 # --------------------------------------------------------------------------
+# dynamic WEATHER response (IP geolocation + Open-Meteo, then Piper TTS)
+#
+# 1. Location: the device's current location, looked up from its public IP
+#    (ipapi.co, free, no key). If the lookup fails (offline, blocked, or the
+#    IP is a private one), fall back to UP Diliman, Quezon City.
+# 2. Weather: Open-Meteo (free, no API key) -- current conditions only.
+# 3. Spoken:  e.g. "Currently in Quezon City: partly cloudy, 29 degrees."
+#
+# The whole lookup is bounded (~10 s worst case) so a dead network degrades
+# to the fallback location / a short apology instead of hanging the device.
+# --------------------------------------------------------------------------
+WEATHER_FALLBACK = ("UP Diliman, Quezon City", 14.6265, 121.0465)
+WEATHER_HTTP_TIMEOUT = 10   # seconds, per request
+
+
+def _http_json(url: str, timeout: int = WEATHER_HTTP_TIMEOUT):
+    """GET `url` and parse JSON. Returns None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "vcm-pi-v3"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode("utf-8", "replace"))
+    except Exception:  # noqa: BLE001 - offline / DNS / timeout / bad JSON
+        return None
+
+
+def _current_location(override: str | None = None):
+    """(name, lat, lon) of the device's current location.
+
+    `override` (e.g. from --weather-loc) wins. Otherwise look up the public
+    IP's location; on any failure fall back to UP Diliman, Quezon City.
+    """
+    if override:
+        return override, 14.6265, 121.0465
+    geo = _http_json("https://ipapi.co/json/")
+    if geo and geo.get("latitude") is not None and geo.get("longitude") is not None:
+        name = (geo.get("city") or geo.get("region") or geo.get("country_name")
+                or "your location")
+        return name, float(geo["latitude"]), float(geo["longitude"])
+    print("  >> [weather] IP location lookup failed -- using "
+          f"{WEATHER_FALLBACK[0]}")
+    return WEATHER_FALLBACK
+
+
+def weather_response_text(override: str | None = None) -> str:
+    """Fetch the current weather for the device's location; spoken sentence.
+
+    e.g. "Currently in Quezon City: partly cloudy, 29 degrees."
+    """
+    name, lat, lon = _current_location(override)
+    url = ("https://api.open-meteo.com/v1/forecast"
+           f"?latitude={lat:.4f}&longitude={lon:.4f}"
+           "&current=temperature_2m,apparent_temperature,relative_humidity_2m,"
+           "weather_code,wind_speed_10m"
+           "&timezone=auto")
+    data = _http_json(url)
+    if not data or "current" not in data:
+        return "I could not reach the weather service right now."
+    cur = data["current"]
+    desc = _WEATHER_CODES.get(int(cur.get("weather_code", -1)),
+                              "the current conditions")
+    temp = int(round(float(cur["temperature_2m"])))
+    return (f"Currently in {name}: {desc}, {temp} degrees "
+            f"Celsius, feels like {int(round(float(cur['apparent_temperature'])))}.")
+
+
+# WMO weather interpretation codes -> spoken description (subset used by
+# Open-Meteo's `weather_code`).
+_WEATHER_CODES = {
+    0: "clear skies", 1: "mainly clear", 2: "partly cloudy", 3: "overcast",
+    45: "fog", 48: "freezing fog",
+    51: "light drizzle", 53: "drizzle", 55: "heavy drizzle",
+    56: "freezing drizzle", 57: "freezing drizzle",
+    61: "light rain", 63: "rain", 65: "heavy rain",
+    66: "freezing rain", 67: "freezing rain",
+    71: "light snow", 73: "snow", 75: "heavy snow", 77: "snow grains",
+    80: "light showers", 81: "showers", 82: "heavy showers",
+    85: "snow showers", 86: "snow showers",
+    95: "thunderstorms", 96: "thunderstorms with hail",
+    99: "thunderstorms with hail",
+}
+
+
+# --------------------------------------------------------------------------
 # VAD (webrtcvad + absolute energy gate -- noise-robust endpointing)
 #
 # The old energy VAD ended an utterance only when the mic's RMS dropped below
@@ -948,6 +1031,12 @@ def run_mic(args):
                     text = time_response_text()
                     print(f"  >> saying (Piper TTS): {text!r}")
                     speak(text, enabled=not args.no_play)
+                elif cmd == "WEATHER":
+                    # dynamic response: live weather for the device's
+                    # current location (IP geolocation; fallback UP Diliman)
+                    text = weather_response_text(getattr(args, "weather_loc", None))
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
                 else:
                     wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
                     print(f"  >> playing {wav}")
@@ -973,6 +1062,10 @@ def run_file(args):
     print(f"  E2E {e2e:.0f} ms")
     if cmd == "TIME":
         text = time_response_text()
+        print(f"  >> saying (Piper TTS): {text!r}")
+        speak(text, enabled=not args.no_play)
+    elif cmd == "WEATHER":
+        text = weather_response_text(getattr(args, "weather_loc", None))
         print(f"  >> saying (Piper TTS): {text!r}")
         speak(text, enabled=not args.no_play)
     else:
@@ -1050,6 +1143,11 @@ def main():
                          "command to start; default 1.0. If no speech "
                          "starts in that time, the device returns to "
                          "standby (waiting for the wake word).")
+    ap.add_argument("--weather-loc", default=None,
+                    help="location name to use for the WEATHER command "
+                         "instead of IP geolocation (e.g. 'UP Diliman, "
+                         "Quezon City'). The coordinates always fall back "
+                         "to UP Diliman when an override is given.")
     ap.add_argument("--no-wake", action="store_true",
                     help="disable the wake word and always listen. "
                          "DEBUGGING ONLY -- without the wake word the "
