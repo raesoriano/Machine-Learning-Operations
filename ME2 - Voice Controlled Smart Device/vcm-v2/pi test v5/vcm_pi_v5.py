@@ -46,6 +46,12 @@ Flow
              ->  decode + classify + play the response
              ->  0.5 s cooldown  ->  back to STANDBY
 
+The wake word is MANDATORY. If the openWakeWord model cannot be loaded (missing
+file, unfetched Git-LFS pointer, or a failed self-test), the program REFUSES
+to start with a loud error instead of silently falling back to always-listen
+(the old behavior that produced ghost commands). Pass --no-wake to opt into
+always-listen for debugging only.
+
 Stop with Ctrl-C at any time.
 """
 import argparse
@@ -673,6 +679,27 @@ class VAD:
 # --------------------------------------------------------------------------
 # the loop: wait -> classify -> speak -> wait ...
 # --------------------------------------------------------------------------
+def _abort_no_wake(reason: str, fix: str):
+    """Refuse to start when the wake word is not active.
+
+    The device's contract is: STANDBY by default, and NO command is accepted
+    until "hey rhasspy" is heard. If the wake model cannot be loaded, running
+    the continuous decoder (the old always-listen behavior) would violate that
+    contract and is exactly what produced the ghost commands. So instead of
+    silently degrading, we exit with a loud, actionable error. Pass --no-wake
+    to opt into always-listen for debugging only.
+    """
+    print("\n" + "!" * 72)
+    print("  WAKE WORD NOT ACTIVE -- refusing to start.")
+    print(f"  reason : {reason}")
+    print(f"  fix    : {fix}")
+    print("  The device must be in STANDBY (waiting for 'hey rhasspy') before")
+    print("  it accepts any command. It will NOT run in always-listen mode")
+    print("  unless you explicitly pass --no-wake (debugging only).")
+    print("!" * 72 + "\n")
+    sys.exit(2)
+
+
 def run_mic(args):
     import sounddevice as sd
     from scipy.signal import resample_poly
@@ -694,19 +721,19 @@ def run_mic(args):
     # wake word detector (openWakeWord "hey rhasspy")
     wake = None
     if getattr(args, "no_wake", False):
-        print("wake word : DISABLED (--no-wake) -- always listening")
+        print("wake word : DISABLED (--no-wake) -- always listening "
+              "(DEBUG ONLY)")
     elif not os.path.exists(WAKEWORD_MODEL):
-        print("  >> [wake word model not found] "
-              f"{WAKEWORD_MODEL}\n"
-              "     falling back to ALWAYS-LISTEN (no wake word). "
-              "Run: git lfs pull")
+        _abort_no_wake(
+            f"wake word model not found: {WAKEWORD_MODEL}",
+            "run `git lfs pull` in the repo, then restart")
     elif os.path.getsize(WAKEWORD_MODEL) < 1000:
         # A real model is ~200 KB; a sub-KB file is an unfetched Git-LFS
-        # pointer, which is why the wake word would silently not load.
-        print(f"  >> [wake word model is a Git-LFS pointer, not the model "
-              f"({os.path.getsize(WAKEWORD_MODEL)} bytes)]\n"
-              "     falling back to ALWAYS-LISTEN (no wake word). "
-              "Run: git lfs pull")
+        # pointer, which is why the wake word would not load.
+        _abort_no_wake(
+            f"wake word model is a Git-LFS pointer, not the model "
+            f"({os.path.getsize(WAKEWORD_MODEL)} bytes)",
+            "run `git lfs pull` in the repo, then restart")
     else:
         try:
             wake = WakeWord(WAKEWORD_MODEL, threshold=args.wake_threshold)
@@ -720,18 +747,18 @@ def run_mic(args):
                       f"threshold {wake.threshold:.2f}) | self-test "
                       f"score {peak:.2f} >= {args.wake_threshold:.2f} OK")
             else:
-                print(f"  >> [wake word self-test FAILED: score {peak:.3f} "
-                      f"< {args.wake_threshold:.2f}]\n"
-                      "     The model loaded but does not fire. Falling back "
-                      "to ALWAYS-LISTEN.\n"
-                      "     Check: pip install -r requirements.txt "
-                      "(openwakeword==0.4.0)")
-                wake = None
+                _abort_no_wake(
+                    f"wake word self-test FAILED: score {peak:.3f} "
+                    f"< {args.wake_threshold:.2f} (model loaded but does "
+                    "not fire)",
+                    "run `pip install -r requirements.txt` (needs "
+                    "openwakeword==0.4.0 + onnxruntime), then restart")
         except Exception as e:  # noqa: BLE001 - onnxruntime / model issue
-            print(f"  >> [wake word unavailable: {type(e).__name__}: {e}]\n"
-                  "     falling back to ALWAYS-LISTEN (no wake word).\n"
-                  "     Fix: pip install -r requirements.txt   "
-                  "(needs openwakeword==0.4.0 + onnxruntime)")
+            _abort_no_wake(
+                f"wake word model failed to load: "
+                f"{type(e).__name__}: {e}",
+                "run `pip install -r requirements.txt` (needs "
+                "openwakeword==0.4.0 + onnxruntime), then restart")
 
     vad = VAD(sr, gate=args.gate)
     gate = (WakeGate(sr, wake, vad, gate_rms=vad.GATE,
@@ -937,7 +964,11 @@ def main():
                          "starts in that time, the device returns to "
                          "standby (waiting for the wake word).")
     ap.add_argument("--no-wake", action="store_true",
-                    help="disable the wake word and always listen (debugging)")
+                    help="disable the wake word and always listen. "
+                         "DEBUGGING ONLY -- without the wake word the "
+                         "device accepts commands from noise (ghost "
+                         "commands). By default the program REFUSES to "
+                         "start if the wake word cannot be loaded.")
     ap.add_argument("--wake-check", action="store_true",
                     help="run ONLY the wake-word self-test (load the model, "
                          "feed the bundled 'hey rhasspy' fixture, print the "
