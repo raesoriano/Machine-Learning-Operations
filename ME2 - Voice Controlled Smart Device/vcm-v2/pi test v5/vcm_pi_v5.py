@@ -462,16 +462,40 @@ class WakeWord:
 
 def wake_selftest(model_path: str, threshold: float) -> tuple:
     """Feed the bundled 'hey rhasspy' self-test wav through the model and
-    report (peak_score, passed). This proves the wake model actually loaded
-    and can fire -- a silent load failure (e.g. a missing onnxruntime / tflite
-    backend on the Pi) would otherwise leave the device always-listening and
-    produce ghost commands. Returns (0.0, False) if the fixture or model is
-    unavailable."""
+    report (peak_score, passed, reason). This proves the wake model actually
+    loaded and can fire -- a silent load failure (e.g. a missing onnxruntime
+    / tflite backend on the Pi) would otherwise leave the device
+    always-listening and produce ghost commands. `reason` names the exact
+    step that failed so the Pi output is actionable."""
     import soundfile as sf
+    if not os.path.exists(model_path):
+        return 0.0, False, f"model file not found: {model_path}"
+    size = os.path.getsize(model_path)
+    if size < 1000:
+        return 0.0, False, (
+            f"model file is {size} bytes -- an unfetched Git-LFS pointer, "
+            "not the model. Run `git lfs pull` in the repo, then retry")
+    try:
+        import onnxruntime  # noqa: F401
+    except Exception as e:  # noqa: BLE001
+        return 0.0, False, (
+            f"onnxruntime import failed: {type(e).__name__}: {e} -- run "
+            "`pip install -r requirements.txt`")
+    try:
+        import openwakeword  # noqa: F401
+        import openwakeword as _ow
+        import importlib.metadata as _imd
+        ver = _imd.version("openwakeword")
+    except Exception as e:  # noqa: BLE001
+        return 0.0, False, (
+            f"openwakeword import failed: {type(e).__name__}: {e} -- run "
+            "`pip install -r requirements.txt` (needs openwakeword==0.4.0)")
     fixture = os.path.join(os.path.dirname(model_path),
                            "selftest_hey_rhasspy.wav")
     if not os.path.exists(fixture):
-        return 0.0, False
+        return 0.0, False, (
+            f"self-test fixture not found: {fixture} -- run `git lfs pull` "
+            "or re-clone")
     try:
         a, sr = sf.read(fixture, dtype="float32")
         if a.ndim > 1:
@@ -481,13 +505,22 @@ def wake_selftest(model_path: str, threshold: float) -> tuple:
             g = int(np.gcd(sr, 16000))
             a = resample_poly(a, 16000 // g, sr // g).astype(np.float32)
         ww = WakeWord(model_path, threshold=threshold)
+    except Exception as e:  # noqa: BLE001 - load failure
+        return 0.0, False, (
+            f"model failed to load (openwakeword {ver}): "
+            f"{type(e).__name__}: {e}")
+    try:
         pcm = (np.clip(a, -1.0, 1.0) * 32767).astype(np.int16)
         peak = 0.0
         for i in range(0, len(pcm) - 1279, 1280):
             peak = max(peak, ww.push(pcm[i:i + 1280]))
-        return peak, peak >= threshold
-    except Exception:  # noqa: BLE001 - any load/inference failure
-        return 0.0, False
+        return peak, peak >= threshold, (
+            f"openwakeword {ver}, model {size} bytes, "
+            f"{len(pcm) // 1280} frames fed")
+    except Exception as e:  # noqa: BLE001 - inference failure
+        return 0.0, False, (
+            f"inference failed (openwakeword {ver}): "
+            f"{type(e).__name__}: {e}")
 
 
 class StreamDecimate:
@@ -741,7 +774,7 @@ def run_mic(args):
             # 'hey rhasspy' fixture through it. A silent load failure (missing
             # onnxruntime / tflite backend on the Pi) would otherwise leave
             # the device always-listening -> ghost commands.
-            peak, ok = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
+            peak, ok, why = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
             if ok:
                 print(f"wake word : 'hey rhasspy' (openWakeWord, "
                       f"threshold {wake.threshold:.2f}) | self-test "
@@ -749,8 +782,7 @@ def run_mic(args):
             else:
                 _abort_no_wake(
                     f"wake word self-test FAILED: score {peak:.3f} "
-                    f"< {args.wake_threshold:.2f} (model loaded but does "
-                    "not fire)",
+                    f"< {args.wake_threshold:.2f} -- {why}",
                     "run `pip install -r requirements.txt` (needs "
                     "openwakeword==0.4.0 + onnxruntime), then restart")
         except Exception as e:  # noqa: BLE001 - onnxruntime / model issue
@@ -977,15 +1009,17 @@ def main():
     args = ap.parse_args()
 
     if args.wake_check:
-        peak, ok = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
+        peak, ok, why = wake_selftest(WAKEWORD_MODEL, args.wake_threshold)
         print(f"self-test: score {peak:.3f} (threshold "
               f"{args.wake_threshold:.2f}) -> {'PASS' if ok else 'FAIL'}")
+        print(f"  detail: {why}")
         if not ok:
-            print("The wake model is not firing. On the Pi this is almost "
-                  "always a dependency problem: openwakeword must be "
-                  "0.4.0 (0.5/0.6 need tflite-runtime, which has no "
-                  "Python 3.13 / aarch64 wheel). Run: "
-                  "pip install -r requirements.txt")
+            print("The wake model is not firing. The detail line above says "
+                  "exactly which step failed (missing model / LFS pointer / "
+                  "import / load / inference). Most common fixes: "
+                  "`git lfs pull` (model files are stored in Git LFS) and "
+                  "`pip install -r requirements.txt` (openwakeword==0.4.0 + "
+                  "onnxruntime).")
         sys.exit(0 if ok else 1)
     elif args.file:
         run_file(args)
