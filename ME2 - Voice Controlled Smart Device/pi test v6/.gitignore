@@ -8,7 +8,7 @@ _smoke*.py
 _cov_check.py
 # logs + reports (regenerated each run)
 *.log
-test_v6_report.json
+test_v6_*report*.json
 # heavy derived data
 data/features.npz
 data/words.npz
