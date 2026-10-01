@@ -37,7 +37,7 @@ trained 0.8 MB AM → 84.8 % / 88.3 %. New-dataset comparison pending.
 
 | Item | Value |
 |---|---|
-| Source | HuggingFace `airimonda/ai231-me2-voice-commands` — real voice + synthetic + CommonVoice_en / FluentSpeechCommands / SLURP / SNIPS; numerals: MLEnd + SpeechCommands v2 |
+| Source | HuggingFace `airimonda/ai231-me2-voice-commands` — compiled from the audited sources: Speech Commands v2 (34,031), MLEnd numerals (32,029), **group synthetic TTS (11,248, produced by Mark Andrian Macalalad)**, SLURP (1,861), group real voices (920), SNIPS SLU (493), Fluent Speech Commands (412), Common Voice en (100), Xela S1–S5 (70), Timers and Such (33), Xela Multi-Sensor (12) |
 | Hours / utts | **30.9 h / 81,686** (train 10,682 · test 4,418 · holdout 196 · numerals 66,390) |
 | Speakers | 315 (train) · 121 (test, **zero overlap with train**) · 2,547 (numerals) |
 | Labels | **19 intents** + OUT_OF_SCOPE · **18 slot values** (times, percents, temperatures, reminder texts) |
