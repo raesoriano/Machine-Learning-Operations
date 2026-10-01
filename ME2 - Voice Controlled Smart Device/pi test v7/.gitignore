@@ -1,0 +1,17 @@
+# regenerable / stale artifacts -- not part of the source
+models/
+__pycache__/
+*.pyc
+# debug + one-off probes
+_dbg_*.py
+_smoke*.py
+_cov_check.py
+_num_check.py
+_scope_check.py
+# logs + reports (regenerated each run)
+*.log
+test_v6_*report*.json
+# heavy derived data
+data/features.npz
+data/words.npz
+data/decoded_words.npz
