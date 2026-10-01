@@ -16,11 +16,15 @@ class; it is mapped to the coarse schema via commands.coarse_class before
 comparison, so a clip is correct when the coarse command matches.
 
 Report: overall / in-scope / reject accuracy, intent accuracy, per-class
-breakdown, mean WER (constrained vs free transcript), decode latency.
+breakdown, mean WER (constrained vs free transcript), decode latency,
+real-vs-synthetic split (test is ~77% synthetic, so both are reported).
+
+Parallel: one decoder per worker process (ProcessPoolExecutor).
 """
 from __future__ import annotations
 import os, sys, json, time, csv, argparse
 import numpy as np
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -50,6 +54,17 @@ COARSE_TO_INTENT = {
     "REJECT": "unknown",
 }
 
+# per-worker decoder, built once in each process
+_W = {}
+
+
+def _init_worker(models_dir: str, beam: int):
+    am = AcousticModel.load(os.path.join(models_dir, "acoustic_model.npz"))
+    dictionary = load_dict(os.path.join(models_dir, "dictionary.txt"))
+    lm = LanguageModel.load(os.path.join(models_dir, "lm.npz"))
+    _W["dec"] = Decoder(am, dictionary, lm.words, beam=beam)
+    _W["lm"] = lm
+
 
 def _wer(ref: str, hyp: str) -> float:
     r, h = ref.split(), hyp.split()
@@ -66,8 +81,36 @@ def _wer(ref: str, hyp: str) -> float:
     return dp[n, m] / max(1, n)
 
 
+def _eval_one(args):
+    path, gold, is_syn, margin = args
+    dec, lm = _W["dec"], _W["lm"]
+    x = read_wav(path)
+    F = features(x)
+    T = F.shape[0]
+    t1 = time.perf_counter()
+    words, glp, _ = dec.decode_constrained(lm, F)
+    fwords, flp = dec.decode_free(lm, F)
+    asr_ms = (time.perf_counter() - t1) * 1000
+    glp_pf = glp / max(1, T)
+    flp_pf = flp / max(1, T)
+    phrase = " ".join(words)
+    fine = phrase_to_class(phrase) if words else "REJECT"
+    pred = coarse_class(fine)
+    if not words or (flp_pf - glp_pf) > margin:
+        pred = "REJECT"
+    return {
+        "path": path,
+        "gold": gold, "heard": " ".join(fwords),
+        "transcript": phrase, "fine": fine, "pred": pred,
+        "correct": bool(pred == gold),
+        "is_syn": bool(is_syn),
+        "wer": _wer(phrase, " ".join(fwords)) if words else 1.0,
+        "asr_ms": asr_ms,
+    }
+
+
 def _load_split(data: str, split: str):
-    """[(wav_path, gold_coarse)] from the split manifest."""
+    """[(wav_path, gold_coarse, is_synthetic)] from the split manifest."""
     rows = []
     mpath = os.path.join(data, split, "manifest.csv")
     with open(mpath) as f:
@@ -78,7 +121,7 @@ def _load_split(data: str, split: str):
                 continue
             p = os.path.join(data, split, r["file"])
             if os.path.exists(p):
-                rows.append((p, gold))
+                rows.append((p, gold, int(r.get("is_synthetic") or 0)))
     return rows
 
 
@@ -89,49 +132,29 @@ def main():
     ap.add_argument("--beam", type=int, default=4000)
     ap.add_argument("--reject-margin", type=float, default=8.0,
                     help="reject if (free_lp - grammar_lp)/frames > margin")
+    ap.add_argument("--workers", type=int, default=32)
     ap.add_argument("--report", default=None)
     args = ap.parse_args()
     if args.report is None:
         args.report = os.path.join(HERE, f"test_v6_{args.split}_report.json")
 
-    am = AcousticModel.load(os.path.join(MODELS, "acoustic_model.npz"))
-    dictionary = load_dict(os.path.join(MODELS, "dictionary.txt"))
-    lm = LanguageModel.load(os.path.join(MODELS, "lm.npz"))
-    dec = Decoder(am, dictionary, lm.words, beam=args.beam)
-    print(f"loaded: {am.n_phones} phones, {len(dictionary)} words, "
-          f"{lm.n_phrases} phrases", flush=True)
-
     rows = _load_split(args.data, args.split)
     print(f"{args.split} clips: {len(rows)}", flush=True)
 
-    results = []
+    jobs = [(p, g, s, args.reject_margin) for (p, g, s) in rows]
+    results = [None] * len(jobs)
     t0 = time.time()
-    for k, (path, gold) in enumerate(rows):
-        x = read_wav(path)
-        F = features(x)
-        T = F.shape[0]
-        t1 = time.perf_counter()
-        words, glp, _ = dec.decode_constrained(lm, F)
-        fwords, flp = dec.decode_free(lm, F)
-        asr_ms = (time.perf_counter() - t1) * 1000
-        glp_pf = glp / max(1, T)
-        flp_pf = flp / max(1, T)
-        phrase = " ".join(words)
-        fine = phrase_to_class(phrase) if words else "REJECT"
-        pred = coarse_class(fine)
-        # REJECT: no phrase, or the free decode is clearly better
-        if not words or (flp_pf - glp_pf) > args.reject_margin:
-            pred = "REJECT"
-        results.append({
-            "path": os.path.relpath(path, args.data),
-            "gold": gold, "heard": " ".join(fwords),
-            "transcript": phrase, "fine": fine, "pred": pred,
-            "correct": bool(pred == gold),
-            "wer": _wer(phrase, " ".join(fwords)) if words else 1.0,
-            "asr_ms": asr_ms,
-        })
-        if (k + 1) % 100 == 0:
-            print(f"  {k+1}/{len(rows)}  ({time.time()-t0:.0f}s)", flush=True)
+    done = 0
+    with ProcessPoolExecutor(max_workers=args.workers,
+                             initializer=_init_worker,
+                             initargs=(MODELS, args.beam)) as ex:
+        futs = {ex.submit(_eval_one, j): i for i, j in enumerate(jobs)}
+        for fut in as_completed(futs):
+            i = futs[fut]
+            results[i] = fut.result()
+            done += 1
+            if done % 200 == 0:
+                print(f"  {done}/{len(rows)}  ({time.time()-t0:.0f}s)", flush=True)
 
     n = len(results)
     inscope = [r for r in results if r["gold"] != "REJECT"]
@@ -153,6 +176,18 @@ def main():
             "acc": round(sum(r["correct"] for r in sub) / len(sub), 4),
         }
 
+    def _block(sub):
+        if not sub:
+            return {"n": 0}
+        ins = [r for r in sub if r["gold"] != "REJECT"]
+        oos_ = [r for r in sub if r["gold"] == "REJECT"]
+        return {
+            "n": len(sub),
+            "overall_acc": round(sum(r["correct"] for r in sub) / len(sub), 4),
+            "command_acc": round(sum(r["correct"] for r in ins) / max(1, len(ins)), 4),
+            "reject_acc": round(sum(r["correct"] for r in oos_) / max(1, len(oos_)), 4),
+        }
+
     report = {
         "model": "v6 HMM/GMM (from-scratch PocketSphinx-arch)",
         "split": args.split, "n_clips": n,
@@ -165,6 +200,8 @@ def main():
         "asr_ms_p50": round(float(np.percentile(lat, 50)), 1),
         "asr_ms_p90": round(float(np.percentile(lat, 90)), 1),
         "reject_margin": args.reject_margin,
+        "real": _block([r for r in results if not r["is_syn"]]),
+        "synthetic": _block([r for r in results if r["is_syn"]]),
         "per_class": per_class,
         "results": results,
     }
@@ -176,6 +213,8 @@ def main():
     print(f"  intent_acc  : {intent_acc:.4f}")
     print(f"  mean_wer    : {mean_wer:.4f}")
     print(f"  latency ms  : p50={report['asr_ms_p50']}  p90={report['asr_ms_p90']}")
+    print(f"  REAL        : n={report['real']['n']}  overall={report['real'].get('overall_acc')}  cmd={report['real'].get('command_acc')}  rej={report['real'].get('reject_acc')}")
+    print(f"  SYNTHETIC   : n={report['synthetic']['n']}  overall={report['synthetic'].get('overall_acc')}  cmd={report['synthetic'].get('command_acc')}  rej={report['synthetic'].get('reject_acc')}")
     print(f"  report      : {args.report}")
 
 

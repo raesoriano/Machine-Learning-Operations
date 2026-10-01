@@ -88,6 +88,12 @@ def main():
     ap.add_argument("--max-numerals", type=int, default=20000,
                     help="cap on numerals clips used for the digit phones")
     ap.add_argument("--workers", type=int, default=32)
+    ap.add_argument("--real-only", action="store_true",
+                    help="train the acoustic model on REAL in-scope clips only "
+                         "(is_synthetic==0). The numerals split is already 100%% "
+                         "real, so it is always included. Use this when the "
+                         "device hears real human voices -- a model trained on "
+                         "the synthetic-majority mix decodes real speech badly.")
     args = ap.parse_args()
     data = args.data
     os.makedirs(MODELS, exist_ok=True)
@@ -128,10 +134,14 @@ def main():
     train = []
     mpath = os.path.join(data, "train", "manifest.csv")
     n_ooo = 0
+    n_synth = 0
     with open(mpath) as f:
         for r in csv.DictReader(f):
             if int(r.get("out_of_scope") or 0) == 1:
                 n_ooo += 1
+                continue
+            if args.real_only and r.get("is_synthetic") == "1":
+                n_synth += 1
                 continue
             tr = (r.get("transcript") or "").strip()
             if not tr:
@@ -162,7 +172,9 @@ def main():
         num_rows = random.sample(num_rows, args.max_numerals)
     train += num_rows
     print(f"training clips: {len(train)} (in-scope train {n_train} + "
-          f"numerals {len(num_rows)}); {n_ooo} out-of-scope rows excluded",
+          f"numerals {len(num_rows)}); {n_ooo} out-of-scope rows excluded"
+          + (f"; {n_synth} synthetic rows excluded (--real-only)"
+             if args.real_only else ""),
           flush=True)
 
     # extract features in a pool
