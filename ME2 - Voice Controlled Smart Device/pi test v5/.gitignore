@@ -1,0 +1,9 @@
+# regenerable / heavy artifacts
+models/
+__pycache__/
+*.pyc
+_dbg_*.py
+*.log
+data/features.npz
+data/words.npz
+data/decoded_words.npz

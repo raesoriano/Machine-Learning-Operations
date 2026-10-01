@@ -1,5 +1,25 @@
 #!/usr/bin/env python3
-"""pi test v3 -- ME2 smart-device voice command listener WITH spoken responses.
+"""pi test v6 -- ME2 smart-device voice command listener (from-scratch HMM/GMM).
+
+v6 is inspired by PocketSphinx but does NOT use it. The recognizer is built
+from scratch in numpy as a classic three-component HMM/GMM system:
+
+  1. Acoustic model  -- one 3-state left-to-right HMM per phone with GMM
+                        emissions, trained by bootstrap EM on the command clips
+                        (hgm/acoustic.py). Converts the raw waveform into
+                        per-frame, per-phone, per-state log-likelihoods.
+  2. Phonetic dict   -- command words -> ARPAbet phone sequences (hgm/dict.py),
+                        the mapping file that turns words into structural
+                        phoneme strings.
+  3. Language model  -- word bigram + a constrained finite-state automaton over
+                        the 104-phrase grammar (hgm/lm.py), which constrains the
+                        search space to valid word sequences.
+
+Decoding is a two-level Viterbi over (grammar-FSA node, phone position, HMM
+state) (hgm/decode.py). The best path through the grammar FSA is the recognized
+command; a best path through a free unigram FSA is "what I actually heard"; the
+gap between the two drives REJECT (a non-command utterance decodes poorly under
+the grammar). No PocketSphinx, no ONNX ASR, no whisper -- just numpy + scipy.
 
 The full loop the user asked for:
 
@@ -8,34 +28,27 @@ The full loop the user asked for:
     ...  (until Ctrl-C)
 
 A **wake word** ("hey rhasspy", openWakeWord) gates the whole pipeline. The
-grammar-constrained decoder no longer runs continuously -- it only arms after
-the wake word fires, which is what kills the ghost commands that a noisy mic
-used to produce (noise can no longer decode into a command on its own).
-
-The model is the BEST one from the vcm-v2 work: the **PocketSphinx ensemble**
-(custom 1.6 MB LDA AM + stock 6.4 MB en-us AM, both decoding the same 103-phrase
-JSGF command grammar, fused by agreement / stage-2-classifier confidence).
-It scores **95.3% command / 97.1% intent** on the 171-clip held-out set
-(`data/additional_test_data`, one new speaker) -- see
-`archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`.
+grammar-constrained decoder only arms after the wake word fires, which kills
+the ghost commands a noisy mic used to produce (noise can no longer decode into
+a command on its own).
 
 Once a command is classified, the device "answers" by playing the matching
 response WAV from the TTS repo (16 kHz mono 16-bit, Piper en_US-lessac-medium).
-The 31 commands map onto the 19 response phrases; the REJECT / unknown class
-plays the generated "can you repeat that?" (`19_repeat.wav`).
+The 32 command classes map onto the 19 response phrases; the REJECT / unknown
+class plays the generated "can you repeat that?" (`19_repeat.wav`).
 
-This folder is self-contained: acoustic models, dictionary, JSGF grammar, the
-stage-2 classifier, the `vcm`/`vcm2` code, the response WAVs, and the
-openWakeWord "hey rhasspy" model (in `wakeword/`) all live here.
+This folder is self-contained: the trained models (`models/`), the `hgm`
+recognizer package, the `vcm2` code, the response WAVs, and the openWakeWord
+"hey rhasspy" model (in `wakeword/`) all live here.
 
 Usage
 -----
-    python vcm_pi_v3.py                 # live mic: wake word -> command -> speak
-    python vcm_pi_v3.py --file clip.wav # classify one file, print the response
-    python vcm_pi_v3.py --test          # run the held-out test set
-    python vcm_pi_v3.py --no-play       # (mic) classify + print, skip playback
-    python vcm_pi_v3.py --wake-threshold 0.6   # stricter wake-word gate
-    python vcm_pi_v3.py --command-window 1.5   # wait 1.5 s for the command
+    python vcm_pi_v6.py                 # live mic: wake word -> command -> speak
+    python vcm_pi_v6.py --file clip.wav # classify one file, print the response
+    python vcm_pi_v6.py --test          # run the held-out test set
+    python vcm_pi_v6.py --no-play       # (mic) classify + print, skip playback
+    python vcm_pi_v6.py --wake-threshold 0.6   # stricter wake-word gate
+    python vcm_pi_v6.py --command-window 1.5   # wait 1.5 s for the command
 
 Flow
 ----
@@ -74,34 +87,22 @@ from scipy.signal import resample_poly
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)          # so `import vcm` / `import vcm2` resolve locally
 
-from vcm2.classifier import load_classifier, predict      # noqa: E402
 from vcm2.ground_truth import build_ground_truth          # noqa: E402
 
 # --------------------------------------------------------------------------
 # paths (all relative to this folder)
 # --------------------------------------------------------------------------
-CUSTOM_HMM = os.path.join(_HERE, "am", "custom")
-CUSTOM_LM = os.path.join(CUSTOM_HMM, "vcm.lm.bin")
-STOCK_HMM = os.path.join(_HERE, "am", "stock")
-STOCK_DICT = os.path.join(_HERE, "am", "stock_enus", "cmudict-en-us.dict")
-STOCK_LM = os.path.join(_HERE, "am", "stock_enus", "en-us.lm.bin")
-DICT3 = os.path.join(_HERE, "dict3")
-JSGF = os.path.join(_HERE, "vcm_commands_enh3.jsgf")
-CLASSIFIER = os.path.join(_HERE, "classifier.pkl")
+# v6 models (HMM/GMM acoustic + phonetic dict + LM) live in models/.
 RESP_DIR = os.path.join(_HERE, "responses")
 YES_WAV = os.path.join(RESP_DIR, "00_yes.wav")   # "yes?" cue after the wake word
 TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "data",
                                           "additional_test_data"))
 
-# tuned decode params (identical to the eval that produced the 95.3% report)
-CUSTOM_EXTRA = {"-silprob": "0.65", "-wip": "0.65"}
-STOCK_EXTRA = {"-silprob": "0.45", "-wip": "0.60"}
 
-# A freshly-created PocketSphinx decoder needs a few real-speech utterances to
-# lock in (its feature/AGC state adapts over the first decodes). We re-decode
-# the FIRST real command WARMUP_REPS times and take the converged result; this
-# both fixes the first command and warms the decoder for all that follow.
-WARMUP_REPS = 4
+# The HMM/GMM decoder is stateless (no AGC / feature adaptation to lock in),
+# so one decode is enough. WARMUP_REPS is kept for interface parity with v5
+# (classify_warm) but is effectively a no-op.
+WARMUP_REPS = 1
 
 # After the device finishes speaking (or playing a canned response), it ignores
 # the mic for this many seconds before accepting the next command, so the tail
@@ -121,7 +122,7 @@ DUCK_SECONDS = 10.0
 # --------------------------------------------------------------------------
 # The decoder no longer runs continuously. The openWakeWord "hey rhasspy" model
 # (204 KB ONNX, bundled in ./wakeword) watches the mic at all times; only once
-# it fires does the VAD + PocketSphinx ensemble arm for the actual command.
+# it fires does the VAD + HMM/GMM decoder arm for the actual command.
 # Noise / a zoom call can't produce a command on its own anymore, because the
 # grammar-constrained decoder simply isn't listening until the wake word.
 WAKEWORD_MODEL = os.path.join(_HERE, "wakeword", "hey_rhasspy_v0.1.onnx")
@@ -190,77 +191,77 @@ _INTENT_OF = {
     "CREATE_REMINDER_DRINK_WATER": "reminders_lists",
     "CREATE_REMINDER_EXERCISE": "reminders_lists",
     "CREATE_REMINDER_STUDY": "reminders_lists",
-    "CALL": "call", "MESSAGE": "reminders_lists",
-    "REJECT": "reject",
+    "CALL": "call", "MESSAGE": "call",
+    "REJECT": "unknown",
 }
 
 
 # --------------------------------------------------------------------------
-# PocketSphinx ensemble (the best model)
+# v6 model: from-scratch HMM/GMM recognizer (NO PocketSphinx, NO ONNX ASR).
+#
+# Three components, mirroring a classic PocketSphinx-style recognizer but
+# implemented from scratch in numpy:
+#   1. Acoustic model  -- one 3-state L2R HMM per phone, GMM emissions,
+#                         trained by bootstrap EM (hgm/acoustic.py).
+#   2. Phonetic dict   -- command words -> ARPAbet phone sequences (hgm/dict).
+#   3. Language model  -- word bigram + a constrained FSA over the 104-phrase
+#                         grammar (hgm/lm.py).
+# Decoding is a two-level Viterbi over (grammar-FSA node, phone pos, HMM state)
+# (hgm/decode.py). The grammar path gives the recognized command; a free
+# unigram path gives "what I actually heard"; their gap drives REJECT.
 # --------------------------------------------------------------------------
-def _make_decoder(hmm, dictionary, lm, jsgf, extra):
-    from pocketsphinx import Config, Decoder
-    cfg = Config()
-    cfg.set_string("-hmm", hmm)
-    cfg.set_string("-dict", dictionary)
-    cfg.set_string("-lm", lm)
-    cfg.set_string("-logfn", "/dev/null")
-    cfg.set_string("-wip", "0.65")
-    for k, v in (extra or {}).items():
-        cfg.set_string(k, v)
-    dec = Decoder(cfg)
-    if jsgf:
-        with open(jsgf) as f:
-            dec.add_jsgf_string("vcm", f.read())
-        dec.activate_search("vcm")
-    return dec
+MODELS_DIR = os.path.join(_HERE, "models")
+REJECT_MARGIN = 8.0   # per-frame log-likelihood gap that triggers REJECT
 
 
-def _decode_pcm(dec, pcm: bytes):
-    """Feed 16 kHz mono 16-bit PCM bytes; return (transcript, utt_prob)."""
-    dec.start_utt()
-    chunk = 4000 * 2  # 4000 samples * 2 bytes
-    for i in range(0, len(pcm), chunk):
-        dec.process_raw(pcm[i:i + chunk], False, False)
-    dec.end_utt()
-    hyp = dec.hyp()
-    text = (hyp.hypstr or "").strip() if hyp else ""
-    return text, dec.get_prob()
-
-
-class Ensemble:
-    """custom AM + stock AM, same JSGF grammar, agree/confidence fusion."""
+class V6Model:
+    """HMM/GMM recognizer: constrained grammar decode + free decode."""
 
     def __init__(self):
-        print("building ensemble decoders (custom + stock) ...", flush=True)
-        self.dec_c = _make_decoder(CUSTOM_HMM, DICT3, CUSTOM_LM, JSGF, CUSTOM_EXTRA)
-        self.dec_s = _make_decoder(STOCK_HMM, STOCK_DICT, STOCK_LM, JSGF, STOCK_EXTRA)
-        self.clf = load_classifier(CLASSIFIER)
-        print("ready.", flush=True)
+        print("loading v6 HMM/GMM recognizer (acoustic + dict + LM) ...",
+              flush=True)
+        from hgm.feats import features as _feats
+        from hgm.acoustic import AcousticModel
+        from hgm.dict import load as load_dict
+        from hgm.lm import LanguageModel
+        from hgm.decode import Decoder
+        self._feats = _feats
+        am = AcousticModel.load(os.path.join(MODELS_DIR, "acoustic_model.npz"))
+        dictionary = load_dict(os.path.join(MODELS_DIR, "dictionary.txt"))
+        lm = LanguageModel.load(os.path.join(MODELS_DIR, "lm.npz"))
+        self.decoder = Decoder(am, dictionary, lm.words, beam=4000)
+        self.lm = lm
+        print(f"ready.  {am.n_phones} phones, {len(dictionary)} words, "
+              f"{lm.n_phrases} grammar phrases.", flush=True)
 
-    def classify_warm(self, pcm: bytes, reps: int = 1):
-        """Classify; when reps>1, decode that many times and return the LAST
-        result (converged). Used to warm a freshly-created decoder on the
-        first real command (see WARMUP_REPS)."""
-        out = None
-        for _ in range(max(1, reps)):
-            out = self.classify(pcm)
-        return out
+    def _decode(self, x: np.ndarray):
+        """float32 mono 16 kHz -> (command, intent, heard, transcript)."""
+        from hgm.commands import phrase_to_class, class_to_intent
+        # match the training/eval feature pipeline exactly: peak-normalize to
+        # 0.9 (hgm.feats.read_wav does this) before log-mel + mean-norm.
+        peak = float(np.max(np.abs(x))) if x.size else 0.0
+        if peak > 0:
+            x = x / peak * 0.9
+        F = self._feats(x)
+        T = F.shape[0]
+        words, glp, pidx = self.decoder.decode_constrained(self.lm, F)
+        fwords, flp = self.decoder.decode_free(self.lm, F)
+        phrase = " ".join(words)
+        pred = phrase_to_class(phrase) if words else "REJECT"
+        # REJECT: no phrase, or the free decode is clearly better than the
+        # grammar-constrained decode (the utterance is not one of our cmds).
+        if not words or (flp / max(1, T) - glp / max(1, T)) > REJECT_MARGIN:
+            pred = "REJECT"
+        return (pred, class_to_intent(pred), " ".join(fwords), phrase)
 
     def classify(self, pcm: bytes):
-        """16 kHz mono 16-bit PCM -> (command, intent, transcript, clf_prob)."""
-        tc, _pc = _decode_pcm(self.dec_c, pcm)
-        ts, _ps = _decode_pcm(self.dec_s, pcm)
-        cc, cpc = predict(self.clf, tc)
-        cs, cps = predict(self.clf, ts)
-        # fusion: agreement, else the more confident stage-2 classifier
-        if cc == cs:
-            cmd, transcript, cprob = cc, tc, cpc
-        elif cpc >= cps:
-            cmd, transcript, cprob = cc, tc, cpc
-        else:
-            cmd, transcript, cprob = cs, ts, cps
-        return cmd, _INTENT_OF.get(cmd, "unknown"), transcript, cprob
+        """16 kHz mono 16-bit PCM -> (command, intent, heard, transcript)."""
+        x = np.frombuffer(pcm, dtype=np.int16).astype(np.float32) / 32768.0
+        return self._decode(x)
+
+    def classify_warm(self, pcm: bytes, reps: int = 1):
+        """The HMM/GMM decoder is stateless (no AGC to lock in) -- one pass."""
+        return self.classify(pcm)
 
 
 # --------------------------------------------------------------------------
@@ -494,7 +495,7 @@ WEATHER_HTTP_TIMEOUT = 10   # seconds, per request
 def _http_json(url: str, timeout: int = WEATHER_HTTP_TIMEOUT):
     """GET `url` and parse JSON. Returns None on any failure."""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "vcm-pi-v3"})
+        req = urllib.request.Request(url, headers={"User-Agent": "vcm-pi-v5"})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read().decode("utf-8", "replace"))
     except Exception:  # noqa: BLE001 - offline / DNS / timeout / bad JSON
@@ -1053,7 +1054,7 @@ def _heal_wake_model(model_path: str) -> str:
     tmp = model_path + ".dl"
     try:
         req = urllib.request.Request(_WAKE_MODEL_RAW,
-                                     headers={"User-Agent": "vcm-pi-v3"})
+                                     headers={"User-Agent": "vcm-pi-v5"})
         with urllib.request.urlopen(req, timeout=60) as r:
             data = r.read()
         if len(data) < 10000:
@@ -1355,7 +1356,7 @@ def _abort_no_wake(reason: str, fix: str):
 def run_mic(args):
     import sounddevice as sd
     from scipy.signal import resample_poly
-    model = Ensemble()
+    model = V6Model()
     state = {"busy": False, "audio": None, "cue": False, "muted": False}
 
     # music player (mpv + yt-dlp) -- the seven media commands drive this
@@ -1521,32 +1522,40 @@ def run_mic(args):
                 state["audio"] = None
                 vad.reset()
                 n += 1
-                reps = WARMUP_REPS if n == 1 else 1   # warm the fresh decoder
                 t0 = time.perf_counter()
-                cmd, intent, transcript, cprob = model.classify_warm(
-                    float32_to_pcm16(a), reps=reps)
+                cmd, intent, heard, cprob = model.classify(
+                    float32_to_pcm16(a))
                 e2e = (time.perf_counter() - t0) * 1000.0
                 print(f"[{time.strftime('%H:%M:%S')}] ── utterance #{n} "
                       f"({len(a) / 16000:.2f} s) ─────────────────────")
-                print(f"  transcript : {transcript!r}")
+                print(f"  heard      : {heard!r}")
                 print(f"  command    : {cmd}   intent: {intent}")
                 print(f"  E2E {e2e:.0f} ms")
-                # "previous song" is in the JSGF grammar but NOT a trained
-                # classifier class (the 31-class model has no PREVIOUS), so
-                # the stage-2 model can never emit it -- it misroutes the
-                # phrase to PLAY_MUSIC. Route it from the decoded transcript
-                # instead: "previous song" is the only grammar phrase that
-                # contains "previous", so the match is unambiguous.
-                if "previous" in transcript.lower():
+                # "previous song" is a command we support, but the 31-class
+                # model has no PREVIOUS class, so the stage-2 classifier can
+                # never emit it -- it misroutes the phrase to PLAY_MUSIC.
+                # Route it from the decoded transcript instead: "previous"
+                # only appears in "previous song", so the match is unambiguous.
+                if "previous" in heard.lower():
                     cmd, intent = "PREVIOUS", "media_control"
-                    print("  (routed PREVIOUS from transcript -- not a "
+                    print("  (routed PREVIOUS from heard words -- not a "
                           "trained class)")
                 # A command arrived: keep the music ducked while the response
                 # plays, and extend the revert window (so the user can issue
                 # another command right after without the music jumping up).
                 player.duck()
                 duck_until = time.time() + DUCK_SECONDS
-                if cmd == "TIME":
+                if getattr(args, "speak_heard", False) and heard:
+                    print(f"  >> saying (Piper TTS): 'I heard: {heard}.'")
+                    speak(f"I heard: {heard}.", enabled=not args.no_play)
+                if cmd == "REJECT":
+                    # real rejection: tell the user what was actually heard
+                    text = (f"I heard {heard}. Can you repeat that?"
+                            if heard else
+                            "I didn't catch that. Can you repeat?")
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
+                elif cmd == "TIME":
                     # dynamic response: say the ACTUAL current time (UTC+8)
                     text = time_response_text()
                     print(f"  >> saying (Piper TTS): {text!r}")
@@ -1579,13 +1588,13 @@ def run_mic(args):
 
 
 def run_file(args):
-    model = Ensemble()
+    model = V6Model()
     pcm = read_pcm16(args.file)
     t0 = time.perf_counter()
-    cmd, intent, transcript, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
+    cmd, intent, heard, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
     e2e = (time.perf_counter() - t0) * 1000.0
     print(f"  file       : {args.file}")
-    print(f"  transcript : {transcript!r}")
+    print(f"  heard      : {heard!r}")
     print(f"  command    : {cmd}   intent: {intent}")
     print(f"  E2E {e2e:.0f} ms")
     if cmd == "TIME":
@@ -1603,16 +1612,17 @@ def run_file(args):
 
 
 def run_test(args):
-    model = Ensemble()
+    model = V6Model()
     rows = build_ground_truth(args.data)
     print(f"{len(rows)} clips in {args.data}\n")
     correct = intent_correct = 0
     per_folder = {}
     t0 = time.perf_counter()
+    from hgm.commands import class_to_intent
     for k, r in enumerate(rows):
-        gold_intent = _INTENT_OF.get(r["gold"], "unknown")
+        gold_intent = class_to_intent(r["gold"])
         pcm = read_pcm16(r["path"])
-        cmd, intent, transcript, cprob = model.classify(pcm)
+        cmd, intent, heard, cprob = model.classify(pcm)
         ok = cmd == r["gold"]
         iok = intent == gold_intent
         correct += ok
@@ -1627,7 +1637,7 @@ def run_test(args):
     n = len(rows)
     wall = time.perf_counter() - t0
     report = {
-        "model": "PocketSphinx ensemble (custom + stock, agree+clf fusion)",
+        "model": "v6 HMM/GMM: acoustic (3-state HMM x GMM) + phonetic dict + grammar LM, two-level Viterbi",
         "n_clips": n,
         "command_acc": round(correct / n, 4),
         "intent_acc": round(intent_correct / n, 4),
@@ -1637,7 +1647,7 @@ def run_test(args):
                            "intent_acc": round(v["intent"] / v["n"], 4)}
                        for k, v in sorted(per_folder.items())},
     }
-    out = os.path.join(_HERE, "test_v3_report.json")
+    out = os.path.join(_HERE, "test_v6_report.json")
     with open(out, "w") as f:
         json.dump(report, f, indent=2)
     print(f"\ncommand_acc {report['command_acc']:.4f}  "
@@ -1687,6 +1697,10 @@ def main():
                     help="test-set directory (for --test)")
     ap.add_argument("--no-play", action="store_true",
                     help="print the response instead of playing it")
+    ap.add_argument("--speak-heard", action="store_true",
+                    help="also speak the decoded words ('I heard: ...') "
+                         "before every command response. On REJECT the "
+                         "heard words are always spoken.")
     ap.add_argument("--gate", type=float, default=None,
                     help="absolute min frame RMS (0..1) to count as speech; "
                          "default 0.05 (-26 dBFS), calibrated on the "

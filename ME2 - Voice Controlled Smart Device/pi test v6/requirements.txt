@@ -1,0 +1,34 @@
+# pi test v6 -- runtime dependencies (Pi 4/5, Python 3.10+)
+#
+# v6 is the from-scratch HMM/GMM version: a classic three-component recognizer
+# (acoustic HMM/GMM + phonetic dictionary + grammar language model) built in
+# numpy, decoded by a two-level Viterbi. NO PocketSphinx, NO ONNX ASR, NO
+# whisper, NO TF-IDF -- the recognizer needs only numpy + scipy.
+#
+#   pip install -r requirements.txt
+#
+# The trained models (acoustic_model.npz, dictionary.txt, lm.npz) are
+# committed in models/ (no download needed). The wake word model
+# (wakeword/hey_rhasspy_v0.1.onnx) is committed too; if it is a Git-LFS
+# pointer the script re-downloads it on start.
+
+# --- audio / DSP (mic + features) ---
+soundfile>=0.12
+numpy>=1.24
+scipy>=1.10
+
+# --- the recognizer itself needs NOTHING else (pure numpy/scipy) ---
+# hgm/ = feats + gmm + hmm + acoustic + dict + lm + decode (all numpy).
+
+# --- wake word ("hey rhasspy", openWakeWord) ---
+# openWakeWord is ONNX-backed, so this is the one onnxruntime dependency.
+onnxruntime>=1.16
+openwakeword==0.4.0
+
+# --- spoken responses (Piper TTS; optional but recommended) ---
+# The script degrades to canned WAVs if piper-tts is not installed.
+piper-tts>=1.2.0
+
+# --- music commands (YouTube playlist via mpv + yt-dlp) ---
+# mpv is a SYSTEM package:  sudo apt install mpv
+yt-dlp>=2024.4.9

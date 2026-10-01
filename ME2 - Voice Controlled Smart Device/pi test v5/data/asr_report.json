@@ -1,0 +1,39 @@
+{
+ "val_wer": 0.2710225607969528,
+ "test_wer": 0.26150442477876107,
+ "test_clips": 1790,
+ "samples": [
+  {
+   "ref": "alarm 6 am",
+   "hyp": "make am"
+  },
+  {
+   "ref": "alarm 6 am",
+   "hyp": "make am"
+  },
+  {
+   "ref": "wake me up at 6 am",
+   "hyp": "wake me up at am"
+  },
+  {
+   "ref": "wake me up at 6 am",
+   "hyp": "wake me up at am"
+  },
+  {
+   "ref": "alarm 6 am",
+   "hyp": "reminder exercise"
+  },
+  {
+   "ref": "alarm 6 am",
+   "hyp": "reminder exercise"
+  },
+  {
+   "ref": "wake me up at 6 am",
+   "hyp": "wake me up at 6 am"
+  },
+  {
+   "ref": "wake me up at 6 am",
+   "hyp": "wake me up at 6 am"
+  }
+ ]
+}

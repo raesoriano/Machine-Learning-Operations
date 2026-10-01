@@ -1,0 +1,30 @@
+# pi test v5 -- runtime dependencies (Pi 4/5, Python 3.10+)
+#
+# v5 is the lightweight ONNX version: a limited-vocabulary CTC ASR (1-D CNN)
+# + a phrase classifier (1-D CNN, 31 commands + REJECT), both ONNX (~1 MB).
+# No whisper, no PocketSphinx, no TF-IDF.
+#
+#   pip install -r requirements.txt
+#
+# The two ONNX models are committed in models/ (no download needed).
+# The wake word model (wakeword/hey_rhasspy_v0.1.onnx) is committed too; if it
+# is a Git-LFS pointer the script re-downloads it on start.
+
+# --- audio / DSP (mic + features) ---
+soundfile>=0.12
+numpy>=1.24
+scipy>=1.10
+
+# --- ONNX inference (the two v5 models) ---
+onnxruntime>=1.16
+
+# --- wake word ("hey rhasspy") ---
+openwakeword==0.4.0
+
+# --- spoken responses (Piper TTS; optional but recommended) ---
+# The script degrades to canned WAVs if piper-tts is not installed.
+piper-tts>=1.2.0
+
+# --- music commands (YouTube playlist via mpv + yt-dlp) ---
+# mpv is a SYSTEM package:  sudo apt install mpv
+yt-dlp>=2024.4.9

@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""pi test v3 -- ME2 smart-device voice command listener WITH spoken responses.
+"""pi test v5 -- ME2 smart-device voice command listener (lightweight ONNX).
+
+Unlike v3/v4, the "transcript" is what the model ACTUALLY heard: a small
+limited-vocabulary CTC ASR (1-D CNN) decodes the clip into words from the ~82
+command vocabulary (anything it can't match -> <unk>), and a second 1-D CNN
+classifies that word sequence into one of the 31 commands -- or REJECT.  Both
+models are ONNX (~1 MB total, no whisper, no PocketSphinx).  The device prints
+and speaks the heard words, then acts on the command (or asks for a repeat).
 
 The full loop the user asked for:
 
@@ -12,30 +19,28 @@ grammar-constrained decoder no longer runs continuously -- it only arms after
 the wake word fires, which is what kills the ghost commands that a noisy mic
 used to produce (noise can no longer decode into a command on its own).
 
-The model is the BEST one from the vcm-v2 work: the **PocketSphinx ensemble**
-(custom 1.6 MB LDA AM + stock 6.4 MB en-us AM, both decoding the same 103-phrase
-JSGF command grammar, fused by agreement / stage-2-classifier confidence).
-It scores **95.3% command / 97.1% intent** on the 171-clip held-out set
-(`data/additional_test_data`, one new speaker) -- see
-`archived/vcm-v2/backbone/reports/pocketsphinx_ensemble_cmudict.json`.
+The two models are tiny ONNX files (~1 MB total) that live in `models/`:
+a limited-vocab CTC ASR (1-D CNN) and a phrase classifier (1-D CNN, 31
+commands + REJECT). No PocketSphinx, no whisper, no TF-IDF -- the Pi only
+needs `onnxruntime` + `numpy` + `scipy`.
 
 Once a command is classified, the device "answers" by playing the matching
 response WAV from the TTS repo (16 kHz mono 16-bit, Piper en_US-lessac-medium).
 The 31 commands map onto the 19 response phrases; the REJECT / unknown class
 plays the generated "can you repeat that?" (`19_repeat.wav`).
 
-This folder is self-contained: acoustic models, dictionary, JSGF grammar, the
-stage-2 classifier, the `vcm`/`vcm2` code, the response WAVs, and the
-openWakeWord "hey rhasspy" model (in `wakeword/`) all live here.
+This folder is self-contained: the two ONNX models (`models/`), the vocabulary
+(`data/vocab.json`), the `vcm2` code, the response WAVs, and the openWakeWord
+"hey rhasspy" model (in `wakeword/`) all live here.
 
 Usage
 -----
-    python vcm_pi_v3.py                 # live mic: wake word -> command -> speak
-    python vcm_pi_v3.py --file clip.wav # classify one file, print the response
-    python vcm_pi_v3.py --test          # run the held-out test set
-    python vcm_pi_v3.py --no-play       # (mic) classify + print, skip playback
-    python vcm_pi_v3.py --wake-threshold 0.6   # stricter wake-word gate
-    python vcm_pi_v3.py --command-window 1.5   # wait 1.5 s for the command
+    python vcm_pi_v5.py                 # live mic: wake word -> command -> speak
+    python vcm_pi_v5.py --file clip.wav # classify one file, print the response
+    python vcm_pi_v5.py --test          # run the held-out test set
+    python vcm_pi_v5.py --no-play       # (mic) classify + print, skip playback
+    python vcm_pi_v5.py --wake-threshold 0.6   # stricter wake-word gate
+    python vcm_pi_v5.py --command-window 1.5   # wait 1.5 s for the command
 
 Flow
 ----
@@ -74,28 +79,20 @@ from scipy.signal import resample_poly
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)          # so `import vcm` / `import vcm2` resolve locally
 
-from vcm2.classifier import load_classifier, predict      # noqa: E402
 from vcm2.ground_truth import build_ground_truth          # noqa: E402
 
 # --------------------------------------------------------------------------
 # paths (all relative to this folder)
 # --------------------------------------------------------------------------
-CUSTOM_HMM = os.path.join(_HERE, "am", "custom")
-CUSTOM_LM = os.path.join(CUSTOM_HMM, "vcm.lm.bin")
-STOCK_HMM = os.path.join(_HERE, "am", "stock")
-STOCK_DICT = os.path.join(_HERE, "am", "stock_enus", "cmudict-en-us.dict")
-STOCK_LM = os.path.join(_HERE, "am", "stock_enus", "en-us.lm.bin")
-DICT3 = os.path.join(_HERE, "dict3")
-JSGF = os.path.join(_HERE, "vcm_commands_enh3.jsgf")
-CLASSIFIER = os.path.join(_HERE, "classifier.pkl")
+# v5 models (ONNX) live in models/ + data/ next to this script.
+ASR_ONNX = os.path.join(_HERE, "models", "asr.onnx")
+CLS_ONNX = os.path.join(_HERE, "models", "classify.onnx")
+VOCAB_JSON = os.path.join(_HERE, "data", "vocab.json")
 RESP_DIR = os.path.join(_HERE, "responses")
 YES_WAV = os.path.join(RESP_DIR, "00_yes.wav")   # "yes?" cue after the wake word
 TEST_DATA = os.path.normpath(os.path.join(_HERE, "..", "data",
                                           "additional_test_data"))
 
-# tuned decode params (identical to the eval that produced the 95.3% report)
-CUSTOM_EXTRA = {"-silprob": "0.65", "-wip": "0.65"}
-STOCK_EXTRA = {"-silprob": "0.45", "-wip": "0.60"}
 
 # A freshly-created PocketSphinx decoder needs a few real-speech utterances to
 # lock in (its feature/AGC state adapts over the first decodes). We re-decode
@@ -196,71 +193,36 @@ _INTENT_OF = {
 
 
 # --------------------------------------------------------------------------
-# PocketSphinx ensemble (the best model)
+# v5 model: limited-vocab ONNX ASR + phrase classifier (31 cmds + REJECT)
 # --------------------------------------------------------------------------
-def _make_decoder(hmm, dictionary, lm, jsgf, extra):
-    from pocketsphinx import Config, Decoder
-    cfg = Config()
-    cfg.set_string("-hmm", hmm)
-    cfg.set_string("-dict", dictionary)
-    cfg.set_string("-lm", lm)
-    cfg.set_string("-logfn", "/dev/null")
-    cfg.set_string("-wip", "0.65")
-    for k, v in (extra or {}).items():
-        cfg.set_string(k, v)
-    dec = Decoder(cfg)
-    if jsgf:
-        with open(jsgf) as f:
-            dec.add_jsgf_string("vcm", f.read())
-        dec.activate_search("vcm")
-    return dec
+class V5Model:
+    """Two-stage ONNX recognizer.
 
+    Stage 1 (ASR):  16 kHz PCM -> log-Mel -> ASRModel (CTC) -> word sequence
+                    over the ~82-word command vocabulary (unknown -> <unk>).
+    Stage 2 (classify): word sequence -> PhraseModel -> 31 commands | REJECT.
 
-def _decode_pcm(dec, pcm: bytes):
-    """Feed 16 kHz mono 16-bit PCM bytes; return (transcript, utt_prob)."""
-    dec.start_utt()
-    chunk = 4000 * 2  # 4000 samples * 2 bytes
-    for i in range(0, len(pcm), chunk):
-        dec.process_raw(pcm[i:i + chunk], False, False)
-    dec.end_utt()
-    hyp = dec.hyp()
-    text = (hyp.hypstr or "").strip() if hyp else ""
-    return text, dec.get_prob()
-
-
-class Ensemble:
-    """custom AM + stock AM, same JSGF grammar, agree/confidence fusion."""
+    `classify` returns (command, intent, heard, prob) where `heard` is the
+    actual decoded word string -- what the model really heard, not a grammar
+    phrase.
+    """
 
     def __init__(self):
-        print("building ensemble decoders (custom + stock) ...", flush=True)
-        self.dec_c = _make_decoder(CUSTOM_HMM, DICT3, CUSTOM_LM, JSGF, CUSTOM_EXTRA)
-        self.dec_s = _make_decoder(STOCK_HMM, STOCK_DICT, STOCK_LM, JSGF, STOCK_EXTRA)
-        self.clf = load_classifier(CLASSIFIER)
+        print("loading v5 ONNX models (ASR + classifier) ...", flush=True)
+        import infer
+        self.rec = infer.V5Recognizer(ASR_ONNX, CLS_ONNX, VOCAB_JSON)
         print("ready.", flush=True)
 
-    def classify_warm(self, pcm: bytes, reps: int = 1):
-        """Classify; when reps>1, decode that many times and return the LAST
-        result (converged). Used to warm a freshly-created decoder on the
-        first real command (see WARMUP_REPS)."""
-        out = None
-        for _ in range(max(1, reps)):
-            out = self.classify(pcm)
-        return out
-
     def classify(self, pcm: bytes):
-        """16 kHz mono 16-bit PCM -> (command, intent, transcript, clf_prob)."""
-        tc, _pc = _decode_pcm(self.dec_c, pcm)
-        ts, _ps = _decode_pcm(self.dec_s, pcm)
-        cc, cpc = predict(self.clf, tc)
-        cs, cps = predict(self.clf, ts)
-        # fusion: agreement, else the more confident stage-2 classifier
-        if cc == cs:
-            cmd, transcript, cprob = cc, tc, cpc
-        elif cpc >= cps:
-            cmd, transcript, cprob = cc, tc, cpc
-        else:
-            cmd, transcript, cprob = cs, ts, cps
-        return cmd, _INTENT_OF.get(cmd, "unknown"), transcript, cprob
+        """16 kHz mono 16-bit PCM -> (command, intent, heard, prob)."""
+        x = np.frombuffer(pcm, dtype=np.int16).astype(np.float32) / 32768.0
+        r = self.rec.recognize_float(x, sr=16000)
+        return (r["command"], _INTENT_OF.get(r["command"], "unknown"),
+                r["heard"], 1.0)
+
+    def classify_warm(self, pcm: bytes, reps: int = 1):
+        """ONNX inference is stateless (no decoder to warm) -- one pass."""
+        return self.classify(pcm)
 
 
 # --------------------------------------------------------------------------
@@ -494,7 +456,7 @@ WEATHER_HTTP_TIMEOUT = 10   # seconds, per request
 def _http_json(url: str, timeout: int = WEATHER_HTTP_TIMEOUT):
     """GET `url` and parse JSON. Returns None on any failure."""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "vcm-pi-v3"})
+        req = urllib.request.Request(url, headers={"User-Agent": "vcm-pi-v5"})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read().decode("utf-8", "replace"))
     except Exception:  # noqa: BLE001 - offline / DNS / timeout / bad JSON
@@ -1053,7 +1015,7 @@ def _heal_wake_model(model_path: str) -> str:
     tmp = model_path + ".dl"
     try:
         req = urllib.request.Request(_WAKE_MODEL_RAW,
-                                     headers={"User-Agent": "vcm-pi-v3"})
+                                     headers={"User-Agent": "vcm-pi-v5"})
         with urllib.request.urlopen(req, timeout=60) as r:
             data = r.read()
         if len(data) < 10000:
@@ -1521,32 +1483,40 @@ def run_mic(args):
                 state["audio"] = None
                 vad.reset()
                 n += 1
-                reps = WARMUP_REPS if n == 1 else 1   # warm the fresh decoder
                 t0 = time.perf_counter()
-                cmd, intent, transcript, cprob = model.classify_warm(
-                    float32_to_pcm16(a), reps=reps)
+                cmd, intent, heard, cprob = model.classify(
+                    float32_to_pcm16(a))
                 e2e = (time.perf_counter() - t0) * 1000.0
                 print(f"[{time.strftime('%H:%M:%S')}] ── utterance #{n} "
                       f"({len(a) / 16000:.2f} s) ─────────────────────")
-                print(f"  transcript : {transcript!r}")
+                print(f"  heard      : {heard!r}")
                 print(f"  command    : {cmd}   intent: {intent}")
                 print(f"  E2E {e2e:.0f} ms")
-                # "previous song" is in the JSGF grammar but NOT a trained
-                # classifier class (the 31-class model has no PREVIOUS), so
-                # the stage-2 model can never emit it -- it misroutes the
-                # phrase to PLAY_MUSIC. Route it from the decoded transcript
-                # instead: "previous song" is the only grammar phrase that
-                # contains "previous", so the match is unambiguous.
-                if "previous" in transcript.lower():
+                # "previous song" is a command we support, but the 31-class
+                # model has no PREVIOUS class, so the stage-2 classifier can
+                # never emit it -- it misroutes the phrase to PLAY_MUSIC.
+                # Route it from the decoded transcript instead: "previous"
+                # only appears in "previous song", so the match is unambiguous.
+                if "previous" in heard.lower():
                     cmd, intent = "PREVIOUS", "media_control"
-                    print("  (routed PREVIOUS from transcript -- not a "
+                    print("  (routed PREVIOUS from heard words -- not a "
                           "trained class)")
                 # A command arrived: keep the music ducked while the response
                 # plays, and extend the revert window (so the user can issue
                 # another command right after without the music jumping up).
                 player.duck()
                 duck_until = time.time() + DUCK_SECONDS
-                if cmd == "TIME":
+                if getattr(args, "speak_heard", False) and heard:
+                    print(f"  >> saying (Piper TTS): 'I heard: {heard}.'")
+                    speak(f"I heard: {heard}.", enabled=not args.no_play)
+                if cmd == "REJECT":
+                    # real rejection: tell the user what was actually heard
+                    text = (f"I heard {heard}. Can you repeat that?"
+                            if heard else
+                            "I didn't catch that. Can you repeat?")
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
+                elif cmd == "TIME":
                     # dynamic response: say the ACTUAL current time (UTC+8)
                     text = time_response_text()
                     print(f"  >> saying (Piper TTS): {text!r}")
@@ -1579,13 +1549,13 @@ def run_mic(args):
 
 
 def run_file(args):
-    model = Ensemble()
+    model = V5Model()
     pcm = read_pcm16(args.file)
     t0 = time.perf_counter()
-    cmd, intent, transcript, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
+    cmd, intent, heard, cprob = model.classify_warm(pcm, reps=WARMUP_REPS)
     e2e = (time.perf_counter() - t0) * 1000.0
     print(f"  file       : {args.file}")
-    print(f"  transcript : {transcript!r}")
+    print(f"  heard      : {heard!r}")
     print(f"  command    : {cmd}   intent: {intent}")
     print(f"  E2E {e2e:.0f} ms")
     if cmd == "TIME":
@@ -1603,7 +1573,7 @@ def run_file(args):
 
 
 def run_test(args):
-    model = Ensemble()
+    model = V5Model()
     rows = build_ground_truth(args.data)
     print(f"{len(rows)} clips in {args.data}\n")
     correct = intent_correct = 0
@@ -1612,7 +1582,7 @@ def run_test(args):
     for k, r in enumerate(rows):
         gold_intent = _INTENT_OF.get(r["gold"], "unknown")
         pcm = read_pcm16(r["path"])
-        cmd, intent, transcript, cprob = model.classify(pcm)
+        cmd, intent, heard, cprob = model.classify(pcm)
         ok = cmd == r["gold"]
         iok = intent == gold_intent
         correct += ok
@@ -1627,7 +1597,7 @@ def run_test(args):
     n = len(rows)
     wall = time.perf_counter() - t0
     report = {
-        "model": "PocketSphinx ensemble (custom + stock, agree+clf fusion)",
+        "model": "v5 ONNX: limited-vocab CTC ASR + phrase classifier (31+REJECT)",
         "n_clips": n,
         "command_acc": round(correct / n, 4),
         "intent_acc": round(intent_correct / n, 4),
@@ -1637,7 +1607,7 @@ def run_test(args):
                            "intent_acc": round(v["intent"] / v["n"], 4)}
                        for k, v in sorted(per_folder.items())},
     }
-    out = os.path.join(_HERE, "test_v3_report.json")
+    out = os.path.join(_HERE, "test_v5_report.json")
     with open(out, "w") as f:
         json.dump(report, f, indent=2)
     print(f"\ncommand_acc {report['command_acc']:.4f}  "
@@ -1687,6 +1657,10 @@ def main():
                     help="test-set directory (for --test)")
     ap.add_argument("--no-play", action="store_true",
                     help="print the response instead of playing it")
+    ap.add_argument("--speak-heard", action="store_true",
+                    help="also speak the decoded words ('I heard: ...') "
+                         "before every command response. On REJECT the "
+                         "heard words are always spoken.")
     ap.add_argument("--gate", type=float, default=None,
                     help="absolute min frame RMS (0..1) to count as speech; "
                          "default 0.05 (-26 dBFS), calibrated on the "

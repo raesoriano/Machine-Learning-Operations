@@ -1,0 +1,109 @@
+{
+  "model": "v5 ONNX: limited-vocab CTC ASR + phrase classifier (31+REJECT)",
+  "n_clips": 176,
+  "command_acc": 0.0511,
+  "intent_acc": 0.1761,
+  "wall_s": 6.6,
+  "per_folder": {
+    "ALARM": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "BRIGHTNESS": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "CALL": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "COLOR": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "CREATE_REMINDER": {
+      "n": 9,
+      "cmd_acc": 0.1111,
+      "intent_acc": 0.8889
+    },
+    "LIGHT_OFF": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "LIGHT_ON": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "LIST_REMINDERS": {
+      "n": 9,
+      "cmd_acc": 0.4444,
+      "intent_acc": 0.6667
+    },
+    "MESSAGE": {
+      "n": 9,
+      "cmd_acc": 0.1111,
+      "intent_acc": 0.6667
+    },
+    "NEXT": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.1111
+    },
+    "PAUSE": {
+      "n": 9,
+      "cmd_acc": 0.1111,
+      "intent_acc": 0.2222
+    },
+    "PLAY_MUSIC": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "REJECT": {
+      "n": 5,
+      "cmd_acc": 0.2,
+      "intent_acc": 0.2
+    },
+    "STOP": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.2222
+    },
+    "TEMPERATURE": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "TIME": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "TIMER": {
+      "n": 9,
+      "cmd_acc": 0.1111,
+      "intent_acc": 0.5556
+    },
+    "VOLUME_DOWN": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "VOLUME_UP": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    },
+    "WEATHER": {
+      "n": 9,
+      "cmd_acc": 0.0,
+      "intent_acc": 0.0
+    }
+  }
+}
