@@ -1,0 +1,2280 @@
+{
+ "model": "v7 PocketSphinx ensemble (v3 architecture, custom AM retrained on the v6 dataset)",
+ "split": "test",
+ "n_clips": 250,
+ "n_inscope": 0,
+ "n_oos": 250,
+ "overall_acc": 0.452,
+ "command_acc": 0.0,
+ "reject_acc": 0.452,
+ "intent_acc": 0.452,
+ "asr_ms_p50": 131.9,
+ "asr_ms_p90": 254.8,
+ "real": {
+  "n": 0
+ },
+ "synthetic": {
+  "n": 250,
+  "overall_acc": 0.452,
+  "command_acc": 0.0,
+  "reject_acc": 0.452
+ },
+ "per_class": {
+  "REJECT": {
+   "n": 250,
+   "acc": 0.452
+  }
+ },
+ "results": [
+  {
+   "file": "neg_noise_only_00000.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume up",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 213.7
+  },
+  {
+   "file": "neg_babble_00001.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 292.0
+  },
+  {
+   "file": "neg_near_silence_00002.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 163.3
+  },
+  {
+   "file": "neg_near_silence_00003.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 252.6
+  },
+  {
+   "file": "neg_reversed_00004.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 119.0
+  },
+  {
+   "file": "neg_reversed_00005.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume up",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 86.6
+  },
+  {
+   "file": "neg_near_silence_00006.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 188.3
+  },
+  {
+   "file": "neg_reversed_00007.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 111.0
+  },
+  {
+   "file": "neg_noise_only_00008.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 67.3
+  },
+  {
+   "file": "neg_babble_00009.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 126.3
+  },
+  {
+   "file": "neg_babble_00010.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "turn off the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 207.2
+  },
+  {
+   "file": "neg_reversed_00011.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 80.3
+  },
+  {
+   "file": "neg_truncated_00012.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 68.2
+  },
+  {
+   "file": "neg_near_silence_00013.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 82.3
+  },
+  {
+   "file": "neg_truncated_00014.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "power on the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 68.7
+  },
+  {
+   "file": "neg_truncated_00015.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 106.2
+  },
+  {
+   "file": "neg_babble_00016.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "turn on",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 216.4
+  },
+  {
+   "file": "neg_truncated_00017.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 100.1
+  },
+  {
+   "file": "neg_noise_only_00018.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 296.7
+  },
+  {
+   "file": "neg_reversed_00019.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "turn on",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 78.3
+  },
+  {
+   "file": "neg_truncated_00020.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 105.1
+  },
+  {
+   "file": "neg_reversed_00021.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 126.4
+  },
+  {
+   "file": "neg_babble_00022.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "change the brightness to one hundred percent",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 279.0
+  },
+  {
+   "file": "neg_reversed_00023.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 109.2
+  },
+  {
+   "file": "neg_noise_only_00024.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "turn",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 85.8
+  },
+  {
+   "file": "neg_reversed_00025.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "tell me the weather",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 120.2
+  },
+  {
+   "file": "neg_babble_00026.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 143.8
+  },
+  {
+   "file": "neg_near_silence_00027.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 96.5
+  },
+  {
+   "file": "neg_babble_00028.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 103.3
+  },
+  {
+   "file": "neg_near_silence_00029.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 189.9
+  },
+  {
+   "file": "neg_noise_only_00030.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 163.3
+  },
+  {
+   "file": "neg_near_silence_00031.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 272.4
+  },
+  {
+   "file": "neg_babble_00032.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "turn the volume",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 176.5
+  },
+  {
+   "file": "neg_near_silence_00033.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 98.0
+  },
+  {
+   "file": "neg_noise_only_00034.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "skip song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 377.7
+  },
+  {
+   "file": "neg_babble_00035.wav",
+   "gold": "REJECT",
+   "pred": "LIST_REMINDERS",
+   "transcript": "list my reminders",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 71.5
+  },
+  {
+   "file": "neg_truncated_00036.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 63.3
+  },
+  {
+   "file": "neg_reversed_00037.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 84.4
+  },
+  {
+   "file": "neg_truncated_00038.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 112.4
+  },
+  {
+   "file": "neg_noise_only_00039.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "previous song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 92.7
+  },
+  {
+   "file": "neg_near_silence_00040.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 271.0
+  },
+  {
+   "file": "neg_babble_00041.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 199.3
+  },
+  {
+   "file": "neg_babble_00042.wav",
+   "gold": "REJECT",
+   "pred": "CREATE_REMINDER",
+   "transcript": "create a reminder to exercise",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 129.9
+  },
+  {
+   "file": "neg_truncated_00043.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "start",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 175.6
+  },
+  {
+   "file": "neg_noise_only_00044.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 158.1
+  },
+  {
+   "file": "neg_noise_only_00045.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 170.8
+  },
+  {
+   "file": "neg_babble_00046.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 300.7
+  },
+  {
+   "file": "neg_truncated_00047.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 98.9
+  },
+  {
+   "file": "neg_noise_only_00048.wav",
+   "gold": "REJECT",
+   "pred": "LIST_REMINDERS",
+   "transcript": "list",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 160.7
+  },
+  {
+   "file": "neg_truncated_00049.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "turn off",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 68.3
+  },
+  {
+   "file": "neg_noise_only_00050.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 242.3
+  },
+  {
+   "file": "neg_near_silence_00051.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 158.6
+  },
+  {
+   "file": "neg_reversed_00052.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 104.9
+  },
+  {
+   "file": "neg_near_silence_00053.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 82.2
+  },
+  {
+   "file": "neg_babble_00054.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "countdown for thirty seconds",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 184.5
+  },
+  {
+   "file": "neg_truncated_00055.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 103.3
+  },
+  {
+   "file": "neg_babble_00056.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "start a timer for ten seconds",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 218.7
+  },
+  {
+   "file": "neg_truncated_00057.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "lower the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 89.1
+  },
+  {
+   "file": "neg_near_silence_00058.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 206.4
+  },
+  {
+   "file": "neg_noise_only_00059.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "lower",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 84.3
+  },
+  {
+   "file": "neg_reversed_00060.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 87.4
+  },
+  {
+   "file": "neg_near_silence_00061.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "lights off",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 247.4
+  },
+  {
+   "file": "neg_babble_00062.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 147.0
+  },
+  {
+   "file": "neg_noise_only_00063.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 81.0
+  },
+  {
+   "file": "neg_babble_00064.wav",
+   "gold": "REJECT",
+   "pred": "COLOR",
+   "transcript": "color red",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 235.3
+  },
+  {
+   "file": "neg_truncated_00065.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 132.9
+  },
+  {
+   "file": "neg_truncated_00066.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 65.7
+  },
+  {
+   "file": "neg_near_silence_00067.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 163.7
+  },
+  {
+   "file": "neg_near_silence_00068.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 261.3
+  },
+  {
+   "file": "neg_truncated_00069.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 97.5
+  },
+  {
+   "file": "neg_babble_00070.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "increase the volume",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 179.0
+  },
+  {
+   "file": "neg_noise_only_00071.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "lower",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 95.5
+  },
+  {
+   "file": "neg_truncated_00072.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 123.8
+  },
+  {
+   "file": "neg_near_silence_00073.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 154.5
+  },
+  {
+   "file": "neg_noise_only_00074.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 5461.1
+  },
+  {
+   "file": "neg_noise_only_00075.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 232.4
+  },
+  {
+   "file": "neg_truncated_00076.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 89.0
+  },
+  {
+   "file": "neg_babble_00077.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness one hundred",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 156.8
+  },
+  {
+   "file": "neg_reversed_00078.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 119.3
+  },
+  {
+   "file": "neg_babble_00079.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness one hundred percent",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 183.6
+  },
+  {
+   "file": "neg_noise_only_00080.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 277.5
+  },
+  {
+   "file": "neg_near_silence_00081.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 117.0
+  },
+  {
+   "file": "neg_noise_only_00082.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 82.0
+  },
+  {
+   "file": "neg_babble_00083.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 103.0
+  },
+  {
+   "file": "neg_reversed_00084.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 151.8
+  },
+  {
+   "file": "neg_truncated_00085.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 59.1
+  },
+  {
+   "file": "neg_near_silence_00086.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 254.5
+  },
+  {
+   "file": "neg_reversed_00087.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 103.8
+  },
+  {
+   "file": "neg_babble_00088.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 164.0
+  },
+  {
+   "file": "neg_reversed_00089.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "previous song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 115.4
+  },
+  {
+   "file": "neg_truncated_00090.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 135.4
+  },
+  {
+   "file": "neg_reversed_00091.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 80.4
+  },
+  {
+   "file": "neg_near_silence_00092.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 154.5
+  },
+  {
+   "file": "neg_babble_00093.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 223.6
+  },
+  {
+   "file": "neg_truncated_00094.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "power",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 54.6
+  },
+  {
+   "file": "neg_babble_00095.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "start music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 130.8
+  },
+  {
+   "file": "neg_babble_00096.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "tell",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 109.0
+  },
+  {
+   "file": "neg_near_silence_00097.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 275.2
+  },
+  {
+   "file": "neg_babble_00098.wav",
+   "gold": "REJECT",
+   "pred": "ALARM",
+   "transcript": "alarm nine",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 124.1
+  },
+  {
+   "file": "neg_reversed_00099.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 83.0
+  },
+  {
+   "file": "neg_reversed_00100.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 85.8
+  },
+  {
+   "file": "neg_babble_00101.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness one hundred percent",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 252.7
+  },
+  {
+   "file": "neg_babble_00102.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 141.7
+  },
+  {
+   "file": "neg_noise_only_00103.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 281.2
+  },
+  {
+   "file": "neg_truncated_00104.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 89.4
+  },
+  {
+   "file": "neg_truncated_00105.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 110.5
+  },
+  {
+   "file": "neg_near_silence_00106.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 242.2
+  },
+  {
+   "file": "neg_reversed_00107.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 71.4
+  },
+  {
+   "file": "neg_truncated_00108.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "remind",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 70.8
+  },
+  {
+   "file": "neg_reversed_00109.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 156.2
+  },
+  {
+   "file": "neg_truncated_00110.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 60.8
+  },
+  {
+   "file": "neg_reversed_00111.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 92.4
+  },
+  {
+   "file": "neg_babble_00112.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 381.8
+  },
+  {
+   "file": "neg_truncated_00113.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 112.7
+  },
+  {
+   "file": "neg_noise_only_00114.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 193.3
+  },
+  {
+   "file": "neg_reversed_00115.wav",
+   "gold": "REJECT",
+   "pred": "MESSAGE",
+   "transcript": "message",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 91.1
+  },
+  {
+   "file": "neg_noise_only_00116.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 125.7
+  },
+  {
+   "file": "neg_near_silence_00117.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 270.5
+  },
+  {
+   "file": "neg_babble_00118.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "timer thirty seconds",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 149.8
+  },
+  {
+   "file": "neg_noise_only_00119.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 168.8
+  },
+  {
+   "file": "neg_babble_00120.wav",
+   "gold": "REJECT",
+   "pred": "ALARM",
+   "transcript": "wake me up at nine pm",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 125.3
+  },
+  {
+   "file": "neg_noise_only_00121.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 159.0
+  },
+  {
+   "file": "neg_reversed_00122.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 95.4
+  },
+  {
+   "file": "neg_noise_only_00123.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "turn off",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 131.1
+  },
+  {
+   "file": "neg_noise_only_00124.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 104.7
+  },
+  {
+   "file": "neg_near_silence_00125.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 65.9
+  },
+  {
+   "file": "neg_near_silence_00126.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 250.0
+  },
+  {
+   "file": "neg_truncated_00127.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 135.3
+  },
+  {
+   "file": "neg_truncated_00128.wav",
+   "gold": "REJECT",
+   "pred": "CALL",
+   "transcript": "call",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 118.7
+  },
+  {
+   "file": "neg_babble_00129.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "start a timer for one minute",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 105.8
+  },
+  {
+   "file": "neg_babble_00130.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "brightness",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 112.8
+  },
+  {
+   "file": "neg_reversed_00131.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 139.1
+  },
+  {
+   "file": "neg_near_silence_00132.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 184.7
+  },
+  {
+   "file": "neg_babble_00133.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "whats the weather",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 163.8
+  },
+  {
+   "file": "neg_near_silence_00134.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 213.5
+  },
+  {
+   "file": "neg_noise_only_00135.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 124.4
+  },
+  {
+   "file": "neg_truncated_00136.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 67.4
+  },
+  {
+   "file": "neg_reversed_00137.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "lower the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 155.2
+  },
+  {
+   "file": "neg_truncated_00138.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 97.0
+  },
+  {
+   "file": "neg_noise_only_00139.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "time",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 294.9
+  },
+  {
+   "file": "neg_reversed_00140.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume up",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 96.5
+  },
+  {
+   "file": "neg_babble_00141.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "timer one minute",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 93.4
+  },
+  {
+   "file": "neg_truncated_00142.wav",
+   "gold": "REJECT",
+   "pred": "CALL",
+   "transcript": "call",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 86.1
+  },
+  {
+   "file": "neg_babble_00143.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 203.6
+  },
+  {
+   "file": "neg_noise_only_00144.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 71.4
+  },
+  {
+   "file": "neg_babble_00145.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness one hundred",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 99.2
+  },
+  {
+   "file": "neg_truncated_00146.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "remind",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 76.5
+  },
+  {
+   "file": "neg_near_silence_00147.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 199.6
+  },
+  {
+   "file": "neg_truncated_00148.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 90.7
+  },
+  {
+   "file": "neg_near_silence_00149.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 167.9
+  },
+  {
+   "file": "neg_near_silence_00150.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 178.1
+  },
+  {
+   "file": "neg_near_silence_00151.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 138.1
+  },
+  {
+   "file": "neg_noise_only_00152.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "skip",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 619.9
+  },
+  {
+   "file": "neg_reversed_00153.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "start music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 127.2
+  },
+  {
+   "file": "neg_truncated_00154.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "next song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 109.9
+  },
+  {
+   "file": "neg_babble_00155.wav",
+   "gold": "REJECT",
+   "pred": "ALARM",
+   "transcript": "set an alarm for eight",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 238.5
+  },
+  {
+   "file": "neg_near_silence_00156.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 231.9
+  },
+  {
+   "file": "neg_reversed_00157.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "set the brightness to one hundred",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 167.1
+  },
+  {
+   "file": "neg_reversed_00158.wav",
+   "gold": "REJECT",
+   "pred": "MESSAGE",
+   "transcript": "message",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 78.2
+  },
+  {
+   "file": "neg_noise_only_00159.wav",
+   "gold": "REJECT",
+   "pred": "CALL",
+   "transcript": "make a phone call",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 212.4
+  },
+  {
+   "file": "neg_babble_00160.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 108.9
+  },
+  {
+   "file": "neg_reversed_00161.wav",
+   "gold": "REJECT",
+   "pred": "MESSAGE",
+   "transcript": "send a message",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 109.0
+  },
+  {
+   "file": "neg_truncated_00162.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 100.9
+  },
+  {
+   "file": "neg_reversed_00163.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 95.3
+  },
+  {
+   "file": "neg_truncated_00164.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "time",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 60.6
+  },
+  {
+   "file": "neg_noise_only_00165.wav",
+   "gold": "REJECT",
+   "pred": "ALARM",
+   "transcript": "alarm nine pm",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 220.8
+  },
+  {
+   "file": "neg_near_silence_00166.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 184.4
+  },
+  {
+   "file": "neg_reversed_00167.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness sixty percent",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 137.5
+  },
+  {
+   "file": "neg_reversed_00168.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 100.9
+  },
+  {
+   "file": "neg_near_silence_00169.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 125.7
+  },
+  {
+   "file": "neg_near_silence_00170.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 116.2
+  },
+  {
+   "file": "neg_noise_only_00171.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "time",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 257.1
+  },
+  {
+   "file": "neg_truncated_00172.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "set",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 136.8
+  },
+  {
+   "file": "neg_noise_only_00173.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "time",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 240.7
+  },
+  {
+   "file": "neg_near_silence_00174.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 239.9
+  },
+  {
+   "file": "neg_noise_only_00175.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 266.1
+  },
+  {
+   "file": "neg_noise_only_00176.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "whats",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 168.7
+  },
+  {
+   "file": "neg_reversed_00177.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "skip",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 128.9
+  },
+  {
+   "file": "neg_babble_00178.wav",
+   "gold": "REJECT",
+   "pred": "BRIGHTNESS",
+   "transcript": "brightness one hundred percent",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 77.0
+  },
+  {
+   "file": "neg_near_silence_00179.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 274.8
+  },
+  {
+   "file": "neg_near_silence_00180.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 222.4
+  },
+  {
+   "file": "neg_babble_00181.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "turn the volume down",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 226.2
+  },
+  {
+   "file": "neg_noise_only_00182.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 316.1
+  },
+  {
+   "file": "neg_babble_00183.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 120.3
+  },
+  {
+   "file": "neg_noise_only_00184.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_DOWN",
+   "transcript": "lower the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 357.9
+  },
+  {
+   "file": "neg_truncated_00185.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 74.9
+  },
+  {
+   "file": "neg_noise_only_00186.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 170.6
+  },
+  {
+   "file": "neg_near_silence_00187.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 241.1
+  },
+  {
+   "file": "neg_near_silence_00188.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 246.2
+  },
+  {
+   "file": "neg_babble_00189.wav",
+   "gold": "REJECT",
+   "pred": "LIST_REMINDERS",
+   "transcript": "list",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 132.2
+  },
+  {
+   "file": "neg_reversed_00190.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 84.2
+  },
+  {
+   "file": "neg_babble_00191.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "turn",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 88.8
+  },
+  {
+   "file": "neg_truncated_00192.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 272.1
+  },
+  {
+   "file": "neg_reversed_00193.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "set the lights to",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 107.3
+  },
+  {
+   "file": "neg_reversed_00194.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "skip song",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 161.6
+  },
+  {
+   "file": "neg_noise_only_00195.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 221.8
+  },
+  {
+   "file": "neg_noise_only_00196.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 157.9
+  },
+  {
+   "file": "neg_noise_only_00197.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "tell",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 96.7
+  },
+  {
+   "file": "neg_reversed_00198.wav",
+   "gold": "REJECT",
+   "pred": "NEXT",
+   "transcript": "skip",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 90.1
+  },
+  {
+   "file": "neg_noise_only_00199.wav",
+   "gold": "REJECT",
+   "pred": "STOP",
+   "transcript": "end",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 180.9
+  },
+  {
+   "file": "neg_noise_only_00200.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 193.6
+  },
+  {
+   "file": "neg_noise_only_00201.wav",
+   "gold": "REJECT",
+   "pred": "CALL",
+   "transcript": "make a phone",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 137.2
+  },
+  {
+   "file": "neg_babble_00202.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 169.1
+  },
+  {
+   "file": "neg_reversed_00203.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "turn off",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 90.5
+  },
+  {
+   "file": "neg_reversed_00204.wav",
+   "gold": "REJECT",
+   "pred": "MESSAGE",
+   "transcript": "message",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 73.0
+  },
+  {
+   "file": "neg_truncated_00205.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 78.7
+  },
+  {
+   "file": "neg_truncated_00206.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 137.0
+  },
+  {
+   "file": "neg_near_silence_00207.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 192.1
+  },
+  {
+   "file": "neg_truncated_00208.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 102.1
+  },
+  {
+   "file": "neg_near_silence_00209.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 223.6
+  },
+  {
+   "file": "neg_reversed_00210.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "timer one",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 118.0
+  },
+  {
+   "file": "neg_truncated_00211.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 131.7
+  },
+  {
+   "file": "neg_truncated_00212.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 74.0
+  },
+  {
+   "file": "neg_near_silence_00213.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 142.4
+  },
+  {
+   "file": "neg_babble_00214.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "lights on",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 262.4
+  },
+  {
+   "file": "neg_near_silence_00215.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 307.1
+  },
+  {
+   "file": "neg_babble_00216.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 176.7
+  },
+  {
+   "file": "neg_truncated_00217.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 68.3
+  },
+  {
+   "file": "neg_truncated_00218.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 87.9
+  },
+  {
+   "file": "neg_reversed_00219.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "set the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 84.5
+  },
+  {
+   "file": "neg_reversed_00220.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "turn on",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 92.5
+  },
+  {
+   "file": "neg_noise_only_00221.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 444.8
+  },
+  {
+   "file": "neg_noise_only_00222.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_ON",
+   "transcript": "lights on",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 192.6
+  },
+  {
+   "file": "neg_near_silence_00223.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 163.3
+  },
+  {
+   "file": "neg_reversed_00224.wav",
+   "gold": "REJECT",
+   "pred": "VOLUME_UP",
+   "transcript": "volume",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 73.9
+  },
+  {
+   "file": "neg_babble_00225.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 186.5
+  },
+  {
+   "file": "neg_truncated_00226.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "whats the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 128.8
+  },
+  {
+   "file": "neg_truncated_00227.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 108.3
+  },
+  {
+   "file": "neg_near_silence_00228.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 223.0
+  },
+  {
+   "file": "neg_truncated_00229.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 59.5
+  },
+  {
+   "file": "neg_reversed_00230.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "set the brightness",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 91.3
+  },
+  {
+   "file": "neg_noise_only_00231.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what time is it",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 222.1
+  },
+  {
+   "file": "neg_noise_only_00232.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 175.7
+  },
+  {
+   "file": "neg_near_silence_00233.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 79.4
+  },
+  {
+   "file": "neg_truncated_00234.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 109.6
+  },
+  {
+   "file": "neg_reversed_00235.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 112.0
+  },
+  {
+   "file": "neg_noise_only_00236.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "power",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 135.2
+  },
+  {
+   "file": "neg_reversed_00237.wav",
+   "gold": "REJECT",
+   "pred": "PAUSE",
+   "transcript": "pause",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 89.9
+  },
+  {
+   "file": "neg_babble_00238.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "turn off the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 208.6
+  },
+  {
+   "file": "neg_reversed_00239.wav",
+   "gold": "REJECT",
+   "pred": "LIGHT_OFF",
+   "transcript": "kill the lights",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 85.5
+  },
+  {
+   "file": "neg_near_silence_00240.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 171.2
+  },
+  {
+   "file": "neg_babble_00241.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "timer thirty seconds",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 210.0
+  },
+  {
+   "file": "neg_babble_00242.wav",
+   "gold": "REJECT",
+   "pred": "TIMER",
+   "transcript": "timer ten seconds",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 143.7
+  },
+  {
+   "file": "neg_near_silence_00243.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 146.8
+  },
+  {
+   "file": "neg_reversed_00244.wav",
+   "gold": "REJECT",
+   "pred": "PLAY_MUSIC",
+   "transcript": "play some music",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 60.5
+  },
+  {
+   "file": "neg_truncated_00245.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 90.4
+  },
+  {
+   "file": "neg_reversed_00246.wav",
+   "gold": "REJECT",
+   "pred": "WEATHER",
+   "transcript": "whats the",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 84.9
+  },
+  {
+   "file": "neg_near_silence_00247.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 220.6
+  },
+  {
+   "file": "neg_near_silence_00248.wav",
+   "gold": "REJECT",
+   "pred": "REJECT",
+   "transcript": "",
+   "correct": true,
+   "is_syn": 1,
+   "asr_ms": 227.5
+  },
+  {
+   "file": "neg_noise_only_00249.wav",
+   "gold": "REJECT",
+   "pred": "TIME",
+   "transcript": "what",
+   "correct": false,
+   "is_syn": 1,
+   "asr_ms": 152.3
+  }
+ ]
+}

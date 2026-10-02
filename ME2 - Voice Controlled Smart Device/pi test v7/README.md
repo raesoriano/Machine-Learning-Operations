@@ -88,3 +88,27 @@ as the neural v8, get closer?*
 * `am/stock/`, `am/stock_enus/` — stock `en-us` AM + cmudict (ensemble 2nd leg).
 * `training/eval_v7.py` — the v6-test-split evaluator (same protocol as v8).
 * `_eval_test.json` — full per-clip results for this run.
+
+## Rejection on the new `synthetic_negatives` split
+
+The updated dataset added a `synthetic_negatives` split (1,000 train + 250
+test generated OOS clips: noise-only, babble, reversed, truncated,
+near-silence). Running the **current v7 model** on the 250 test negatives
+(`training/eval_v7.py --data <me2-v6-negatives/dataset> --split test`,
+`_eval_negatives.json`):
+
+* **reject_acc = 0.452** (113/250) — with **no retrain**. v7's rejection is
+  structural: the stage-2 classifier maps any transcript it can't match to a
+  command to REJECT, so noise/babble that decodes to nothing is already
+  rejected. (v8's base model rejected 0/250 on this split — its reject rule
+  was unreachable; see `pi test v8/README_negatives.md`.)
+* The 137 misses are clips whose audio contains a real command-word fragment
+  (truncated/babble), so the ASR decodes a plausible word and the classifier
+  maps it to a command.
+
+A classifier retrain that adds the 1,000 negatives as explicit REJECT
+training examples would push this higher, but the original `classifier.pkl`
+training script/data were not committed, so a directly-comparable retrain was
+not attempted (it would risk the 0.764 command accuracy). v8's
+`models_neg` + `--reject-empty` (0.88 on this split) is the stronger,
+reproducible reject mechanism.
