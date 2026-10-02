@@ -1,4 +1,4 @@
-# pi test v8 — reject via synthetic negatives (new dataset split)
+# pi test v8-conformer-ctc — reject via synthetic negatives (new dataset split)
 
 Follow-up to the v8 Conformer+CTC model. The base v8 model rejected **0/47**
 out-of-scope clips on the v6 test split. The updated AI231 ME2 dataset added a

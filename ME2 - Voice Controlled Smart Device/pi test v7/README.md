@@ -101,7 +101,7 @@ near-silence). Running the **current v7 model** on the 250 test negatives
   structural: the stage-2 classifier maps any transcript it can't match to a
   command to REJECT, so noise/babble that decodes to nothing is already
   rejected. (v8's base model rejected 0/250 on this split — its reject rule
-  was unreachable; see `pi test v8/README_negatives.md`.)
+  was unreachable; see `pi test v8-conformer-ctc/README_negatives.md`.)
 * The 137 misses are clips whose audio contains a real command-word fragment
   (truncated/babble), so the ASR decodes a plausible word and the classifier
   maps it to a command.

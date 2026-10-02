@@ -1,4 +1,4 @@
-# pi test v8 — ME2 voice command recognizer: **neural causal encoder (original template)**
+# pi test v8-conformer-ctc — ME2 voice command recognizer: **neural causal encoder (original template)**
 
 The **original ME2 template architecture** — a causal (left-context only)
 encoder with a word-level **CTC** head — trained from scratch on the AI231
@@ -55,6 +55,46 @@ torchrun --nproc_per_node=6 train_v8.py --epochs 12 --bs 48 --workers 8
 python eval_v8.py --split test --report _eval_test.json
 ```
 
+## ONNX / standalone runtime (no torch, no torchaudio)
+
+The model is exported to ONNX with the log-mel front-end **baked into the
+graph** (input: 16 kHz float32 waveform `[B, T]` → output: CTC log-probs
+`[B, T', 110]`), so the runtime needs only `onnxruntime` + `numpy` + the
+stdlib — no torch, no torchaudio, and no import from `pi test v6` (the vocab
+and the 93 command phrases are baked into `meta.json` next to the ONNX file).
+
+```
+python export_onnx.py --model models/best.pt --out models/best.onnx
+python export_onnx.py --model models_neg/best.pt --out models_neg/best.onnx
+```
+
+Exported with the dynamo exporter at opset 18 (the legacy TorchScript
+exporter cannot trace `torch.stft`). Weights are stored in the sibling
+`.onnx.data` external-data file (both tracked by LFS).
+
+```
+# Pi-side: pip install onnxruntime numpy
+python v8_onnx.py --model models/best.onnx --file clip.wav
+python v8_onnx.py --model models_neg/best.onnx --file clip.wav --reject-empty
+python v8_onnx.py --model models/best.onnx --data <dataset> --split test --report report.json
+```
+
+`v8_onnx.py` runs the exact same decode protocol as `eval_v8.py`
+(constrained CTC-FSA + greedy free decode + reject rule). Verified on the
+196-clip holdout split against the fp32 torch model: **zero per-clip
+prediction flips** for both checkpoints (max |Δlog-prob| 1.1e-4 / 7.9e-5).
+Note: `eval_v8.py` on a GPU uses bf16 autocast, which itself flips a small
+number of near-tie decodes vs fp32 — the ONNX runtime matches the fp32
+reference exactly.
+
+| model | ONNX | runtime |
+|---|---|---|
+| base v8 | `models/best.onnx` (+`.data`, 43 MB) | `v8_onnx.py --model models/best.onnx` |
+| v8 + negatives | `models_neg/best.onnx` (+`.data`, 43 MB) | `v8_onnx.py --model models_neg/best.onnx --reject-empty` |
+
+(int8 dynamic quantization was attempted but the quantized graph does not
+export cleanly with torch 2.14; the fp32 ONNX is the supported artifact.)
+
 ## Results (v6 test split, 4,418 clips — 4,371 in-scope + 47 out-of-scope)
 
 | metric | value |
@@ -95,6 +135,11 @@ python eval_v8.py --split test --report _eval_test.json
 | `data.py` | 16 kHz wav → log-mel, spoken-word tokenizer, CTC targets |
 | `train_v8.py` | DDP training (bf16, cosine LR, val on holdout) |
 | `eval_v8.py` | CTC-FSA constrained decode + free decode + reject, metrics |
+| `export_onnx.py` | export the full graph (wav → log-probs) to ONNX + bake `meta.json` |
+| `v8_onnx.py` | **standalone ONNX runtime** (onnxruntime + numpy only, no torch) |
+| `requirements_onnx.txt` | Pi-side deps for `v8_onnx.py` (onnxruntime + numpy) |
 | `models/best.pt` | best checkpoint (val_loss 0.4497) |
+| `models/best.onnx` (+`.data`) | same model, ONNX (opset 18, front-end baked in) |
+| `models/meta.json` | baked vocab + 93 command phrases (for `v8_onnx.py`) |
 | `models/words.txt` | the 109-word vocab |
 | `_eval_test.json` | full per-clip + per-class test report |

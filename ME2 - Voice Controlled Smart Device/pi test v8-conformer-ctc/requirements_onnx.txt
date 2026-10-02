@@ -1,0 +1,4 @@
+# Pi-side runtime for v8_onnx.py only (no torch, no torchaudio).
+#   pip install -r requirements_onnx.txt
+onnxruntime>=1.17
+numpy
