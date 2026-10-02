@@ -200,6 +200,12 @@ def main():
     ap.add_argument("--model", default=os.path.join(MODELS, "best.pt"))
     ap.add_argument("--reject-margin", type=float, default=8.0,
                     help="reject if (free_lp - constrained_lp)/frames > margin")
+    ap.add_argument("--reject-empty", action="store_true",
+                    help="ALSO reject when the free (greedy) decode is empty "
+                         "(model emitted only blanks). Use with a model trained "
+                         "on all-blank synthetic negatives. The per-frame "
+                         "margin rule above is mathematically incapable of "
+                         "triggering (see README).")
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--report", default=None)
     args = ap.parse_args()
@@ -261,6 +267,8 @@ def main():
                 phrase = ""
                 pred = "REJECT"
             if (f_lp - c_lp) / max(1, Tj) > args.reject_margin:
+                pred = "REJECT"
+            if args.reject_empty and not f_words:
                 pred = "REJECT"
             results.append({
                 "file": os.path.basename(p),

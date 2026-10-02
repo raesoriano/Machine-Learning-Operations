@@ -51,6 +51,11 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--warmup", type=int, default=300)
     ap.add_argument("--max-numerals", type=int, default=20000)
+    ap.add_argument("--negatives", default=None,
+                    help="path to a synthetic_negatives dataset dir (with "
+                         "train/manifest.csv + train/audio). Adds those clips "
+                         "as all-blank CTC targets so the model learns to emit "
+                         "nothing on noise/babble -> widens the reject gap.")
     ap.add_argument("--workers", type=int, default=16)
     ap.add_argument("--d-model", type=int, default=256)
     ap.add_argument("--layers", type=int, default=6)
@@ -77,6 +82,20 @@ def main():
 
     items = load_split(args.data, dictionary, word2idx,
                        max_numerals=args.max_numerals)
+    n_neg = 0
+    if args.negatives:
+        import csv as _csv
+        nmpath = os.path.join(args.negatives, "train", "manifest.csv")
+        with open(nmpath) as f:
+            for r in _csv.DictReader(f):
+                p = os.path.join(args.negatives, "train", "audio",
+                                 os.path.basename(r["file"]))
+                if os.path.exists(p):
+                    items.append((p, []))   # empty target = all-blank CTC
+                    n_neg += 1
+        if rank == 0:
+            print(f"negatives: +{n_neg} all-blank clips from {args.negatives}",
+                  flush=True)
     ds = V8Dataset(items)
     sampler = DistributedSampler(ds, shuffle=True) if dist_on else None
     dl = DataLoader(ds, batch_size=args.bs,
