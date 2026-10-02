@@ -1,0 +1,17 @@
+pocketsphinx>=5.0.1
+scikit-learn>=1.3
+numpy>=1.24
+soundfile>=0.12
+sounddevice>=0.4
+scipy>=1.10.0
+webrtcvad-wheels>=2.0.14
+piper-tts>=1.3
+# PINNED: 0.5/0.6 require tflite-runtime on Linux, which has NO wheel for
+# Python 3.13 on aarch64 (the Pi) -> pip install fails -> the wake word
+# silently falls back to always-listen (ghost commands). 0.4.0 uses
+# onnxruntime only, which works on the Pi.
+openwakeword==0.4.0
+onnxruntime>=1.17
+# MUSIC: resolves the YouTube playlist for the media commands.
+# (mpv itself is a SYSTEM package, not pip: `sudo apt install mpv`)
+yt-dlp>=2024.4.9
