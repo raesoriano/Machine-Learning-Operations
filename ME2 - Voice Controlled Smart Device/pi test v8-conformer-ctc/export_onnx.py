@@ -41,7 +41,6 @@ import torchaudio
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
-sys.path.insert(0, os.path.join(os.path.dirname(_HERE), "pi test v6"))
 from model import V8Model                        # noqa: E402
 from data import read_wav16, load_test           # noqa: E402
 
@@ -74,14 +73,13 @@ class V8Full(nn.Module):
 
 
 def load_phrases() -> list[str]:
-    import importlib.util
-    spec = importlib.util.spec_from_file_location(
-        "v6_train", os.path.join(os.path.dirname(_HERE),
-                                 "pi test v6", "train_am.py"))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    rows = mod._load_variations(mod.VARIATIONS)
-    return [" ".join(ws) for _, _, _, _, ws in rows]
+    import csv as _csv
+    from hgm.spoken import tokenize_spoken
+    out = []
+    with open(os.path.join(_HERE, "variations.csv")) as f:
+        for r in _csv.DictReader(f):
+            out.append(" ".join(tokenize_spoken(r["phrase"])))
+    return out
 
 
 def export(ckpt_path: str, out_path: str, do_int8: bool,

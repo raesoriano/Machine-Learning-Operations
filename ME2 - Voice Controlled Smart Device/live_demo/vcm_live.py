@@ -311,7 +311,8 @@ def build_model(args):
         from adapters import v8 as _v8
         return _v8.build(
             model_path=getattr(args, "v8_model", None),
-            reject_empty=not getattr(args, "no_reject_empty", False))
+            reject_empty=not getattr(args, "no_reject_empty", False),
+            reject_content=not getattr(args, "no_reject_content", False))
     raise SystemExit(f"--model {name!r} not wired yet (choose v3, v7, v8)")
 
 
@@ -1746,12 +1747,14 @@ def main():
                          "v3/v7 = PocketSphinx ensemble)")
     ap.add_argument("--v8-model", default=None,
                     help="path to the v8 ONNX checkpoint (default: "
-                         "pi test v8-conformer-ctc/models_neg/best.onnx, the "
-                         "negatives-trained model; use models/best.onnx for "
-                         "the base model)")
+                         "pi test v8-conformer-ctc/models/best.onnx, the "
+                         "expanded-vocab model; use models_neg/best.onnx for "
+                         "the old 109-vocab negatives model)")
     ap.add_argument("--no-reject-empty", action="store_true",
-                    help="v8 only: disable the empty-free-decode reject rule "
-                         "(keep it on for the negatives-trained model)")
+                    help="v8 only: disable the empty-free-decode reject rule")
+    ap.add_argument("--no-reject-content", action="store_true",
+                    help="v8 only: disable the expanded-vocab content reject "
+                         "rule (reject when the free decode is not a command)")
     ap.add_argument("--test", action="store_true",
                     help="run the 171-clip held-out test set and exit")
     ap.add_argument("--data", default=TEST_DATA,

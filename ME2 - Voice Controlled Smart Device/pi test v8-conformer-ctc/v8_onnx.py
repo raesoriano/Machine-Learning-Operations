@@ -295,7 +295,8 @@ class V8Onnx:
     """
 
     def __init__(self, onnx_path: str, reject_margin: float = 8.0,
-                 reject_empty: bool = False):
+                 reject_empty: bool = False, reject_content: bool = False,
+                 base_vocab_size: int = 109):
         self.words = None
         meta_path = os.path.join(os.path.dirname(os.path.abspath(onnx_path)),
                                  "meta.json")
@@ -306,6 +307,10 @@ class V8Onnx:
         self.fsa = CtcFsa(meta["phrases"], self.word2idx)
         self.reject_margin = reject_margin
         self.reject_empty = reject_empty
+        self.reject_content = reject_content
+        # words 1..base_vocab_size are the base (command) vocabulary; the
+        # expanded-vocab model appends OOS words after them.
+        self.base_vocab_size = base_vocab_size
         so = ort.SessionOptions()
         so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         self.sess = ort.InferenceSession(
@@ -333,6 +338,18 @@ class V8Onnx:
         reject = ((f_lp - c_lp) / max(1, lp.shape[0]) > self.reject_margin)
         if self.reject_empty and not f_words:
             reject = True
+        if self.reject_content:
+            # Expanded-vocab reject rule: OOS speech now DECODES to real words,
+            # so reject when those words do NOT form a command. Two signals:
+            #   (a) base_frac < 0.6  -- free decode mostly non-command words
+            #   (b) free_len>=2 and phrase_len/free_len < 0.20 -- FSA locked a
+            #       1-word command onto a multi-word utterance
+            fw = [w - 1 for w in f_words]
+            pw = [w - 1 for w in c_words] if c_words else []
+            base_frac = (sum(1 for w in fw if w < self.base_vocab_size) / len(fw)) if fw else 0.0
+            plen_ratio = (len(pw) / len(fw)) if fw else 0.0
+            if (base_frac < 0.6) or (len(fw) >= 2 and plen_ratio < 0.20):
+                reject = True
         if reject:
             pred = "REJECT"
         return {
@@ -367,11 +384,16 @@ def main():
     ap.add_argument("--split", default="test", choices=["test", "holdout"])
     ap.add_argument("--reject-margin", type=float, default=8.0)
     ap.add_argument("--reject-empty", action="store_true")
+    ap.add_argument("--reject-content", action="store_true",
+                    help="expanded-vocab reject rule (736-word model)")
+    ap.add_argument("--base-vocab-size", type=int, default=109)
     ap.add_argument("--report", default=None)
     args = ap.parse_args()
 
     rec = V8Onnx(args.model, reject_margin=args.reject_margin,
-                 reject_empty=args.reject_empty)
+                 reject_empty=args.reject_empty,
+                 reject_content=args.reject_content,
+                 base_vocab_size=args.base_vocab_size)
     print(f"loaded {args.model}  vocab={len(rec.words)} "
           f"phrases={len(rec.fsa.phrases)}", flush=True)
 

@@ -19,9 +19,8 @@ import torch
 import torchaudio
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ME2 = os.path.dirname(_HERE)
-sys.path.insert(0, os.path.join(_ME2, "pi test v6"))
-from hgm.spoken import tokenize_spoken          # noqa: E402
+sys.path.insert(0, _HERE)
+from hgm.spoken import tokenize_spoken          # noqa: E402  (vendored, self-contained)
 from hgm.commands import phrase_to_class        # noqa: E402
 from hgm.dict import build_dictionary           # noqa: E402
 
@@ -156,10 +155,101 @@ def build_vocab(data: str):
     """The v6 dictionary (109 words: in-scope + number words), loaded from
     the v6 model artifacts so the data selection matches v6 exactly."""
     dictionary = {}
-    with open(os.path.join(os.path.dirname(_HERE),
-                           "pi test v6", "models", "dictionary.txt")) as f:
+    with open(os.path.join(_HERE, "base_dictionary.txt")) as f:
         for line in f:
             parts = line.split()
             if len(parts) > 1:
                 dictionary[parts[0]] = parts[1:]
     return dictionary
+
+
+def build_vocab_v8(data: str):
+    """Expanded v8 vocabulary: the 109 base words (in-scope + numbers) PLUS
+    every word that appears in the out-of-scope (OOS) train transcripts.
+
+    Why: the base 109-word vocab cannot decode OOS audio, so the free (greedy)
+    decode comes out empty/garbage and the reject rule has nothing to work
+    with. By adding the OOS words to the CTC vocabulary we let the model
+    DECODE the out-of-scope speech accurately (the free decode produces the
+    real words); rejection then happens at the command-matching stage, where
+    those words do not form any of the 93 in-scope command phrases. This is
+    what fixes the false rejections: in-scope commands still decode to a
+    high-scoring constrained phrase, OOS decodes to words that match no
+    command.
+
+    The base 109 words keep their original (sorted) order so their indices
+    are stable; OOS words are appended after them (also sorted). OOS words
+    get a placeholder phone (SIL) -- the CTC head learns their acoustic
+    emission directly from the OOS training clips, no dictionary needed.
+    """
+    dictionary = build_vocab(data)          # base 109, phones from v6
+    base_words = sorted(dictionary)
+    oos_words = set()
+    mpath = os.path.join(data, "train", "manifest.csv")
+    with open(mpath) as f:
+        for r in csv.DictReader(f):
+            if int(r.get("out_of_scope") or 0) != 1:
+                continue
+            tr = (r.get("transcript") or "").strip()
+            if not tr:
+                continue
+            for w in tokenize_spoken(tr):
+                oos_words.add(w)
+    new_words = [w for w in sorted(oos_words) if w not in dictionary]
+    for w in new_words:
+        dictionary[w] = ["SIL"]            # placeholder; CTC learns it
+    words = base_words + new_words         # base indices stay stable
+    return dictionary, words
+
+
+def oos_train_items(data: str, word2idx: dict):
+    """The out-of-scope train clips, as (path, ctc word idx) items with their
+    REAL word targets (so the model learns to decode them, not emit blank)."""
+    items = []
+    n_bad = 0
+    mpath = os.path.join(data, "train", "manifest.csv")
+    with open(mpath) as f:
+        for r in csv.DictReader(f):
+            if int(r.get("out_of_scope") or 0) != 1:
+                continue
+            tr = (r.get("transcript") or "").strip()
+            if not tr:
+                continue
+            ws = tokenize_spoken(tr)
+            if not ws or any(w not in word2idx for w in ws):
+                n_bad += 1
+                continue
+            items.append((os.path.join(data, "train", "audio",
+                                       os.path.basename(r["file"])),
+                          ctc_target([word2idx[w] for w in ws])))
+    print(f"v8 OOS train items: {len(items)} (skipped {n_bad} empty/OOV)",
+          flush=True)
+    return items
+
+
+def oos_items(data: str, word2idx: dict, split: str = "holdout"):
+    """OOS clips from `split` as (path, ctc word idx) with their REAL word
+    targets. The model learns to DECODE out-of-scope speech accurately (the
+    free decode produces the real words); rejection then happens at the
+    command-matching / score-gap stage, where those words match no command.
+    This is the opposite of the all-blank trick: we WANT the model to speak
+    the OOS words, so the score gap (free vs constrained) is what rejects.
+    """
+    items = []
+    n_bad = 0
+    mpath = os.path.join(data, split, "manifest.csv")
+    with open(mpath) as f:
+        for r in csv.DictReader(f):
+            if int(r.get("out_of_scope") or 0) != 1:
+                continue
+            tr = (r.get("transcript") or "").strip()
+            if not tr:
+                continue
+            ws = tokenize_spoken(tr)
+            if not ws or any(w not in word2idx for w in ws):
+                n_bad += 1
+                continue
+            p = os.path.join(data, split, r["file"])
+            if os.path.exists(p):
+                items.append((p, ctc_target([word2idx[w] for w in ws])))
+    return items

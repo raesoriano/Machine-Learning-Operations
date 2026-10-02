@@ -26,8 +26,8 @@ from torch.utils.data import DataLoader, DistributedSampler
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
 from model import V8Model                       # noqa: E402
-from data import (V8Dataset, collate, build_vocab, load_split,  # noqa: E402
-                  load_test)
+from data import (V8Dataset, collate, build_vocab, build_vocab_v8,  # noqa: E402
+                  load_split, load_test, oos_train_items, oos_items)
 
 DEFAULT_DATA = "/home/ron.andrei.soriano/sandbox/data/external/me2-v6/dataset"
 
@@ -70,18 +70,21 @@ def main():
     if rank == 0:
         print(f"device: {torch.cuda.get_device_name(local)}", flush=True)
 
-    # ---------------- vocab (identical to v6) ---------------- #
-    dictionary = build_vocab(args.data)
-    words = sorted(dictionary)
+    # ---------------- vocab (base 109 + OOS words) ---------------- #
+    dictionary, words = build_vocab_v8(args.data)
     word2idx = {w: i + 1 for i, w in enumerate(words)}   # 0 = CTC blank
     V = len(words)
     if rank == 0:
-        print(f"vocab: {V} words (+1 CTC blank)", flush=True)
+        print(f"vocab: {V} words (+1 CTC blank)  "
+              f"[base 109 + {V - 109} OOS words]", flush=True)
         with open(os.path.join(args.out, "words.txt"), "w") as f:
             f.write("\n".join(words) + "\n")
 
     items = load_split(args.data, dictionary, word2idx,
                        max_numerals=args.max_numerals)
+    # OOS train clips: REAL word targets so the model learns to DECODE them
+    # (rejection then happens at the command-matching / score-gap stage).
+    items += oos_train_items(args.data, word2idx)
     n_neg = 0
     if args.negatives:
         import csv as _csv

@@ -23,7 +23,7 @@ import numpy as np
 from shared import _ME2, COARSE_INTENT
 
 _V8_DIR = os.path.join(_ME2, "pi test v8-conformer-ctc")
-_DEFAULT_ONNX = os.path.join(_V8_DIR, "models_neg", "best.onnx")
+_DEFAULT_ONNX = os.path.join(_V8_DIR, "models", "best.onnx")
 
 
 def _load_v8_module():
@@ -39,11 +39,16 @@ def _load_v8_module():
 
 class V8Adapter:
     def __init__(self, model_path: str | None = None,
-                 reject_empty: bool = True):
+                 reject_empty: bool = False,
+                 reject_content: bool = True,
+                 base_vocab_size: int = 109):
         self._mod = _load_v8_module()
         path = model_path or _DEFAULT_ONNX
         print(f"loading v8 Conformer+CTC ONNX ({path}) ...", flush=True)
-        self._v8 = self._mod.V8Onnx(path, reject_empty=reject_empty)
+        self._v8 = self._mod.V8Onnx(
+            path, reject_empty=reject_empty,
+            reject_content=reject_content,
+            base_vocab_size=base_vocab_size)
         # warm the ONNX session (graph init + first inference) so the first
         # real command after the wake word is not slow
         self._v8._logprobs(np.zeros(1600, dtype=np.float32))
@@ -68,6 +73,18 @@ class V8Adapter:
         reject = ((f_lp - c_lp) / max(1, lp.shape[0]) > self._v8.reject_margin)
         if self._v8.reject_empty and not f_words:
             reject = True
+        if self._v8.reject_content:
+            # Expanded-vocab reject rule: OOS speech decodes to real words;
+            # reject when those words do not form a command (mostly
+            # non-command words, or a 1-word command locked onto a
+            # multi-word utterance).
+            fw = [w - 1 for w in f_words]
+            pw = [w - 1 for w in c_words] if c_words else []
+            base_frac = (sum(1 for w in fw
+                             if w < self._v8.base_vocab_size) / len(fw)) if fw else 0.0
+            plen_ratio = (len(pw) / len(fw)) if fw else 0.0
+            if (base_frac < 0.6) or (len(fw) >= 2 and plen_ratio < 0.20):
+                reject = True
         if reject:
             pred = "REJECT"
         transcript = " ".join(self._v8.words[w - 1] for w in f_words)
@@ -77,5 +94,7 @@ class V8Adapter:
         return pred, COARSE_INTENT.get(pred, "unknown"), transcript, prob
 
 
-def build(model_path: str | None = None, reject_empty: bool = True) -> V8Adapter:
-    return V8Adapter(model_path, reject_empty=reject_empty)
+def build(model_path: str | None = None, reject_empty: bool = False,
+          reject_content: bool = True) -> V8Adapter:
+    return V8Adapter(model_path, reject_empty=reject_empty,
+                     reject_content=reject_content)
