@@ -1,0 +1,2 @@
+# v8 neural checkpoint is large (43 MB) -> Git LFS.
+models/best.pt filter=lfs diff=lfs merge=lfs -text
