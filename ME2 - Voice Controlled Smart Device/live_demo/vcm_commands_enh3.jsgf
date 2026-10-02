@@ -1,0 +1,109 @@
+#JSGF V1.0;
+grammar vcm;
+public <command> =
+  (
+    alarm eight am |
+    alarm nine pm |
+    alarm six am |
+    brightness one hundred percent |
+    brightness sixty percent |
+    brightness twenty percent |
+    call |
+    change the brightness to one hundred percent |
+    change the brightness to sixty percent |
+    change the brightness to twenty percent |
+    change the lights to blue |
+    change the lights to green |
+    change the lights to red |
+    change the temperature to eighteen degrees |
+    change the temperature to twenty six degrees |
+    change the temperature to twenty two degrees |
+    color blue |
+    color green |
+    color red |
+    countdown for one minute |
+    countdown for ten seconds |
+    countdown for thirty seconds |
+    create a reminder to drink water |
+    create a reminder to exercise |
+    create a reminder to study |
+    increase the volume |
+    kill the lights |
+    lights off |
+    lights on |
+    list my reminders |
+    lower the volume |
+    make a call |
+    make a phone call |
+    message |
+    next song |
+    pause |
+    pause audio |
+    pause song |
+    play music |
+    play next song |
+    play some music |
+    previous song |
+    power on the lights |
+    remind me to drink water |
+    remind me to exercise |
+    remind me to study |
+    reminder drink water |
+    reminder exercise |
+    reminder study |
+    reminders |
+    send a message |
+    send my message |
+    set an alarm for eight am |
+    set an alarm for nine pm |
+    set an alarm for six am |
+    set the brightness to one hundred percent |
+    set the brightness to sixty percent |
+    set the brightness to twenty percent |
+    set the lights to blue |
+    set the lights to green |
+    set the lights to red |
+    set the temperature to eighteen degrees |
+    set the temperature to twenty six degrees |
+    set the temperature to twenty two degrees |
+    show my reminders |
+    skip song |
+    start a timer for one minute |
+    start a timer for ten seconds |
+    start a timer for thirty seconds |
+    start music |
+    stop |
+    stop playing |
+    stop the music |
+    tell me the time |
+    tell me the weather |
+    temperature eighteen degrees |
+    temperature twenty six degrees |
+    temperature twenty two degrees |
+    time |
+    timer one minute |
+    timer ten seconds |
+    timer thirty seconds |
+    turn off the lights |
+    turn on the lights |
+    turn the volume down |
+    turn the volume up |
+    volume down |
+    volume up |
+    wake me up at eight am |
+    wake me up at nine pm |
+    wake me up at six am |
+    weather |
+    what time is it |
+    whats the weather |
+    change color to blue |
+    change color to green |
+    change color to red |
+    create a reminder drink water |
+    create a reminder exercise |
+    create a reminder study |
+    create reminder to drink water |
+    lights out |
+    shut off the lights |
+    end playback
+  ) ;
