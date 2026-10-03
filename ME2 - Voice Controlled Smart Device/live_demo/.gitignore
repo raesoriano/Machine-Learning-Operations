@@ -1,0 +1,4 @@
+# Piper TTS voice (en_US-lessac-low, ~63 MB) is auto-downloaded into tts/ on
+# first run (vcm_live.py _ensure_tts_voice). Not committed.
+tts/
+.venv/

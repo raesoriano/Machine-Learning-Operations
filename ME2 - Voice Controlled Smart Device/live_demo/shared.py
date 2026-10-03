@@ -42,49 +42,17 @@ COARSE_INTENT = {
 }
 
 # ---------------------------------------------------------------------------
-# coarse 19-command schema -> response WAV (from the TTS repo, in responses/).
-# Several coarse classes share a phrase (all brightness -> "setting
-# brightness", all colors -> "changing color", ...). 00_yes.wav is the "yes?"
-# cue (not bound to a command); 19_repeat.wav is the REJECT / "can you repeat
-# that?" response.
+# Spoken responses are synthesized live with Piper TTS (see vcm_live.py's
+# response_text()); there are no pre-recorded command-response WAVs. The only
+# pre-recorded audio is responses/00_yes.wav -- the "yes?" cue played after the
+# wake word (a prompt, not a command response).
 # ---------------------------------------------------------------------------
-RESPONSE_WAV = {
-    "PLAY_MUSIC": "01_playing_music.wav",
-    "WEATHER": "02_current_weather.wav",
-    "TIME": "03_current_time.wav",
-    "LIGHT_ON": "04_switching_lights.wav",
-    "LIGHT_OFF": "04_switching_lights.wav",
-    "BRIGHTNESS": "16_setting_brightness.wav",
-    "COLOR": "17_changing_color.wav",
-    "TIMER": "13_setting_timer.wav",
-    "ALARM": "14_setting_alarm.wav",
-    "TEMPERATURE": "15_changing_temperature.wav",
-    "PAUSE": "05_pausing.wav",
-    "STOP": "06_stopping_playback.wav",
-    "NEXT": "07_next_song.wav",
-    "VOLUME_UP": "08_volume_up.wav",
-    "VOLUME_DOWN": "09_volume_down.wav",
-    "CALL": "10_calling.wav",
-    "MESSAGE": "11_sending_message.wav",
-    "LIST_REMINDERS": "12_reminders_list.wav",
-    "CREATE_REMINDER": "18_creating_reminder.wav",
-    "REJECT": "19_repeat.wav",
-}
-
 # PREVIOUS is a music command that is NOT in the coarse 19 schema (the v3/v7
 # 31-class model has no PREVIOUS class, and v8's grammar has no "previous
 # song"). It is routed from the decoded transcript in the live loop.
 MUSIC_COMMANDS = frozenset(
     {"PLAY_MUSIC", "PAUSE", "STOP", "NEXT", "PREVIOUS",
      "VOLUME_UP", "VOLUME_DOWN"})
-
-
-def coarse_intent(command: str) -> str:
-    return COARSE_INTENT.get(command, "unknown")
-
-
-def response_wav(command: str) -> str:
-    return RESPONSE_WAV.get(command, RESPONSE_WAV["REJECT"])
 
 
 # ---------------------------------------------------------------------------

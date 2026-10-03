@@ -58,6 +58,7 @@ import argparse
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -146,53 +147,118 @@ WAKE_WINDOW = 5         # rolling 5 x 80 ms frames (0.4 s) the peak is taken ove
 COMMAND_WINDOW_S = 1.0  # after the 'yes?' cue, wait this long for the command
                         # to START, then go back to waiting for the wake word
 
-# --------------------------------------------------------------------------
-# command -> response WAV (from the TTS repo). 31 commands + REJECT.
-# Several commands share a phrase (e.g. all brightness -> "setting brightness").
-# 00_yes.wav is kept as a spare generic ack (not bound to a command).
-# --------------------------------------------------------------------------
-RESPONSE_WAV = {
-    "PLAY_MUSIC": "01_playing_music.wav",
-    "WEATHER": "02_current_weather.wav",
-    "TIME": "03_current_time.wav",
-    "LIGHT_ON": "04_switching_lights.wav",
-    "LIGHT_OFF": "04_switching_lights.wav",
-    "BRIGHTNESS_20": "16_setting_brightness.wav",
-    "BRIGHTNESS_60": "16_setting_brightness.wav",
-    "BRIGHTNESS_100": "16_setting_brightness.wav",
-    "COLOR_RED": "17_changing_color.wav",
-    "COLOR_GREEN": "17_changing_color.wav",
-    "COLOR_BLUE": "17_changing_color.wav",
-    "TIMER_10s": "13_setting_timer.wav",
-    "TIMER_30s": "13_setting_timer.wav",
-    "TIMER_1m": "13_setting_timer.wav",
-    "ALARM_6_00AM": "14_setting_alarm.wav",
-    "ALARM_8_00AM": "14_setting_alarm.wav",
-    "ALARM_9_00PM": "14_setting_alarm.wav",
-    "TEMPERATURE_18": "15_changing_temperature.wav",
-    "TEMPERATURE_22": "15_changing_temperature.wav",
-    "TEMPERATURE_26": "15_changing_temperature.wav",
-    "PAUSE": "05_pausing.wav",
-    "STOP": "06_stopping_playback.wav",
-    "NEXT": "07_next_song.wav",
-    "VOLUME_UP": "08_volume_up.wav",
-    "VOLUME_DOWN": "09_volume_down.wav",
-    "CALL": "10_calling.wav",
-    "MESSAGE": "11_sending_message.wav",
-    "LIST_REMINDERS": "12_reminders_list.wav",
-    "CREATE_REMINDER_DRINK_WATER": "18_creating_reminder.wav",
-    "CREATE_REMINDER_EXERCISE": "18_creating_reminder.wav",
-    "CREATE_REMINDER_STUDY": "18_creating_reminder.wav",
-    # coarse 19-schema labels (v8 emits these directly; v3/v7 are rolled up
-    # by the adapter) -- same response WAVs as their fine-grained counterparts
-    "BRIGHTNESS": "16_setting_brightness.wav",
-    "COLOR": "17_changing_color.wav",
-    "TIMER": "13_setting_timer.wav",
-    "ALARM": "14_setting_alarm.wav",
-    "TEMPERATURE": "15_changing_temperature.wav",
-    "CREATE_REMINDER": "18_creating_reminder.wav",
-    "REJECT": "19_repeat.wav",
+# fine 31-class -> coarse 19-command schema (same roll-up the adapters use).
+# Anything not listed is already a coarse / fixed label and maps to itself.
+FINE_TO_COARSE = {
+    "BRIGHTNESS_20": "BRIGHTNESS", "BRIGHTNESS_60": "BRIGHTNESS",
+    "BRIGHTNESS_100": "BRIGHTNESS",
+    "COLOR_RED": "COLOR", "COLOR_GREEN": "COLOR", "COLOR_BLUE": "COLOR",
+    "TIMER_10s": "TIMER", "TIMER_30s": "TIMER", "TIMER_1m": "TIMER",
+    "ALARM_6_00AM": "ALARM", "ALARM_8_00AM": "ALARM", "ALARM_9_00PM": "ALARM",
+    "TEMPERATURE_18": "TEMPERATURE", "TEMPERATURE_22": "TEMPERATURE",
+    "TEMPERATURE_26": "TEMPERATURE",
+    "CREATE_REMINDER_DRINK_WATER": "CREATE_REMINDER",
+    "CREATE_REMINDER_EXERCISE": "CREATE_REMINDER",
+    "CREATE_REMINDER_STUDY": "CREATE_REMINDER",
 }
+
+# --------------------------------------------------------------------------
+# command -> SPOKEN response (Piper TTS). 31 commands + REJECT.
+#
+# The 31 commands are 13 FIXED + 6 SLOTTED x 3 values (18) = 31:
+#   fixed : play_music, weather, time, light_on, light_off, pause, stop,
+#           next, volume_up, volume_down, call, message, list_reminders
+#   slotted (3 values each): timer, alarm, temperature, brightness, color,
+#           create_reminder
+# Anything that is not one of the 31 is REJECTED ("can you repeat that?").
+#
+# response_text() speaks the slot for slotted intents (e.g. "setting alarm
+# for 6 AM", not just "setting alarm"). The slot comes from the FINE class
+# (v8 emits ALARM_6_00AM); for models that only emit the coarse label (v3/v7)
+# it is recovered from the decoded transcript.
+# --------------------------------------------------------------------------
+SLOT_VALUE = {
+    # timer
+    "TIMER_10s": "10 seconds", "TIMER_30s": "30 seconds", "TIMER_1m": "1 minute",
+    # alarm
+    "ALARM_6_00AM": "6:00 AM", "ALARM_8_00AM": "8:00 AM", "ALARM_9_00PM": "9:00 PM",
+    # temperature
+    "TEMPERATURE_18": "18 degrees", "TEMPERATURE_22": "22 degrees",
+    "TEMPERATURE_26": "26 degrees",
+    # brightness
+    "BRIGHTNESS_20": "20 percent", "BRIGHTNESS_60": "60 percent",
+    "BRIGHTNESS_100": "100 percent",
+    # color
+    "COLOR_RED": "red", "COLOR_GREEN": "green", "COLOR_BLUE": "blue",
+    # create_reminder
+    "CREATE_REMINDER_DRINK_WATER": "drink water",
+    "CREATE_REMINDER_EXERCISE": "exercise",
+    "CREATE_REMINDER_STUDY": "study",
+}
+
+# coarse label -> (regex to pull the slot from the transcript, default value).
+# Used when a model only emits the coarse 19 label (v3/v7) so the spoken
+# response still carries the slot.
+_SLOT_FROM_TRANSCRIPT = {
+    "TIMER":         (r"(?:timer|countdown)[^.]{0,24}?(\d+\s+(?:seconds?|minutes?))", "1 minute"),
+    "ALARM":         (r"(?:at|for)\s+(\d{1,2}:\d{2}\s*[AP]M)", "6:00 AM"),
+    "TEMPERATURE":   (r"(\d{2}\s+degrees?)", "22 degrees"),
+    "BRIGHTNESS":    (r"(\d{1,3}\s+percent)", "60 percent"),
+    "COLOR":         (r"(?:to|the)\s+(red|green|blue)\b", "red"),
+    "CREATE_REMINDER": (r"(?:reminder to|remind me to)\s+([^.]{2,30})", "drink water"),
+}
+
+
+def _slot_value(fine: str, transcript: str) -> str:
+    """The spoken slot for a slotted command.
+
+    1. fine class carries it (v8: ALARM_6_00AM -> "6:00 AM");
+    2. else the coarse label + transcript (v3/v7);
+    3. else a sensible default (so the sentence is always grammatical).
+    """
+    if fine in SLOT_VALUE:
+        return SLOT_VALUE[fine]
+    coarse = FINE_TO_COARSE.get(fine, fine)
+    if coarse in _SLOT_FROM_TRANSCRIPT:
+        pat, default = _SLOT_FROM_TRANSCRIPT[coarse]
+        m = re.search(pat, transcript or "", re.IGNORECASE)
+        if m:
+            return m.group(1)
+        return default
+    return ""
+
+
+def response_text(fine: str, transcript: str = "") -> str:
+    """Spoken response for a command (31 schema + REJECT).
+
+    TIME / WEATHER return None -- they are answered dynamically (live time /
+    weather) in the dispatch, not by this map.
+    """
+    if fine in ("TIME", "WEATHER"):
+        return None
+    if fine == "REJECT":
+        return "Can you repeat that?"
+    slot = _slot_value(fine, transcript)
+    return {
+        "PLAY_MUSIC": "Playing music.",
+        "LIGHT_ON": "Turning on the lights.",
+        "LIGHT_OFF": "Turning off the lights.",
+        "PAUSE": "Pausing.",
+        "STOP": "Stopping playback.",
+        "NEXT": "Next song.",
+        "VOLUME_UP": "Volume up.",
+        "VOLUME_DOWN": "Volume down.",
+        "CALL": "Placing your call.",
+        "MESSAGE": "Sending your message.",
+        "LIST_REMINDERS": "Here are your reminders.",
+        "TIMER": f"Setting a timer for {slot}.",
+        "ALARM": f"Setting an alarm for {slot}.",
+        "TEMPERATURE": f"Setting the temperature to {slot}.",
+        "BRIGHTNESS": f"Setting brightness to {slot}.",
+        "COLOR": f"Changing the color to {slot}.",
+        "CREATE_REMINDER": f"Creating a reminder to {slot}.",
+    }.get(FINE_TO_COARSE.get(fine, fine), "Can you repeat that?")
+
 
 # command -> intent (same map as backbone/pocketsphinx/eval_pocketsphinx.py)
 _INTENT_OF = {
@@ -1620,10 +1686,13 @@ def run_mic(args):
                     print(f"  >> saying (Piper TTS): {text!r}")
                     speak(text, enabled=not args.no_play)
                 else:
-                    wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
-                    print(f"  >> playing {wav}")
-                    play_wav(os.path.join(RESP_DIR, wav),
-                             enabled=not args.no_play)
+                    # everything else (13 fixed + 6 slotted + REJECT):
+                    # synthesize the spoken response (Piper TTS) -- the slot
+                    # is included for slotted intents (e.g. "setting an alarm
+                    # for 6:00 AM"). REJECT -> "Can you repeat that?".
+                    text = response_text(cmd, transcript)
+                    print(f"  >> saying (Piper TTS): {text!r}")
+                    speak(text, enabled=not args.no_play)
                 time.sleep(COOLDOWN_S)    # ignore the mic briefly after the
                                           # response ends (tail / echo guard)
                 state["busy"] = False     # re-arm: wait for the next command
@@ -1651,10 +1720,18 @@ def run_file(args):
         text = weather_response_text(getattr(args, "weather_loc", None))
         print(f"  >> saying (Piper TTS): {text!r}")
         speak(text, enabled=not args.no_play)
+    elif cmd in MUSIC_COMMANDS:
+        # --file mode has no live music player; just speak the confirmation.
+        text = {"PLAY_MUSIC": "Playing music.", "PAUSE": "Pausing.",
+                "STOP": "Stopping playback.", "NEXT": "Next song.",
+                "PREVIOUS": "Previous song.", "VOLUME_UP": "Volume up.",
+                "VOLUME_DOWN": "Volume down."}.get(cmd, "Music command.")
+        print(f"  >> saying (Piper TTS): {text!r}")
+        speak(text, enabled=not args.no_play)
     else:
-        wav = RESPONSE_WAV.get(cmd, RESPONSE_WAV["REJECT"])
-        print(f"  >> playing {wav}")
-        play_wav(os.path.join(RESP_DIR, wav), enabled=not args.no_play)
+        text = response_text(cmd, transcript)
+        print(f"  >> saying (Piper TTS): {text!r}")
+        speak(text, enabled=not args.no_play)
 
 
 def run_test(args):
@@ -1684,8 +1761,9 @@ def run_test(args):
         f["cmd"] += ok
         f["intent"] += iok
         mark = "  " if ok else "!!"
+        _rt = response_text(cmd, transcript) or "(dynamic)"
         print(f"{mark} {r['folder']:16s} {r['spoken']!r:34s} -> "
-              f"{cmd:28s} (gold {r['gold']:28s}) [{RESPONSE_WAV.get(cmd, '?')}]")
+              f"{cmd:28s} (gold {r['gold']:28s}) [{_rt}]")
     n = len(rows)
     wall = time.perf_counter() - t0
     report = {

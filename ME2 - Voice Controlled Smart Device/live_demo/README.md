@@ -29,9 +29,23 @@ always-listen for debugging only.
 | `v3` | PocketSphinx ensemble (original AM) — `archived/pi test v3` | + `pocketsphinx`, `scikit-learn` |
 | `v7` | PocketSphinx ensemble (AM retrained on v6 data) — `archived/pi test v7` | + `pocketsphinx`, `scikit-learn` |
 
-v3 and v7 are the same script with different acoustic-model weights; the
-adapter rolls their 31 fine classes up to the 19-command schema so the shared
-loop + response map drive all models identically.
+v3 and v7 are the same script with different acoustic-model weights.
+
+## The 31 commands
+
+The command space is **31 commands = 13 fixed + 6 slotted × 3 values (18)**:
+
+| group | commands |
+|---|---|
+| **13 fixed** (same action regardless) | `play_music`, `weather`, `time`, `light_on`, `light_off`, `pause`, `stop`, `next`, `volume_up`, `volume_down`, `call`, `message`, `list_reminders` |
+| **6 slotted** (each has 3 values) | `timer` (10 s / 30 s / 1 min), `alarm` (6 AM / 8 AM / 9 PM), `temperature` (18 / 22 / 26 °), `brightness` (20 / 60 / 100 %), `color` (red / green / blue), `create_reminder` (drink water / study / exercise) |
+
+13 + 18 = **31**. Each command has **3 phrase variations** → **93 phrases**
+(see `pi test v8-conformer-ctc/variations.csv`). Anything that is not one of
+the 31 is **REJECTED** ("can you repeat that?").
+
+v8 emits the **fine** class (e.g. `ALARM_6_00AM`), which carries the slot; v3/v7
+emit the coarse label and the slot is recovered from the decoded transcript.
 
 ## Setup (Raspberry Pi 5)
 
@@ -75,22 +89,30 @@ Useful flags:
 | `--music-test` | stub-mpv self-test of the media commands |
 | `--wake-check` | verify the wake word loads, then exit |
 
-## Responses
+## Responses (Piper TTS)
 
-`responses/` holds the 19 TTS WAVs (Piper `en_US-lessac-medium`, 16 kHz mono)
-+ the "yes?" cue. The 19 coarse commands map onto these; REJECT/unknown plays
-"can you repeat that?". Dynamic answers (time, weather) are synthesized with
-`piper-tts` at runtime.
+There are **no pre-recorded command-response WAVs** anymore. Every command
+response is synthesized live with **Piper TTS** (`piper-tts`, the
+`en_US-lessac-low` voice — the fastest/lightest tier, ~63 MB, auto-downloaded
+into `tts/` on first run). The spoken text carries the **slot** for slotted
+intents, e.g. *"Setting an alarm for 6:00 AM."* (not just "setting alarm").
+REJECT → *"Can you repeat that?"*. `time` and `weather` are answered
+dynamically (live clock / live weather).
+
+The only pre-recorded audio is `responses/00_yes.wav` — the "yes?" cue played
+after the wake word (a prompt, not a command response).
 
 ## Layout
 
 ```
 live_demo/
-├── vcm_live.py          # the entry point (wake word, VAD, music, TTS, mic loop)
-├── shared.py            # shared infra + model factory + 19-intent response map
+├── vcm_live.py          # entry point (wake word, VAD, music, Piper TTS, mic loop)
+│                        #   + response_text(): 31 commands + REJECT -> spoken text
+├── shared.py            # shared infra + model factory
 ├── adapters/            # one adapter per model family (v3/v7, v8)
-├── responses/           # 19 TTS WAVs + "yes?" cue
-├── wakeword/            # "hey rhasspy" openWakeWord ONNX
+├── responses/           # 00_yes.wav ("yes?" cue) only
+├── tts/                 # Piper voice (auto-downloaded, git-ignored)
+├── wakeword/            # "hey rhasspy" openWakeWord ONNX + self-test wav
 ├── vcm/ vcm2/           # PocketSphinx ensemble code (v3/v7 only)
 └── requirements.txt
 ```

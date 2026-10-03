@@ -67,9 +67,8 @@ class V8Adapter:
         if c_words is not None:
             phrase = " ".join(self._v8.words[w - 1] for w in c_words)
             fine = self._mod.phrase_to_class(phrase)
-            pred = self._mod.coarse_class(fine)
         else:
-            phrase, fine, pred = "", "REJECT", "REJECT"
+            phrase, fine = "", "REJECT"
         reject = ((f_lp - c_lp) / max(1, lp.shape[0]) > self._v8.reject_margin)
         if self._v8.reject_empty and not f_words:
             reject = True
@@ -85,13 +84,16 @@ class V8Adapter:
             plen_ratio = (len(pw) / len(fw)) if fw else 0.0
             if (base_frac < 0.6) or (len(fw) >= 2 and plen_ratio < 0.20):
                 reject = True
-        if reject:
-            pred = "REJECT"
+        # Return the FINE class (31 schema: 13 fixed + 6 slotted x 3 values),
+        # NOT the coarse 19 roll-up -- the slot (e.g. ALARM_6_00AM -> "6 AM")
+        # is what the spoken response needs. REJECT for anything rejected.
+        command = "REJECT" if reject else fine
         transcript = " ".join(self._v8.words[w - 1] for w in f_words)
         # confidence: log-prob gap between the free and the constrained
         # decode, scaled to [0, 1] (0.5 == tied, like the v3/v7 scale)
         prob = float(1.0 / (1.0 + np.exp(-(f_lp - c_lp) / max(1, lp.shape[0]))))
-        return pred, COARSE_INTENT.get(pred, "unknown"), transcript, prob
+        return command, COARSE_INTENT.get(self._mod.coarse_class(fine), "unknown"), \
+            transcript, prob
 
 
 def build(model_path: str | None = None, reject_empty: bool = False,
