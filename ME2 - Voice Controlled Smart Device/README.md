@@ -35,6 +35,7 @@ and [`benchmark/results/comparison.md`](benchmark/results/comparison.md).
 ME2 - Voice Controlled Smart Device/
 ├── README.md                     # this file
 ├── me2-deck.md                   # results deck (Dr. Atienza template)
+├── demo_script.md                # 5–10 min live-demo run-of-show
 ├── pi test v8-conformer-ctc/     # *** CURRENT MODEL *** — training, eval, ONNX, runtime
 │   ├── train_v8.py  eval_v8.py  export_onnx.py  v8_onnx.py
 │   ├── model.py  data.py  hgm/  base_dictionary.txt  variations.csv
