@@ -14,9 +14,9 @@ Wake word: **hey rhasspy (offline: not used)** - trials: 202 with the wake word 
 | false reject (command ignored)    | 2.2%          | 2.3%         | 2.0%            |
 | false wake (no wake word, fired)  | -             | -            | -               |
 | slot exact                        | 93.1%         | 90.0%        | 95.1%           |
-| latency p95                       | 0.07 s        | 0.08 s       | 0.04 s          |
+| latency p95                       | 0.07 s        | 0.07 s       | 0.04 s          |
 
-**Pi:** real-time factor 0.018 (p95 0.025), inference 49 ms
+**Pi:** real-time factor 0.017 (p95 0.024), inference 50 ms
 
 # Detailed metrics
 
@@ -60,7 +60,7 @@ Each group is scored on its own. '-' = the group has no clips of that kind. The 
 | F2 (macro)                     | 86.1%          | 77.3%          | 92.3%           |
 | misfire rate                   | 10.2%          | 17.4%          | 4.0%            |
 | slot exact (intent right)      | 93.1% (n=101)  | 90.0% (n=40)   | 95.1% (n=61)    |
-| latency p50 / p95              | 0.04 / 0.07 s  | 0.07 / 0.08 s  | 0.03 / 0.04 s   |
+| latency p50 / p95              | 0.04 / 0.07 s  | 0.07 / 0.07 s  | 0.03 / 0.04 s   |
 | false wake rate (no wake word) | -              | -              | -               |
 
 ## Slot values (slotted intents, intent right)
@@ -84,10 +84,10 @@ abs error = Manhattan (L1) distance in the slot's unit (alarm: minutes, circular
 
 | metric                                      | mean / p95 / max        |
 |---------------------------------------------|-------------------------|
-| response latency (command end -> Pi output) | 0.049 / 0.073 / 0.129 s |
-| latency p50 / p99                           | 0.042 / 0.085 s         |
-| inference time (Pi-reported)                | 49.1 / 73.1 / 128.9 ms  |
-| real-time factor (infer / audio window)     | 0.018 / 0.025 / 0.208   |
+| response latency (command end -> Pi output) | 0.050 / 0.069 / 0.689 s |
+| latency p50 / p99                           | 0.041 / 0.075 s         |
+| inference time (Pi-reported)                | 49.8 / 69.0 / 689.3 ms  |
+| real-time factor (infer / audio window)     | 0.017 / 0.024 / 0.138   |
 | CPU temperature                             | -                       |
 | CPU use, whole Pi                           | -                       |
 | CPU use, your runtime process               | -                       |
