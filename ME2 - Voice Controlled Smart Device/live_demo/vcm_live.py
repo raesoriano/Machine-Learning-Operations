@@ -1404,7 +1404,7 @@ class WakeGate:
 class VAD:
     FRAME_S = 0.030
     END_S = 0.60          # trailing silence to end an utterance
-    MAX_S = 4.0           # hard cap: worst-case wait is 4 s, not 12
+    MAX_S = 3.0           # hard cap: worst-case wait is 3 s, not 12
     MODE = 2              # aggressiveness 0..3; 2 = strong noise rejection
     GATE = 0.05           # absolute min frame RMS to count as speech (-26 dBFS)
 
