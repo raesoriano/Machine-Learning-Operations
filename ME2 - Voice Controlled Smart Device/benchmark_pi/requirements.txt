@@ -1,0 +1,13 @@
+# ME2 offline benchmark -- ONNX runner (Raspberry Pi edition).
+# No torch, no torchaudio: the log-mel front-end and the 93-phrase
+# CTC-FSA are baked into the ONNX graph + meta.json (v8_onnx.py).
+#
+# Core (holdout set + scoring, shared with ../benchmark):
+numpy>=1.24
+soundfile>=0.12
+pandas>=2.0
+pyarrow>=14
+certifi
+
+# ONNX decode path:
+onnxruntime>=1.16

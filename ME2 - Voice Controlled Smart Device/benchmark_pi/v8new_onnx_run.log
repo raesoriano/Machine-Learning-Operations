@@ -1,0 +1,34 @@
+holdout: 202 clips (186 in-scope, 16 OOS), 106 synthetic
+
+=== v8new_onnx ===
+  onnx: /mnt/jfs_hpc/home/ron.andrei.soriano/sandbox/Machine-Learning-Operations/ME2 - Voice Controlled Smart Device/pi test v8-conformer-ctc/models/best.onnx  vocab=736 phrases=93
+  decoded 202 clips in 27.0s
+  -> v8new_onnx_metrics.json  intent_acc=0.8515 cmd_acc=0.8168 FA=0.875 FR=0.0215 misfire=0.0645
+
+=== SUMMARY ===
+{
+  "v8new_onnx": {
+    "n": 202,
+    "intent_acc": 0.8515,
+    "intent_acc_ci95": [
+      0.7959,
+      0.8939
+    ],
+    "intent_balanced": 0.8618,
+    "intent_macro_f1": 0.8309,
+    "intent_macro_f2": 0.8446,
+    "false_accept": 0.875,
+    "false_reject": 0.0215,
+    "misfire": 0.0645,
+    "cmd_acc": 0.8168,
+    "cmd_balanced": 0.8684,
+    "cmd_macro_f1": 0.8637,
+    "cmd_macro_f2": 0.8611,
+    "cmd_misfire": 0.1022,
+    "slot_exact": 0.9307,
+    "latency_p50_ms": 72.5,
+    "latency_p95_ms": 123.0,
+    "real_intent_acc": 0.7708,
+    "synth_intent_acc": 0.9245
+  }
+}
