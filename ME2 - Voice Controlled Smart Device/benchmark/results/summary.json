@@ -1,0 +1,122 @@
+{
+  "v3": {
+    "n": 202,
+    "intent_acc": 0.8267,
+    "intent_acc_ci95": [
+      0.7686,
+      0.8727
+    ],
+    "intent_balanced": 0.8313,
+    "intent_macro_f1": 0.801,
+    "intent_macro_f2": 0.816,
+    "false_accept": 0.875,
+    "false_reject": 0.0269,
+    "misfire": 0.086,
+    "cmd_acc": 0.8069,
+    "cmd_balanced": 0.8577,
+    "cmd_macro_f1": 0.8406,
+    "cmd_macro_f2": 0.8445,
+    "cmd_misfire": 0.1075,
+    "slot_exact": 0.9596,
+    "latency_p50_ms": 123.4,
+    "latency_p95_ms": 229.7,
+    "real_intent_acc": 0.8021,
+    "synth_intent_acc": 0.8491
+  },
+  "v7": {
+    "n": 202,
+    "intent_acc": 0.8069,
+    "intent_acc_ci95": [
+      0.747,
+      0.8554
+    ],
+    "intent_balanced": 0.8094,
+    "intent_macro_f1": 0.7921,
+    "intent_macro_f2": 0.7966,
+    "false_accept": 0.8125,
+    "false_reject": 0.0323,
+    "misfire": 0.1075,
+    "cmd_acc": 0.7871,
+    "cmd_balanced": 0.8318,
+    "cmd_macro_f1": 0.8277,
+    "cmd_macro_f2": 0.8205,
+    "cmd_misfire": 0.129,
+    "slot_exact": 0.9583,
+    "latency_p50_ms": 140.5,
+    "latency_p95_ms": 257.0,
+    "real_intent_acc": 0.8125,
+    "synth_intent_acc": 0.8019
+  },
+  "v8": {
+    "n": 202,
+    "intent_acc": 0.8317,
+    "intent_acc_ci95": [
+      0.774,
+      0.877
+    ],
+    "intent_balanced": 0.8556,
+    "intent_macro_f1": 0.8,
+    "intent_macro_f2": 0.8265,
+    "false_accept": 1.0,
+    "false_reject": 0.0,
+    "misfire": 0.0968,
+    "cmd_acc": 0.7822,
+    "cmd_balanced": 0.8404,
+    "cmd_macro_f1": 0.825,
+    "cmd_macro_f2": 0.8259,
+    "cmd_misfire": 0.1505,
+    "slot_exact": 0.898,
+    "latency_p50_ms": 41.7,
+    "latency_p95_ms": 71.8,
+    "real_intent_acc": 0.7292,
+    "synth_intent_acc": 0.9245
+  },
+  "v8neg": {
+    "n": 202,
+    "intent_acc": 0.8515,
+    "intent_acc_ci95": [
+      0.7959,
+      0.8939
+    ],
+    "intent_balanced": 0.8688,
+    "intent_macro_f1": 0.8393,
+    "intent_macro_f2": 0.8515,
+    "false_accept": 0.625,
+    "false_reject": 0.0161,
+    "misfire": 0.0914,
+    "cmd_acc": 0.802,
+    "cmd_balanced": 0.8338,
+    "cmd_macro_f1": 0.8311,
+    "cmd_macro_f2": 0.8261,
+    "cmd_misfire": 0.1452,
+    "slot_exact": 0.8958,
+    "latency_p50_ms": 41.9,
+    "latency_p95_ms": 73.0,
+    "real_intent_acc": 0.75,
+    "synth_intent_acc": 0.9434
+  },
+  "v8new": {
+    "n": 202,
+    "intent_acc": 0.8515,
+    "intent_acc_ci95": [
+      0.7959,
+      0.8939
+    ],
+    "intent_balanced": 0.8618,
+    "intent_macro_f1": 0.8309,
+    "intent_macro_f2": 0.8446,
+    "false_accept": 0.875,
+    "false_reject": 0.0215,
+    "misfire": 0.0645,
+    "cmd_acc": 0.8168,
+    "cmd_balanced": 0.8684,
+    "cmd_macro_f1": 0.8637,
+    "cmd_macro_f2": 0.8611,
+    "cmd_misfire": 0.1022,
+    "slot_exact": 0.9307,
+    "latency_p50_ms": 42.2,
+    "latency_p95_ms": 73.2,
+    "real_intent_acc": 0.7708,
+    "synth_intent_acc": 0.9245
+  }
+}

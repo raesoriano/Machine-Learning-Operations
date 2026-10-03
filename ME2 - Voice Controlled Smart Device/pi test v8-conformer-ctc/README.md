@@ -45,13 +45,17 @@ constrained phrase, OOS decodes to words that match no command.
   negatives** (all-blank targets) = ~31.7k training clips (16 kHz mono).
 * word vocab = 736 words as above; word 0 in the CTC output is the blank.
 * validation: the 202-clip holdout split (in-scope + OOS).
+* the dataset lives in `../data/` (Hugging Face `airimonda/ai231-me2-voice-commands`;
+  `python ../data/download_dataset.py --negatives` builds `../data/dataset/`).
+  `train_v8.py` / `eval_v8.py` default `--data` to `../data/dataset`.
 
 ## Training (DGX)
 
 ```
+cd "pi test v8-conformer-ctc"
 torchrun --nproc_per_node=3 train_v8.py --epochs 40 --bs 48 --workers 8 \
   --out models \
-  --negatives /path/to/me2-v6-negatives/dataset
+  --negatives ../data/dataset/synthetic_negatives
 ```
 
 * 3× A100, bf16 autocast, AdamW (lr 1e-3, cosine + warmup), grad clip 5.0.

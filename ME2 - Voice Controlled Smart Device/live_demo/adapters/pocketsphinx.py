@@ -52,7 +52,9 @@ def _load_module(name: str, folder: str):
 
 class PocketSphinxAdapter:
     def __init__(self, name: str):
-        folder = "pi test v3" if name == "v3" else "pi test v7"
+        # v3/v7 were moved to archived/ (superseded by v8); the live_demo
+        # still supports them for comparison.
+        folder = "archived/pi test v3" if name == "v3" else "archived/pi test v7"
         print(f"loading {name} PocketSphinx ensemble "
               f"({folder}/vcm_pi_v3.py) ...", flush=True)
         self._mod = _load_module(name, folder)

@@ -10,7 +10,7 @@ shared interface:
 `command` is the COARSE 19-command schema label (or "REJECT") -- the same
 schema the shared live loop's response map uses. The log-mel front-end is
 baked into the ONNX graph, so this adapter needs only `onnxruntime` +
-`numpy` (no torch, no torchaudio, no import from `pi test v6`).
+`numpy` (no torch, no torchaudio, no import from `archived/pi test v6`).
 """
 from __future__ import annotations
 

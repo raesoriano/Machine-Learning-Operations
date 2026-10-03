@@ -29,7 +29,7 @@ from model import V8Model                       # noqa: E402
 from data import (V8Dataset, collate, build_vocab, build_vocab_v8,  # noqa: E402
                   load_split, load_test, oos_train_items, oos_items)
 
-DEFAULT_DATA = "/home/ron.andrei.soriano/sandbox/data/external/me2-v6/dataset"
+DEFAULT_DATA = os.path.normpath(os.path.join(_HERE, "..", "data", "dataset"))
 
 
 def setup_dist():

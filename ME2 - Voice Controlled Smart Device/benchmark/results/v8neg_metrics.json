@@ -1,0 +1,2084 @@
+{
+  "meta": {
+    "model": "v8neg",
+    "mode": "offline"
+  },
+  "pi_specs": {},
+  "model": "v8neg",
+  "intent_level": {
+    "n": 202,
+    "accuracy": 0.8514851485148515,
+    "accuracy_ci95": [
+      0.7959039344630899,
+      0.8939469022968264
+    ],
+    "balanced_accuracy": 0.86875,
+    "macro_precision": 0.8438200280112046,
+    "macro_recall": 0.86875,
+    "macro_f1": 0.8393262597617437,
+    "macro_f2": 0.8514743389567861,
+    "false_accept_rate": 0.625,
+    "false_accept_ci95": [
+      0.3864064709793481,
+      0.815190174452472
+    ],
+    "false_accepts": 10,
+    "n_out_of_scope": 16,
+    "false_reject_rate": 0.016129032258064516,
+    "misfire_rate": 0.0913978494623656,
+    "per_class": {
+      "ALARM": {
+        "support": 18,
+        "precision": 1.0,
+        "recall": 0.9444444444444444,
+        "f1": 0.9714285714285714,
+        "f2": 0.9550561797752809
+      },
+      "BRIGHTNESS": {
+        "support": 18,
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "f1": 0.9090909090909091,
+        "f2": 0.8620689655172415
+      },
+      "CALL": {
+        "support": 6,
+        "precision": 0.8333333333333334,
+        "recall": 0.8333333333333334,
+        "f1": 0.8333333333333334,
+        "f2": 0.8333333333333334
+      },
+      "COLOR": {
+        "support": 18,
+        "precision": 1.0,
+        "recall": 0.7222222222222222,
+        "f1": 0.8387096774193548,
+        "f2": 0.7647058823529411
+      },
+      "CREATE_REMINDER": {
+        "support": 18,
+        "precision": 0.8823529411764706,
+        "recall": 0.8333333333333334,
+        "f1": 0.8571428571428571,
+        "f2": 0.8426966292134833
+      },
+      "LIGHT_OFF": {
+        "support": 6,
+        "precision": 0.5714285714285714,
+        "recall": 0.6666666666666666,
+        "f1": 0.6153846153846153,
+        "f2": 0.6451612903225806
+      },
+      "LIGHT_ON": {
+        "support": 6,
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.7499999999999999,
+        "f2": 0.8823529411764706
+      },
+      "LIST_REMINDERS": {
+        "support": 6,
+        "precision": 0.8571428571428571,
+        "recall": 1.0,
+        "f1": 0.923076923076923,
+        "f2": 0.9677419354838709
+      },
+      "MESSAGE": {
+        "support": 6,
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571428571428571,
+        "f2": 0.9375
+      },
+      "NEXT": {
+        "support": 6,
+        "precision": 0.8571428571428571,
+        "recall": 1.0,
+        "f1": 0.923076923076923,
+        "f2": 0.9677419354838709
+      },
+      "PAUSE": {
+        "support": 6,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "PLAY_MUSIC": {
+        "support": 6,
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8,
+        "f2": 0.7142857142857142
+      },
+      "REJECT": {
+        "support": 16,
+        "precision": 0.6666666666666666,
+        "recall": 0.375,
+        "f1": 0.4800000000000001,
+        "f2": 0.4109589041095891
+      },
+      "STOP": {
+        "support": 6,
+        "precision": 0.8333333333333334,
+        "recall": 0.8333333333333334,
+        "f1": 0.8333333333333334,
+        "f2": 0.8333333333333334
+      },
+      "TEMPERATURE": {
+        "support": 18,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "TIME": {
+        "support": 6,
+        "precision": 0.625,
+        "recall": 0.8333333333333334,
+        "f1": 0.7142857142857143,
+        "f2": 0.78125
+      },
+      "TIMER": {
+        "support": 18,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "VOLUME_DOWN": {
+        "support": 6,
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "f1": 0.9090909090909091,
+        "f2": 0.8620689655172415
+      },
+      "VOLUME_UP": {
+        "support": 6,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "WEATHER": {
+        "support": 6,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      }
+    },
+    "confusions": [
+      [
+        [
+          "COLOR",
+          "LIGHT_OFF"
+        ],
+        3
+      ],
+      [
+        [
+          "REJECT",
+          "TIME"
+        ],
+        3
+      ],
+      [
+        [
+          "REJECT",
+          "PAUSE"
+        ],
+        3
+      ],
+      [
+        [
+          "LIGHT_OFF",
+          "LIGHT_ON"
+        ],
+        2
+      ],
+      [
+        [
+          "BRIGHTNESS",
+          "CREATE_REMINDER"
+        ],
+        2
+      ],
+      [
+        [
+          "COLOR",
+          "PAUSE"
+        ],
+        2
+      ],
+      [
+        [
+          "CREATE_REMINDER",
+          "REJECT"
+        ],
+        2
+      ],
+      [
+        [
+          "REJECT",
+          "MESSAGE"
+        ],
+        2
+      ],
+      [
+        [
+          "PLAY_MUSIC",
+          "NEXT"
+        ],
+        1
+      ],
+      [
+        [
+          "PLAY_MUSIC",
+          "PAUSE"
+        ],
+        1
+      ],
+      [
+        [
+          "TIME",
+          "PAUSE"
+        ],
+        1
+      ],
+      [
+        [
+          "STOP",
+          "LIGHT_ON"
+        ],
+        1
+      ],
+      [
+        [
+          "VOLUME_DOWN",
+          "PAUSE"
+        ],
+        1
+      ],
+      [
+        [
+          "CALL",
+          "PAUSE"
+        ],
+        1
+      ],
+      [
+        [
+          "ALARM",
+          "REJECT"
+        ],
+        1
+      ]
+    ]
+  },
+  "command_level": {
+    "n": 202,
+    "accuracy": 0.801980198019802,
+    "accuracy_ci95": [
+      0.7416124936948294,
+      0.8510762533805918
+    ],
+    "balanced_accuracy": 0.8337765957446809,
+    "macro_precision": 0.8758704061895553,
+    "macro_recall": 0.8337765957446809,
+    "macro_f1": 0.8311253994232719,
+    "macro_f2": 0.8260700974138058,
+    "false_accept_rate": 0.625,
+    "false_accept_ci95": [
+      0.3864064709793481,
+      0.815190174452472
+    ],
+    "false_accepts": 10,
+    "n_out_of_scope": 16,
+    "false_reject_rate": 0.016129032258064516,
+    "misfire_rate": 0.14516129032258066,
+    "per_class": {
+      "Adjust brightness to 100 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Adjust brightness to 20 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Adjust brightness to 60 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Alarm 6:00 AM": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "f2": 0.5
+      },
+      "Alarm 8:00 AM": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Alarm 9:00 PM": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Brightness 100 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Brightness 20 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Brightness 60 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Brightness level 100 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Brightness level 20 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Brightness level 60 percent": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Call": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "f2": 0.5
+      },
+      "Change color to Blue": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Change color to Green": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "f2": 0.45454545454545453
+      },
+      "Change color to Red": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Change the temperature to 18 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Change the temperature to 22 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Change the temperature to 26 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Countdown for 1 minute": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Countdown for 10 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Countdown for 30 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Create a reminder to Drink water": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Create a reminder to Exercise": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Create a reminder to Study": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "End playback": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Increase the volume": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Kill the lights": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Lights on": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Lights out": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 0.5,
+        "f1": 0.3333333333333333,
+        "f2": 0.4166666666666667
+      },
+      "List my reminders": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Lower the volume": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Make a call": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Make a phone call": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Message": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "f2": 0.8333333333333334
+      },
+      "Next song": {
+        "support": 2,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1": 0.8,
+        "f2": 0.9090909090909091
+      },
+      "Pause": {
+        "support": 2,
+        "precision": 0.18181818181818182,
+        "recall": 1.0,
+        "f1": 0.3076923076923077,
+        "f2": 0.5263157894736843
+      },
+      "Pause audio": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Pause song": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Play music": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Play next song": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Play some music": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Power on the lights": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "REJECT": {
+        "support": 16,
+        "precision": 0.6666666666666666,
+        "recall": 0.375,
+        "f1": 0.4800000000000001,
+        "f2": 0.4109589041095891
+      },
+      "Remind me to Drink water": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Remind me to Exercise": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Remind me to Study": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Reminder Drink water": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Reminder Exercise": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "f2": 0.5
+      },
+      "Reminder Study": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "f2": 0.5
+      },
+      "Reminders": {
+        "support": 2,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1": 0.8,
+        "f2": 0.9090909090909091
+      },
+      "Send a message": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Send my message": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Set an alarm for 6:00 AM": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Set an alarm for 8:00 AM": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Set an alarm for 9:00 PM": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Set color to Blue": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set color to Green": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Set color to Red": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Set the temperature to 18 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Set the temperature to 22 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Set the temperature to 26 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Show my reminders": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Shut off the lights": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Skip song": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Start a timer for 1 minute": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Start a timer for 10 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Start a timer for 30 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Start music": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Stop": {
+        "support": 2,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1": 0.8,
+        "f2": 0.9090909090909091
+      },
+      "Stop playing": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Switch color to Blue": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Switch color to Green": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Switch color to Red": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Tell me the time": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Tell me the weather": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Temperature 18 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Temperature 22 degrees": {
+        "support": 2,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1": 0.8,
+        "f2": 0.9090909090909091
+      },
+      "Temperature 26 degrees": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Time": {
+        "support": 2,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "Timer 1 minute": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Timer 10 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Timer 30 seconds": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Turn on the lights": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Turn the volume down": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Turn the volume up": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Volume down": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "Volume up": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "Wake me up at 6:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Wake me up at 8:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Wake me up at 9:00 PM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Weather": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      },
+      "What time is it?": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666,
+        "f2": 0.5555555555555556
+      },
+      "What's the weather?": {
+        "support": 2,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "f2": 1.0
+      }
+    },
+    "confusions": [
+      [
+        [
+          "REJECT",
+          "Time"
+        ],
+        3
+      ],
+      [
+        [
+          "REJECT",
+          "Pause"
+        ],
+        3
+      ],
+      [
+        [
+          "Wake me up at 6:00 AM",
+          "ALARM:?"
+        ],
+        2
+      ],
+      [
+        [
+          "Wake me up at 8:00 AM",
+          "ALARM:?"
+        ],
+        2
+      ],
+      [
+        [
+          "Wake me up at 9:00 PM",
+          "ALARM:?"
+        ],
+        2
+      ],
+      [
+        [
+          "REJECT",
+          "Message"
+        ],
+        2
+      ],
+      [
+        [
+          "Play music",
+          "Next song"
+        ],
+        1
+      ],
+      [
+        [
+          "Play some music",
+          "Pause"
+        ],
+        1
+      ],
+      [
+        [
+          "What time is it?",
+          "Pause"
+        ],
+        1
+      ],
+      [
+        [
+          "Lights out",
+          "Lights on"
+        ],
+        1
+      ],
+      [
+        [
+          "Shut off the lights",
+          "Lights on"
+        ],
+        1
+      ],
+      [
+        [
+          "End playback",
+          "Lights on"
+        ],
+        1
+      ],
+      [
+        [
+          "Volume down",
+          "Pause"
+        ],
+        1
+      ],
+      [
+        [
+          "Call",
+          "Pause"
+        ],
+        1
+      ],
+      [
+        [
+          "Alarm 6:00 AM",
+          "REJECT"
+        ],
+        1
+      ]
+    ]
+  },
+  "exact_wording": {
+    "n": 202,
+    "accuracy": 0.28217821782178215,
+    "accuracy_ci95": [
+      0.22462552005504857,
+      0.3478612853331723
+    ],
+    "balanced_accuracy": 0.2752659574468085,
+    "macro_precision": 0.10524316109422492,
+    "macro_recall": 0.2752659574468085,
+    "macro_f1": 0.14574696545284782,
+    "macro_f2": 0.19923372760674604,
+    "false_accept_rate": 0.625,
+    "false_accept_ci95": [
+      0.3864064709793481,
+      0.815190174452472
+    ],
+    "false_accepts": 10,
+    "n_out_of_scope": 16,
+    "false_reject_rate": 0.016129032258064516,
+    "misfire_rate": 0.7096774193548387,
+    "per_class": {
+      "Adjust brightness to 100 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Adjust brightness to 20 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Adjust brightness to 60 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Alarm 6:00 AM": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 0.5,
+        "f1": 0.3333333333333333,
+        "f2": 0.4166666666666667
+      },
+      "Alarm 8:00 AM": {
+        "support": 2,
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1": 0.8,
+        "f2": 0.9090909090909091
+      },
+      "Alarm 9:00 PM": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666,
+        "f2": 0.8333333333333334
+      },
+      "Brightness 100 percent": {
+        "support": 2,
+        "precision": 0.2,
+        "recall": 0.5,
+        "f1": 0.28571428571428575,
+        "f2": 0.3846153846153846
+      },
+      "Brightness 20 percent": {
+        "support": 2,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "Brightness 60 percent": {
+        "support": 2,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "Brightness level 100 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Brightness level 20 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Brightness level 60 percent": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Call": {
+        "support": 2,
+        "precision": 0.16666666666666666,
+        "recall": 0.5,
+        "f1": 0.25,
+        "f2": 0.35714285714285715
+      },
+      "Change color to Blue": {
+        "support": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "f2": 0.5
+      },
+      "Change color to Green": {
+        "support": 2,
+        "precision": 0.14285714285714285,
+        "recall": 0.5,
+        "f1": 0.22222222222222224,
+        "f2": 0.3333333333333333
+      },
+      "Change color to Red": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 0.5,
+        "f1": 0.3333333333333333,
+        "f2": 0.4166666666666667
+      },
+      "Change the temperature to 18 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Change the temperature to 22 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Change the temperature to 26 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Countdown for 1 minute": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Countdown for 10 seconds": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Countdown for 30 seconds": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Create a reminder to Drink water": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Create a reminder to Exercise": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Create a reminder to Study": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "End playback": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Increase the volume": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Kill the lights": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Lights on": {
+        "support": 2,
+        "precision": 0.2,
+        "recall": 1.0,
+        "f1": 0.33333333333333337,
+        "f2": 0.5555555555555556
+      },
+      "Lights out": {
+        "support": 2,
+        "precision": 0.14285714285714285,
+        "recall": 0.5,
+        "f1": 0.22222222222222224,
+        "f2": 0.3333333333333333
+      },
+      "List my reminders": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Lower the volume": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Make a call": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Make a phone call": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Message": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1": 0.4,
+        "f2": 0.625
+      },
+      "Next song": {
+        "support": 2,
+        "precision": 0.2857142857142857,
+        "recall": 1.0,
+        "f1": 0.4444444444444445,
+        "f2": 0.6666666666666666
+      },
+      "Pause": {
+        "support": 2,
+        "precision": 0.13333333333333333,
+        "recall": 1.0,
+        "f1": 0.23529411764705882,
+        "f2": 0.43478260869565216
+      },
+      "Pause audio": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Pause song": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Play music": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 0.5,
+        "f1": 0.3333333333333333,
+        "f2": 0.4166666666666667
+      },
+      "Play next song": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Play some music": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Power on the lights": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "REJECT": {
+        "support": 16,
+        "precision": 0.6666666666666666,
+        "recall": 0.375,
+        "f1": 0.4800000000000001,
+        "f2": 0.4109589041095891
+      },
+      "Remind me to Drink water": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Remind me to Exercise": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Remind me to Study": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Reminder Drink water": {
+        "support": 2,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "Reminder Exercise": {
+        "support": 2,
+        "precision": 0.16666666666666666,
+        "recall": 0.5,
+        "f1": 0.25,
+        "f2": 0.35714285714285715
+      },
+      "Reminder Study": {
+        "support": 2,
+        "precision": 0.16666666666666666,
+        "recall": 0.5,
+        "f1": 0.25,
+        "f2": 0.35714285714285715
+      },
+      "Reminders": {
+        "support": 2,
+        "precision": 0.2857142857142857,
+        "recall": 1.0,
+        "f1": 0.4444444444444445,
+        "f2": 0.6666666666666666
+      },
+      "Send a message": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Send my message": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set an alarm for 6:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set an alarm for 8:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set an alarm for 9:00 PM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set color to Blue": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set color to Green": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set color to Red": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set the temperature to 18 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set the temperature to 22 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Set the temperature to 26 degrees": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Show my reminders": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Shut off the lights": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Skip song": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Start a timer for 1 minute": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Start a timer for 10 seconds": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Start a timer for 30 seconds": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Start music": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Stop": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Stop playing": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Switch color to Blue": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Switch color to Green": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Switch color to Red": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Tell me the time": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Tell me the weather": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Temperature 18 degrees": {
+        "support": 2,
+        "precision": 0.4,
+        "recall": 1.0,
+        "f1": 0.5714285714285715,
+        "f2": 0.7692307692307692
+      },
+      "Temperature 22 degrees": {
+        "support": 2,
+        "precision": 0.2857142857142857,
+        "recall": 1.0,
+        "f1": 0.4444444444444445,
+        "f2": 0.6666666666666666
+      },
+      "Temperature 26 degrees": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Time": {
+        "support": 2,
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1": 0.4,
+        "f2": 0.625
+      },
+      "Timer 1 minute": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Timer 10 seconds": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Timer 30 seconds": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Turn on the lights": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Turn the volume down": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Turn the volume up": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Volume down": {
+        "support": 2,
+        "precision": 0.2,
+        "recall": 0.5,
+        "f1": 0.28571428571428575,
+        "f2": 0.3846153846153846
+      },
+      "Volume up": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "Wake me up at 6:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Wake me up at 8:00 AM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Wake me up at 9:00 PM": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "Weather": {
+        "support": 2,
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "f2": 0.7142857142857143
+      },
+      "What time is it?": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      },
+      "What's the weather?": {
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "f2": 0.0
+      }
+    },
+    "confusions": [
+      [
+        [
+          "REJECT",
+          "Time"
+        ],
+        3
+      ],
+      [
+        [
+          "REJECT",
+          "Pause"
+        ],
+        3
+      ],
+      [
+        [
+          "Start music",
+          "Play music"
+        ],
+        2
+      ],
+      [
+        [
+          "What's the weather?",
+          "Weather"
+        ],
+        2
+      ],
+      [
+        [
+          "Tell me the weather",
+          "Weather"
+        ],
+        2
+      ],
+      [
+        [
+          "Tell me the time",
+          "Time"
+        ],
+        2
+      ],
+      [
+        [
+          "Power on the lights",
+          "Lights on"
+        ],
+        2
+      ],
+      [
+        [
+          "Turn on the lights",
+          "Lights on"
+        ],
+        2
+      ],
+      [
+        [
+          "Kill the lights",
+          "Lights out"
+        ],
+        2
+      ],
+      [
+        [
+          "Pause audio",
+          "Pause"
+        ],
+        2
+      ],
+      [
+        [
+          "Pause song",
+          "Pause"
+        ],
+        2
+      ],
+      [
+        [
+          "Stop playing",
+          "Stop"
+        ],
+        2
+      ],
+      [
+        [
+          "Skip song",
+          "Next song"
+        ],
+        2
+      ],
+      [
+        [
+          "Play next song",
+          "Next song"
+        ],
+        2
+      ],
+      [
+        [
+          "Increase the volume",
+          "Volume up"
+        ],
+        2
+      ]
+    ],
+    "lines_with_phrase": 187
+  },
+  "id_order_check": null,
+  "false_wake": {
+    "n": 0,
+    "false_wakes": 0,
+    "false_wake_rate": null,
+    "false_wake_ci95": [
+      null,
+      null
+    ],
+    "wake_word_logged": 0,
+    "fired": []
+  },
+  "slots": {
+    "ALARM": {
+      "n": 17,
+      "exact_rate": 0.5882352941176471,
+      "mean_abs_error": 10.909090909090908,
+      "unit": "min",
+      "mean_rel_error": 0.012121212121212121,
+      "mean_phonetic_dist": 0.38235294117647056,
+      "mean_char_dist": 0.38235294117647056
+    },
+    "BRIGHTNESS": {
+      "n": 15,
+      "exact_rate": 1.0,
+      "mean_abs_error": 0.0,
+      "unit": "%",
+      "mean_rel_error": 0.0,
+      "mean_phonetic_dist": 0.0,
+      "mean_char_dist": 0.0
+    },
+    "COLOR": {
+      "n": 13,
+      "exact_rate": 0.8461538461538461,
+      "mean_abs_error": null,
+      "unit": null,
+      "mean_rel_error": null,
+      "mean_phonetic_dist": 0.15384615384615385,
+      "mean_char_dist": 0.12307692307692308
+    },
+    "CREATE_REMINDER": {
+      "n": 15,
+      "exact_rate": 1.0,
+      "mean_abs_error": null,
+      "unit": null,
+      "mean_rel_error": null,
+      "mean_phonetic_dist": 0.0,
+      "mean_char_dist": 0.0
+    },
+    "TEMPERATURE": {
+      "n": 18,
+      "exact_rate": 0.9444444444444444,
+      "mean_abs_error": 0.2222222222222222,
+      "unit": "deg",
+      "mean_rel_error": 0.027777777777777776,
+      "mean_phonetic_dist": 0.027777777777777776,
+      "mean_char_dist": 0.027777777777777776
+    },
+    "TIMER": {
+      "n": 18,
+      "exact_rate": 1.0,
+      "mean_abs_error": 0.0,
+      "unit": "s",
+      "mean_rel_error": 0.0,
+      "mean_phonetic_dist": 0.0,
+      "mean_char_dist": 0.0
+    },
+    "ALL": {
+      "n": 96,
+      "exact_rate": 0.8958333333333334,
+      "mean_rel_error": 0.010215053763440859,
+      "mean_phonetic_dist": 0.09375,
+      "mean_char_dist": 0.08958333333333333
+    }
+  },
+  "breakdowns": {
+    "overall": {
+      "n": 202,
+      "n_no_wake": 0,
+      "accuracy": 0.8514851485148515,
+      "accuracy_ci95": [
+        0.7959039344630899,
+        0.8939469022968264
+      ],
+      "balanced_accuracy": 0.86875,
+      "macro_f1": 0.8393262597617437,
+      "macro_f2": 0.8514743389567861,
+      "false_accept_rate": 0.625,
+      "false_accepts": 10,
+      "n_out_of_scope": 16,
+      "false_reject_rate": 0.016129032258064516,
+      "misfire_rate": 0.0913978494623656,
+      "command_accuracy": 0.801980198019802,
+      "command_balanced_accuracy": 0.8337765957446809,
+      "command_macro_f1": 0.8311253994232719,
+      "command_macro_f2": 0.8260700974138058,
+      "command_false_reject_rate": 0.016129032258064516,
+      "command_misfire_rate": 0.14516129032258066,
+      "slot_exact_rate": 0.8958333333333334,
+      "n_slot": 96,
+      "latency_p50": 0.0419,
+      "latency_p95": 0.07304999999999999
+    },
+    "real voice": {
+      "n": 96,
+      "n_no_wake": 0,
+      "accuracy": 0.75,
+      "accuracy_ci95": [
+        0.6549000204355595,
+        0.8258615058220327
+      ],
+      "balanced_accuracy": 0.7804166666666666,
+      "macro_f1": 0.7369004524886877,
+      "macro_f2": 0.7527970891401743,
+      "false_accept_rate": 0.6,
+      "false_accepts": 6,
+      "n_out_of_scope": 10,
+      "false_reject_rate": 0.03488372093023256,
+      "misfire_rate": 0.1744186046511628,
+      "command_accuracy": 0.6979166666666666,
+      "command_balanced_accuracy": 0.728735632183908,
+      "command_macro_f1": 0.6868905416572759,
+      "command_macro_f2": 0.7046038151137196,
+      "command_false_reject_rate": 0.03488372093023256,
+      "command_misfire_rate": 0.23255813953488372,
+      "slot_exact_rate": 0.8571428571428571,
+      "n_slot": 35,
+      "latency_p50": 0.0681,
+      "latency_p95": 0.075375
+    },
+    "synthetic voice": {
+      "n": 106,
+      "n_no_wake": 0,
+      "accuracy": 0.9433962264150944,
+      "accuracy_ci95": [
+        0.8819750370792868,
+        0.9738027374615065
+      ],
+      "balanced_accuracy": 0.9333333333333333,
+      "macro_f1": 0.9157142857142857,
+      "macro_f2": 0.9226446347769878,
+      "false_accept_rate": 0.6666666666666666,
+      "false_accepts": 4,
+      "n_out_of_scope": 6,
+      "false_reject_rate": 0.0,
+      "misfire_rate": 0.02,
+      "command_accuracy": 0.8962264150943396,
+      "command_balanced_accuracy": 0.9237588652482269,
+      "command_macro_f1": 0.9042553191489362,
+      "command_macro_f2": 0.9122307952095187,
+      "command_false_reject_rate": 0.0,
+      "command_misfire_rate": 0.07,
+      "slot_exact_rate": 0.9180327868852459,
+      "n_slot": 61,
+      "latency_p50": 0.030449999999999998,
+      "latency_p95": 0.044000000000000004
+    }
+  },
+  "pipeline": {
+    "trials": 202,
+    "response_rate": 0.9554455445544554,
+    "wake_detect_rate": null,
+    "no_response": 9,
+    "extra_fires": 0,
+    "commands_missing_timing": 0,
+    "unknown_intent_names": []
+  },
+  "pi": {
+    "samples": 0,
+    "temp_c": {
+      "n": 0
+    },
+    "cpu_pct_system": {
+      "n": 0
+    },
+    "cpu_pct_process": {
+      "n": 0
+    },
+    "rss_mb_process": {
+      "n": 0
+    },
+    "mem_used_mb_system": {
+      "n": 0
+    },
+    "freq_mhz": {
+      "n": 0
+    },
+    "load1": {
+      "n": 0
+    },
+    "throttled_flags_seen": [],
+    "response_latency_s": {
+      "n": 202,
+      "mean": 0.04807079207920793,
+      "min": 0.0185,
+      "max": 0.082,
+      "p50": 0.0419,
+      "p95": 0.07304999999999999,
+      "p99": 0.07779799999999999
+    },
+    "infer_ms": {
+      "n": 202,
+      "mean": 48.07490594059405,
+      "min": 18.495,
+      "max": 81.96,
+      "p50": 41.8995,
+      "p95": 73.09794999999998,
+      "p99": 77.82967
+    },
+    "rtf": {
+      "n": 202,
+      "mean": 0.01672191201813131,
+      "min": 0.0130344,
+      "max": 0.035387931034482754,
+      "p50": 0.015815105926238738,
+      "p95": 0.023442029893924778,
+      "p99": 0.02981126728110601
+    },
+    "process_cpu_seconds": null,
+    "cpu_seconds_per_speech_second": null,
+    "process_cpu_share_of_wall": null,
+    "test_wall_time_s": 1.3113021850585938e-05,
+    "speech_seconds_played": 0
+  },
+  "offline": true,
+  "note": "Offline adaptation of vcm-benchmark: same 202-clip holdout set, model's own recognizer, benchmark's unmodified scoring code. false-wake rate is N/A offline (needs the live wake-word link)."
+}

@@ -1,0 +1,203 @@
+idx,file,true_intent,true_variation,true_slot,pred_intent,pred_slot,pred_variation,is_synthetic,infer_ms,correct_intent,correct_command
+0,audio/holdout_000000_real_voice_PLAY_MUSIC_V2_t2.wav,PLAY_MUSIC,Play music,,TIMER,1 minute,Timer 1 minute,0,17282.211,False,False
+1,audio/holdout_000001_group_synthetic_PLAY_MUSIC_s10_v1_clean.wav,PLAY_MUSIC,Play music,,WEATHER,,Weather,1,2937.607,False,False
+2,audio/holdout_000002_real_voice_PLAY_MUSIC_V3_t2.wav,PLAY_MUSIC,Start music,,BRIGHTNESS,20 percent,Brightness 20 percent,0,17243.812,False,False
+3,audio/holdout_000003_group_synthetic_PLAY_MUSIC_s10_v2_clean.wav,PLAY_MUSIC,Start music,,TIME,,Time,1,3864.195,False,False
+4,audio/holdout_000004_FluentSpeechCommands_c5d5f9c0-4547-11e9-aa52-bf2189a03a60.wav,PLAY_MUSIC,Play some music,,LIST_REMINDERS,,Reminders,0,8938.78,False,False
+5,audio/holdout_000005_group_synthetic_PLAY_MUSIC_s10_v3_clean.wav,PLAY_MUSIC,Play some music,,TIMER,10 seconds,Timer 10 seconds,1,3291.441,False,False
+6,audio/holdout_000006_real_voice_WEATHER_V1_t2.wav,WEATHER,Weather,,VOLUME_DOWN,,Volume down,0,17500.693,False,False
+7,audio/holdout_000007_group_synthetic_WEATHER_s10_v1_clean.wav,WEATHER,Weather,,WEATHER,,Weather,1,1889.348,True,True
+8,audio/holdout_000008_real_voice_WEATHER_V2_t2.wav,WEATHER,What's the weather?,,CREATE_REMINDER,Drink water,Reminder Drink water,0,17050.121,False,False
+9,audio/holdout_000009_group_synthetic_WEATHER_s10_v2_clean.wav,WEATHER,What's the weather?,,MESSAGE,,Message,1,3428.432,False,False
+10,audio/holdout_000010_real_voice_WEATHER_V3_t1.wav,WEATHER,Tell me the weather,,CREATE_REMINDER,Drink water,Reminder Drink water,0,18645.956,False,False
+11,audio/holdout_000011_group_synthetic_WEATHER_s10_v3_clean.wav,WEATHER,Tell me the weather,,WEATHER,,Weather,1,3931.928,True,True
+12,audio/holdout_000012_real_voice_TIME_V1_t1.wav,TIME,Time,,COLOR,Blue,Change color to Blue,0,16504.803,False,False
+13,audio/holdout_000013_group_synthetic_TIME_s10_v1_clean.wav,TIME,Time,,TIME,,Time,1,1527.57,True,True
+14,audio/holdout_000014_real_voice_TIME_V2_t1.wav,TIME,What time is it?,,VOLUME_DOWN,,Volume down,0,16311.651,False,False
+15,audio/holdout_000015_group_synthetic_TIME_s10_v2_clean.wav,TIME,What time is it?,,TIME,,Time,1,3803.319,True,True
+16,audio/holdout_000016_real_voice_TIME_V3_t1.wav,TIME,Tell me the time,,VOLUME_DOWN,,Volume down,0,15341.461,False,False
+17,audio/holdout_000017_group_synthetic_TIME_s10_v3_clean.wav,TIME,Tell me the time,,TIME,,Time,1,3377.776,True,True
+18,audio/holdout_000018_real_voice_LIGHT_ON_V1_t2.wav,LIGHT_ON,Lights on,,VOLUME_DOWN,,Volume down,0,15980.119,False,False
+19,audio/holdout_000019_group_synthetic_LIGHT_ON_s10_v1_clean.wav,LIGHT_ON,Lights on,,LIGHT_ON,,Lights on,1,3188.382,True,True
+20,audio/holdout_000020_real_voice_LIGHT_ON_V2_t2.wav,LIGHT_ON,Power on the lights,,CREATE_REMINDER,Drink water,Reminder Drink water,0,16659.846,False,False
+21,audio/holdout_000021_group_synthetic_LIGHT_ON_s10_v2_clean.wav,LIGHT_ON,Power on the lights,,LIGHT_ON,,Lights on,1,4681.724,True,True
+22,audio/holdout_000022_real_voice_LIGHT_ON_V3_t1.wav,LIGHT_ON,Turn on the lights,,CREATE_REMINDER,Drink water,Reminder Drink water,0,16983.052,False,False
+23,audio/holdout_000023_group_synthetic_LIGHT_ON_s10_v3_clean.wav,LIGHT_ON,Turn on the lights,,LIGHT_ON,,Lights on,1,3247.796,True,True
+24,audio/holdout_000024_real_voice_LIGHT_OFF_V1_t1.wav,LIGHT_OFF,Lights out,,VOLUME_DOWN,,Volume down,0,17454.448,False,False
+25,audio/holdout_000025_group_synthetic_LIGHT_OFF_s10_v1_clean.wav,LIGHT_OFF,Lights out,,LIGHT_OFF,,Lights out,1,3059.836,True,True
+26,audio/holdout_000026_real_voice_LIGHT_OFF_V2_t2.wav,LIGHT_OFF,Kill the lights,,COLOR,Green,Change color to Green,0,20191.181,False,False
+27,audio/holdout_000027_group_synthetic_LIGHT_OFF_s10_v2_clean.wav,LIGHT_OFF,Kill the lights,,LIST_REMINDERS,,Reminders,1,5382.204,False,False
+28,audio/holdout_000028_real_voice_LIGHT_OFF_V3_t2.wav,LIGHT_OFF,Shut off the lights,,CREATE_REMINDER,Drink water,Reminder Drink water,0,19014.742,False,False
+29,audio/holdout_000029_group_synthetic_LIGHT_OFF_s10_v3_clean.wav,LIGHT_OFF,Shut off the lights,,LIGHT_OFF,,Lights out,1,5014.072,True,True
+30,audio/holdout_000030_real_voice_PAUSE_V1_t1.wav,PAUSE,Pause,,VOLUME_DOWN,,Volume down,0,17927.657,False,False
+31,audio/holdout_000031_group_synthetic_PAUSE_s10_v1_clean.wav,PAUSE,Pause,,TIME,,Time,1,2414.509,False,False
+32,audio/holdout_000032_real_voice_PAUSE_V2_t1.wav,PAUSE,Pause audio,,TIMER,30 seconds,Timer 30 seconds,0,18044.087,False,False
+33,audio/holdout_000033_group_synthetic_PAUSE_s10_v2_clean.wav,PAUSE,Pause audio,,PAUSE,,Pause,1,4465.675,True,True
+34,audio/holdout_000034_real_voice_PAUSE_V3_t1.wav,PAUSE,Pause song,,OTHER:ALARM,,,0,17919.536,False,False
+35,audio/holdout_000035_group_synthetic_PAUSE_s10_v3_clean.wav,PAUSE,Pause song,,LIGHT_OFF,,Lights out,1,3304.117,False,False
+36,audio/holdout_000036_real_voice_STOP_V2_t1.wav,STOP,Stop,,COLOR,Blue,Change color to Blue,0,19192.958,False,False
+37,audio/holdout_000037_group_synthetic_STOP_s10_v1_clean.wav,STOP,Stop,,STOP,,Stop,1,1656.35,True,True
+38,audio/holdout_000038_real_voice_STOP_V3_t1.wav,STOP,Stop playing,,CREATE_REMINDER,Drink water,Reminder Drink water,0,18822.857,False,False
+39,audio/holdout_000039_group_synthetic_STOP_s10_v2_clean.wav,STOP,Stop playing,,LIGHT_ON,,Lights on,1,3681.381,False,False
+40,audio/holdout_000040_FluentSpeechCommands_5986cc10-454f-11e9-aa52-bf2189a03a60.wav,STOP,End playback,,COLOR,Red,Change color to Red,0,10256.556,False,False
+41,audio/holdout_000041_group_synthetic_STOP_s10_v3_clean.wav,STOP,End playback,,TIMER,10 seconds,Timer 10 seconds,1,5420.883,False,False
+42,audio/holdout_000042_real_voice_NEXT_V2_t2.wav,NEXT,Next song,,COLOR,Blue,Change color to Blue,0,19092.694,False,False
+43,audio/holdout_000043_group_synthetic_NEXT_s10_v1_clean.wav,NEXT,Next song,,NEXT,,Next song,1,3221.867,True,True
+44,audio/holdout_000044_real_voice_NEXT_V1_t2.wav,NEXT,Skip song,,COLOR,Blue,Change color to Blue,0,18487.62,False,False
+45,audio/holdout_000045_group_synthetic_NEXT_s10_v2_clean.wav,NEXT,Skip song,,CALL,,Call,1,2784.694,False,False
+46,audio/holdout_000046_real_voice_NEXT_V3_t2.wav,NEXT,Play next song,,VOLUME_DOWN,,Volume down,0,18405.582,False,False
+47,audio/holdout_000047_group_synthetic_NEXT_s10_v3_clean.wav,NEXT,Play next song,,WEATHER,,Weather,1,3782.809,False,False
+48,audio/holdout_000048_real_voice_VOLUME_UP_V1_t2.wav,VOLUME_UP,Volume up,,VOLUME_DOWN,,Volume down,0,19179.378,False,False
+49,audio/holdout_000049_group_synthetic_VOLUME_UP_s10_v1_clean.wav,VOLUME_UP,Volume up,,ALARM,8:00 AM,Alarm 8:00 AM,1,3637.148,False,False
+50,audio/holdout_000050_real_voice_VOLUME_UP_V2_t1.wav,VOLUME_UP,Increase the volume,,OTHER:ALARM,,,0,18044.495,False,False
+51,audio/holdout_000051_group_synthetic_VOLUME_UP_s10_v2_clean.wav,VOLUME_UP,Increase the volume,,NEXT,,Next song,1,5383.992,False,False
+52,audio/holdout_000052_real_voice_VOLUME_UP_V3_t1.wav,VOLUME_UP,Turn the volume up,,VOLUME_DOWN,,Volume down,0,18630.872,False,False
+53,audio/holdout_000053_group_synthetic_VOLUME_UP_s10_v3_clean.wav,VOLUME_UP,Turn the volume up,,MESSAGE,,Message,1,4121.714,False,False
+54,audio/holdout_000054_real_voice_VOLUME_DOWN_V1_t2.wav,VOLUME_DOWN,Volume down,,CREATE_REMINDER,Drink water,Reminder Drink water,0,19068.103,False,False
+55,audio/holdout_000055_group_synthetic_VOLUME_DOWN_s10_v1_clean.wav,VOLUME_DOWN,Volume down,,ALARM,8:00 AM,Alarm 8:00 AM,1,3511.732,False,False
+56,audio/holdout_000056_real_voice_VOLUME_DOWN_V2_t1.wav,VOLUME_DOWN,Lower the volume,,CREATE_REMINDER,Drink water,Reminder Drink water,0,19424.433,False,False
+57,audio/holdout_000057_group_synthetic_VOLUME_DOWN_s10_v2_clean.wav,VOLUME_DOWN,Lower the volume,,TIME,,Time,1,4234.377,False,False
+58,audio/holdout_000058_real_voice_VOLUME_DOWN_V3_t1.wav,VOLUME_DOWN,Turn the volume down,,WEATHER,,Weather,0,19219.264,False,False
+59,audio/holdout_000059_group_synthetic_VOLUME_DOWN_s10_v3_clean.wav,VOLUME_DOWN,Turn the volume down,,ALARM,8:00 AM,Alarm 8:00 AM,1,5323.35,False,False
+60,audio/holdout_000060_real_voice_CALL_V1_t2.wav,CALL,Call,,VOLUME_DOWN,,Volume down,0,18758.661,False,False
+61,audio/holdout_000061_group_synthetic_CALL_s10_v1_clean.wav,CALL,Call,,PAUSE,,Pause,1,2169.866,False,False
+62,audio/holdout_000062_real_voice_CALL_V2_t1.wav,CALL,Make a call,,VOLUME_DOWN,,Volume down,0,19549.819,False,False
+63,audio/holdout_000063_group_synthetic_CALL_s10_v2_clean.wav,CALL,Make a call,,NEXT,,Next song,1,3540.838,False,False
+64,audio/holdout_000064_real_voice_CALL_V3_t1.wav,CALL,Make a phone call,,COLOR,Blue,Change color to Blue,0,19685.098,False,False
+65,audio/holdout_000065_group_synthetic_CALL_s10_v3_clean.wav,CALL,Make a phone call,,NEXT,,Next song,1,3868.018,False,False
+66,audio/holdout_000066_real_voice_MESSAGE_V1_t2.wav,MESSAGE,Message,,COLOR,Blue,Change color to Blue,0,19025.546,False,False
+67,audio/holdout_000067_group_synthetic_MESSAGE_s10_v1_clean.wav,MESSAGE,Message,,MESSAGE,,Message,1,2641.982,True,True
+68,audio/holdout_000068_real_voice_MESSAGE_V2_t1.wav,MESSAGE,Send a message,,BRIGHTNESS,20 percent,Brightness 20 percent,0,19075.914,False,False
+69,audio/holdout_000069_group_synthetic_MESSAGE_s10_v2_clean.wav,MESSAGE,Send a message,,MESSAGE,,Message,1,4318.906,True,True
+70,audio/holdout_000070_real_voice_MESSAGE_V3_t2.wav,MESSAGE,Send my message,,COLOR,Blue,Change color to Blue,0,18824.108,False,False
+71,audio/holdout_000071_group_synthetic_MESSAGE_s10_v3_clean.wav,MESSAGE,Send my message,,MESSAGE,,Message,1,4079.581,True,True
+72,audio/holdout_000072_real_voice_LIST_REMINDERS_V1_t2.wav,LIST_REMINDERS,Reminders,,VOLUME_UP,,Volume up,0,19396.36,False,False
+73,audio/holdout_000073_group_synthetic_LIST_REMINDERS_s10_v1_clean.wav,LIST_REMINDERS,Reminders,,LIGHT_OFF,,Lights out,1,3120.792,False,False
+74,audio/holdout_000074_real_voice_LIST_REMINDERS_V2_t2.wav,LIST_REMINDERS,Show my reminders,,CREATE_REMINDER,Exercise,Reminder Exercise,0,18479.566,False,False
+75,audio/holdout_000075_group_synthetic_LIST_REMINDERS_s10_v2_clean.wav,LIST_REMINDERS,Show my reminders,,LIGHT_ON,,Lights on,1,4809.473,False,False
+76,audio/holdout_000076_real_voice_LIST_REMINDERS_V3_t1.wav,LIST_REMINDERS,List my reminders,,BRIGHTNESS,20 percent,Brightness 20 percent,0,18928.743,False,False
+77,audio/holdout_000077_group_synthetic_LIST_REMINDERS_s10_v3_clean.wav,LIST_REMINDERS,List my reminders,,LIGHT_ON,,Lights on,1,4819.571,False,False
+78,audio/holdout_000078_real_voice_TIMER_V1_1_t1.wav,TIMER,Timer 10 seconds,10 seconds,BRIGHTNESS,60 percent,Brightness 60 percent,0,18216.756,False,False
+79,audio/holdout_000079_group_synthetic_TIMER_10s_s10_v1_clean.wav,TIMER,Timer 10 seconds,10 seconds,WEATHER,,Weather,1,5361.003,False,False
+80,audio/holdout_000080_real_voice_TIMER_V1_2_t1.wav,TIMER,Timer 30 seconds,30 seconds,BRIGHTNESS,100 percent,Brightness 100 percent,0,19250.93,False,False
+81,audio/holdout_000081_group_synthetic_TIMER_30s_s10_v1_clean.wav,TIMER,Timer 30 seconds,30 seconds,VOLUME_UP,,Volume up,1,8106.533,False,False
+82,audio/holdout_000082_real_voice_TIMER_V1_3_t2.wav,TIMER,Timer 1 minute,1 minute,COLOR,Blue,Change color to Blue,0,19439.212,False,False
+83,audio/holdout_000083_group_synthetic_TIMER_1m_s10_v1_clean.wav,TIMER,Timer 1 minute,1 minute,WEATHER,,Weather,1,3644.662,False,False
+84,audio/holdout_000084_real_voice_TIMER_V2_1_t2.wav,TIMER,Countdown for 10 seconds,10 seconds,CREATE_REMINDER,Drink water,Reminder Drink water,0,17846.552,False,False
+85,audio/holdout_000085_group_synthetic_TIMER_10s_s10_v2_clean.wav,TIMER,Countdown for 10 seconds,10 seconds,TIMER,10 seconds,Timer 10 seconds,1,6366.612,True,True
+86,audio/holdout_000086_real_voice_TIMER_V2_2_t2.wav,TIMER,Countdown for 30 seconds,30 seconds,TIMER,10 seconds,Timer 10 seconds,0,18438.604,True,False
+87,audio/holdout_000087_group_synthetic_TIMER_30s_s10_v2_clean.wav,TIMER,Countdown for 30 seconds,30 seconds,TIMER,10 seconds,Timer 10 seconds,1,8147.132,True,False
+88,audio/holdout_000088_real_voice_TIMER_V2_3_t1.wav,TIMER,Countdown for 1 minute,1 minute,CREATE_REMINDER,Drink water,Reminder Drink water,0,17865.85,False,False
+89,audio/holdout_000089_group_synthetic_TIMER_1m_s10_v2_clean.wav,TIMER,Countdown for 1 minute,1 minute,OTHER:ALARM,,,1,5664.859,False,False
+90,audio/holdout_000090_real_voice_TIMER_V3_1_t2.wav,TIMER,Start a timer for 10 seconds,10 seconds,TIMER,10 seconds,Timer 10 seconds,0,17604.527,True,True
+91,audio/holdout_000091_group_synthetic_TIMER_10s_s10_v3_clean.wav,TIMER,Start a timer for 10 seconds,10 seconds,TIMER,10 seconds,Timer 10 seconds,1,7367.209,True,True
+92,audio/holdout_000092_real_voice_TIMER_V3_2_t1.wav,TIMER,Start a timer for 30 seconds,30 seconds,CREATE_REMINDER,Exercise,Reminder Exercise,0,17588.496,False,False
+93,audio/holdout_000093_group_synthetic_TIMER_30s_s10_v3_clean.wav,TIMER,Start a timer for 30 seconds,30 seconds,TIMER,30 seconds,Timer 30 seconds,1,8812.736,True,True
+94,audio/holdout_000094_real_voice_TIMER_V3_3_t2.wav,TIMER,Start a timer for 1 minute,1 minute,WEATHER,,Weather,0,18443.702,False,False
+95,audio/holdout_000095_group_synthetic_TIMER_1m_s10_v3_clean.wav,TIMER,Start a timer for 1 minute,1 minute,WEATHER,,Weather,1,6947.165,False,False
+96,audio/holdout_000096_real_voice_ALARM_V1_1_t1.wav,ALARM,Alarm 6:00 AM,6:00 AM,CREATE_REMINDER,Study,Reminder Study,0,19361.988,False,False
+97,audio/holdout_000097_group_synthetic_ALARM_6_00AM_s10_v1_clean.wav,ALARM,Alarm 6:00 AM,6:00 AM,ALARM,8:00 AM,Alarm 8:00 AM,1,6862.8,True,False
+98,audio/holdout_000098_real_voice_ALARM_V1_2_t2.wav,ALARM,Alarm 8:00 AM,8:00 AM,TEMPERATURE,22 degrees,Temperature 22 degrees,0,18812.326,False,False
+99,audio/holdout_000099_group_synthetic_ALARM_8_00AM_s10_v1_clean.wav,ALARM,Alarm 8:00 AM,8:00 AM,ALARM,8:00 AM,Alarm 8:00 AM,1,5866.15,True,True
+100,audio/holdout_000100_group_synthetic_ALARM_9_00PM_s10_v1_clean.wav,ALARM,Alarm 9:00 PM,9:00 PM,LIST_REMINDERS,,Reminders,1,7910.664,False,False
+101,audio/holdout_000101_group_synthetic_ALARM_9_00PM_s100_v1_clean.wav,ALARM,Alarm 9:00 PM,9:00 PM,LIST_REMINDERS,,Reminders,1,8996.149,False,False
+102,audio/holdout_000102_real_voice_ALARM_V2_1_t1.wav,ALARM,Wake me up at 6:00 AM,6:00 AM,BRIGHTNESS,20 percent,Brightness 20 percent,0,19408.535,False,False
+103,audio/holdout_000103_group_synthetic_ALARM_6_00AM_s10_v2_clean.wav,ALARM,Wake me up at 6:00 AM,6:00 AM,OTHER:ALARM,,,1,7203.192,False,False
+104,audio/holdout_000104_real_voice_ALARM_V2_2_t1.wav,ALARM,Wake me up at 8:00 AM,8:00 AM,CREATE_REMINDER,Study,Reminder Study,0,18153.436,False,False
+105,audio/holdout_000105_group_synthetic_ALARM_8_00AM_s10_v2_clean.wav,ALARM,Wake me up at 8:00 AM,8:00 AM,OTHER:ALARM,,,1,5379.773,False,False
+106,audio/holdout_000106_real_voice_ALARM_V2_3_t2.wav,ALARM,Wake me up at 9:00 PM,9:00 PM,CREATE_REMINDER,Study,Reminder Study,0,18124.707,False,False
+107,audio/holdout_000107_group_synthetic_ALARM_9_00PM_s10_v2_clean.wav,ALARM,Wake me up at 9:00 PM,9:00 PM,OTHER:ALARM,,,1,4732.777,False,False
+108,audio/holdout_000108_real_voice_ALARM_V3_1_t2.wav,ALARM,Set an alarm for 6:00 AM,6:00 AM,BRIGHTNESS,60 percent,Brightness 60 percent,0,18282.948,False,False
+109,audio/holdout_000109_group_synthetic_ALARM_6_00AM_s10_v3_clean.wav,ALARM,Set an alarm for 6:00 AM,6:00 AM,ALARM,6:00 AM,Alarm 6:00 AM,1,6432.936,True,True
+110,audio/holdout_000110_real_voice_ALARM_V3_2_t2.wav,ALARM,Set an alarm for 8:00 AM,8:00 AM,WEATHER,,Weather,0,18810.64,False,False
+111,audio/holdout_000111_group_synthetic_ALARM_8_00AM_s10_v3_clean.wav,ALARM,Set an alarm for 8:00 AM,8:00 AM,ALARM,8:00 AM,Alarm 8:00 AM,1,7909.321,True,True
+112,audio/holdout_000112_real_voice_ALARM_V3_3_t2.wav,ALARM,Set an alarm for 9:00 PM,9:00 PM,TEMPERATURE,22 degrees,Temperature 22 degrees,0,18181.836,False,False
+113,audio/holdout_000113_group_synthetic_ALARM_9_00PM_s10_v3_clean.wav,ALARM,Set an alarm for 9:00 PM,9:00 PM,ALARM,8:00 AM,Alarm 8:00 AM,1,5984.101,True,False
+114,audio/holdout_000114_real_voice_TEMPERATURE_V1_1_t1.wav,TEMPERATURE,Temperature 18 degrees,18 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,18092.483,True,False
+115,audio/holdout_000115_group_synthetic_TEMPERATURE_18_s10_v1_clean.wav,TEMPERATURE,Temperature 18 degrees,18 degrees,TEMPERATURE,18 degrees,Temperature 18 degrees,1,6962.999,True,True
+116,audio/holdout_000116_real_voice_TEMPERATURE_V1_2_t1.wav,TEMPERATURE,Temperature 22 degrees,22 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,16825.988,True,False
+117,audio/holdout_000117_group_synthetic_TEMPERATURE_22_s10_v1_clean.wav,TEMPERATURE,Temperature 22 degrees,22 degrees,CREATE_REMINDER,Drink water,Reminder Drink water,1,7890.675,False,False
+118,audio/holdout_000118_real_voice_TEMPERATURE_V1_3_t1.wav,TEMPERATURE,Temperature 26 degrees,26 degrees,CREATE_REMINDER,Exercise,Reminder Exercise,0,17691.159,False,False
+119,audio/holdout_000119_group_synthetic_TEMPERATURE_26_s10_v1_clean.wav,TEMPERATURE,Temperature 26 degrees,26 degrees,ALARM,9:00 PM,Alarm 9:00 PM,1,6183.21,False,False
+120,audio/holdout_000120_real_voice_TEMPERATURE_V2_1_t2.wav,TEMPERATURE,Change the temperature to 18 degrees,18 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,17664.841,True,False
+121,audio/holdout_000121_group_synthetic_TEMPERATURE_18_s10_v2_clean.wav,TEMPERATURE,Change the temperature to 18 degrees,18 degrees,TEMPERATURE,18 degrees,Temperature 18 degrees,1,9852.084,True,True
+122,audio/holdout_000122_real_voice_TEMPERATURE_V2_2_t1.wav,TEMPERATURE,Change the temperature to 22 degrees,22 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,17171.578,True,False
+123,audio/holdout_000123_group_synthetic_TEMPERATURE_22_s10_v2_clean.wav,TEMPERATURE,Change the temperature to 22 degrees,22 degrees,TEMPERATURE,22 degrees,Temperature 22 degrees,1,8927.973,True,True
+124,audio/holdout_000124_real_voice_TEMPERATURE_V2_3_t1.wav,TEMPERATURE,Change the temperature to 26 degrees,26 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,16409.263,True,True
+125,audio/holdout_000125_group_synthetic_TEMPERATURE_26_s10_v2_clean.wav,TEMPERATURE,Change the temperature to 26 degrees,26 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,1,9515.059,True,True
+126,audio/holdout_000126_real_voice_TEMPERATURE_V3_1_t1.wav,TEMPERATURE,Set the temperature to 18 degrees,18 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,16783.952,True,False
+127,audio/holdout_000127_group_synthetic_TEMPERATURE_18_s10_v3_clean.wav,TEMPERATURE,Set the temperature to 18 degrees,18 degrees,TEMPERATURE,18 degrees,Temperature 18 degrees,1,8172.984,True,True
+128,audio/holdout_000128_real_voice_TEMPERATURE_V3_2_t2.wav,TEMPERATURE,Set the temperature to 22 degrees,22 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,16577.574,True,False
+129,audio/holdout_000129_group_synthetic_TEMPERATURE_22_s10_v3_clean.wav,TEMPERATURE,Set the temperature to 22 degrees,22 degrees,TEMPERATURE,22 degrees,Temperature 22 degrees,1,7207.778,True,True
+130,audio/holdout_000130_real_voice_TEMPERATURE_V3_3_t2.wav,TEMPERATURE,Set the temperature to 26 degrees,26 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,0,16234.495,True,True
+131,audio/holdout_000131_group_synthetic_TEMPERATURE_26_s10_v3_clean.wav,TEMPERATURE,Set the temperature to 26 degrees,26 degrees,TEMPERATURE,26 degrees,Temperature 26 degrees,1,8299.857,True,True
+132,audio/holdout_000132_real_voice_BRIGHTNESS_V1_1_t2.wav,BRIGHTNESS,Brightness 20 percent,20 percent,COLOR,Blue,Change color to Blue,0,16989.872,False,False
+133,audio/holdout_000133_group_synthetic_BRIGHTNESS_20_s10_v1_clean.wav,BRIGHTNESS,Brightness 20 percent,20 percent,TIMER,1 minute,Timer 1 minute,1,5667.739,False,False
+134,audio/holdout_000134_real_voice_BRIGHTNESS_V1_2_t1.wav,BRIGHTNESS,Brightness 60 percent,60 percent,WEATHER,,Weather,0,16855.478,False,False
+135,audio/holdout_000135_group_synthetic_BRIGHTNESS_60_s10_v1_clean.wav,BRIGHTNESS,Brightness 60 percent,60 percent,BRIGHTNESS,60 percent,Brightness 60 percent,1,5583.364,True,True
+136,audio/holdout_000136_real_voice_BRIGHTNESS_V1_3_t1.wav,BRIGHTNESS,Brightness 100 percent,100 percent,WEATHER,,Weather,0,17520.325,False,False
+137,audio/holdout_000137_group_synthetic_BRIGHTNESS_100_s10_v1_clean.wav,BRIGHTNESS,Brightness 100 percent,100 percent,TIMER,10 seconds,Timer 10 seconds,1,6864.241,False,False
+138,audio/holdout_000138_real_voice_BRIGHTNESS_V3_1_t2.wav,BRIGHTNESS,Adjust brightness to 20 percent,20 percent,WEATHER,,Weather,0,17057.12,False,False
+139,audio/holdout_000139_group_synthetic_BRIGHTNESS_20_s10_v2_clean.wav,BRIGHTNESS,Adjust brightness to 20 percent,20 percent,BRIGHTNESS,20 percent,Brightness 20 percent,1,10329.705,True,True
+140,audio/holdout_000140_real_voice_BRIGHTNESS_V3_2_t2.wav,BRIGHTNESS,Adjust brightness to 60 percent,60 percent,BRIGHTNESS,60 percent,Brightness 60 percent,0,16316.262,True,True
+141,audio/holdout_000141_group_synthetic_BRIGHTNESS_60_s10_v2_clean.wav,BRIGHTNESS,Adjust brightness to 60 percent,60 percent,TEMPERATURE,22 degrees,Temperature 22 degrees,1,7921.366,False,False
+142,audio/holdout_000142_real_voice_BRIGHTNESS_V2_3_t1.wav,BRIGHTNESS,Adjust brightness to 100 percent,100 percent,WEATHER,,Weather,0,16759.294,False,False
+143,audio/holdout_000143_group_synthetic_BRIGHTNESS_100_s10_v2_clean.wav,BRIGHTNESS,Adjust brightness to 100 percent,100 percent,TEMPERATURE,22 degrees,Temperature 22 degrees,1,8147.605,False,False
+144,audio/holdout_000144_group_synthetic_BRIGHTNESS_20_s10_v3_clean.wav,BRIGHTNESS,Brightness level 20 percent,20 percent,TIMER,10 seconds,Timer 10 seconds,1,7151.206,False,False
+145,audio/holdout_000145_group_synthetic_BRIGHTNESS_20_s100_v3_clean.wav,BRIGHTNESS,Brightness level 20 percent,20 percent,TIMER,10 seconds,Timer 10 seconds,1,7053.801,False,False
+146,audio/holdout_000146_group_synthetic_BRIGHTNESS_60_s10_v3_clean.wav,BRIGHTNESS,Brightness level 60 percent,60 percent,BRIGHTNESS,60 percent,Brightness 60 percent,1,6805.456,True,True
+147,audio/holdout_000147_group_synthetic_BRIGHTNESS_60_s100_v3_clean.wav,BRIGHTNESS,Brightness level 60 percent,60 percent,BRIGHTNESS,60 percent,Brightness 60 percent,1,7234.732,True,True
+148,audio/holdout_000148_group_synthetic_BRIGHTNESS_100_s10_v3_clean.wav,BRIGHTNESS,Brightness level 100 percent,100 percent,BRIGHTNESS,100 percent,Brightness 100 percent,1,7460.165,True,True
+149,audio/holdout_000149_group_synthetic_BRIGHTNESS_100_s100_v3_clean.wav,BRIGHTNESS,Brightness level 100 percent,100 percent,BRIGHTNESS,100 percent,Brightness 100 percent,1,9391.843,True,True
+150,audio/holdout_000150_real_voice_COLOR_V2_1_t2.wav,COLOR,Change color to Red,Red,COLOR,Blue,Change color to Blue,0,16873.791,True,False
+151,audio/holdout_000151_group_synthetic_COLOR_RED_s10_v1_clean.wav,COLOR,Change color to Red,Red,VOLUME_UP,,Volume up,1,4858.551,False,False
+152,audio/holdout_000152_real_voice_COLOR_V2_2_t2.wav,COLOR,Change color to Blue,Blue,COLOR,Blue,Change color to Blue,0,17083.803,True,True
+153,audio/holdout_000153_group_synthetic_COLOR_BLUE_s10_v1_clean.wav,COLOR,Change color to Blue,Blue,COLOR,Red,Change color to Red,1,4350.858,True,False
+154,audio/holdout_000154_real_voice_COLOR_V2_3_t2.wav,COLOR,Change color to Green,Green,CREATE_REMINDER,Drink water,Reminder Drink water,0,16144.53,False,False
+155,audio/holdout_000155_group_synthetic_COLOR_GREEN_s10_v1_clean.wav,COLOR,Change color to Green,Green,COLOR,Red,Change color to Red,1,4869.653,True,False
+156,audio/holdout_000156_group_synthetic_COLOR_RED_s10_v2_clean.wav,COLOR,Switch color to Red,Red,COLOR,Red,Change color to Red,1,5277.751,True,True
+157,audio/holdout_000157_group_synthetic_COLOR_RED_s100_v2_clean.wav,COLOR,Switch color to Red,Red,COLOR,Red,Change color to Red,1,4168.585,True,True
+158,audio/holdout_000158_group_synthetic_COLOR_BLUE_s10_v2_clean.wav,COLOR,Switch color to Blue,Blue,COLOR,Blue,Change color to Blue,1,4762.468,True,True
+159,audio/holdout_000159_group_synthetic_COLOR_BLUE_s100_v2_clean.wav,COLOR,Switch color to Blue,Blue,COLOR,Red,Change color to Red,1,6030.379,True,False
+160,audio/holdout_000160_group_synthetic_COLOR_GREEN_s10_v2_clean.wav,COLOR,Switch color to Green,Green,COLOR,Green,Change color to Green,1,4938.187,True,True
+161,audio/holdout_000161_group_synthetic_COLOR_GREEN_s100_v2_clean.wav,COLOR,Switch color to Green,Green,COLOR,Blue,Change color to Blue,1,4998.192,True,False
+162,audio/holdout_000162_real_voice_COLOR_V1_1_t2.wav,COLOR,Set color to Red,Red,COLOR,Blue,Change color to Blue,0,16991.393,True,False
+163,audio/holdout_000163_group_synthetic_COLOR_RED_s10_v3_clean.wav,COLOR,Set color to Red,Red,LIGHT_ON,,Lights on,1,5452.88,False,False
+164,audio/holdout_000164_real_voice_COLOR_V1_2_t2.wav,COLOR,Set color to Blue,Blue,COLOR,Blue,Change color to Blue,0,16973.701,True,True
+165,audio/holdout_000165_group_synthetic_COLOR_BLUE_s10_v3_clean.wav,COLOR,Set color to Blue,Blue,COLOR,Blue,Change color to Blue,1,3319.055,True,True
+166,audio/holdout_000166_real_voice_COLOR_V3_3_t2.wav,COLOR,Set color to Green,Green,COLOR,Blue,Change color to Blue,0,15784.122,True,False
+167,audio/holdout_000167_group_synthetic_COLOR_GREEN_s10_v3_clean.wav,COLOR,Set color to Green,Green,COLOR,Red,Change color to Red,1,3994.742,True,False
+168,audio/holdout_000168_real_voice_CREATE_REMINDER_V1_1_t2.wav,CREATE_REMINDER,Reminder Drink water,Drink water,CREATE_REMINDER,Drink water,Reminder Drink water,0,16570.637,True,True
+169,audio/holdout_000169_group_synthetic_CREATE_REMINDER_DRINK_WATER_s10_v1_clean.wav,CREATE_REMINDER,Reminder Drink water,Drink water,LIGHT_OFF,,Lights out,1,5350.637,False,False
+170,audio/holdout_000170_real_voice_CREATE_REMINDER_V1_2_t2.wav,CREATE_REMINDER,Reminder Study,Study,CREATE_REMINDER,Drink water,Reminder Drink water,0,16654.798,True,False
+171,audio/holdout_000171_group_synthetic_CREATE_REMINDER_STUDY_s10_v1_clean.wav,CREATE_REMINDER,Reminder Study,Study,LIGHT_ON,,Lights on,1,2505.777,False,False
+172,audio/holdout_000172_real_voice_CREATE_REMINDER_V1_3_t2.wav,CREATE_REMINDER,Reminder Exercise,Exercise,CREATE_REMINDER,Drink water,Reminder Drink water,0,16645.949,True,False
+173,audio/holdout_000173_group_synthetic_CREATE_REMINDER_EXERCISE_s10_v1_clean.wav,CREATE_REMINDER,Reminder Exercise,Exercise,CREATE_REMINDER,Exercise,Reminder Exercise,1,6026.231,True,True
+174,audio/holdout_000174_real_voice_CREATE_REMINDER_V2_1_t2.wav,CREATE_REMINDER,Remind me to Drink water,Drink water,CREATE_REMINDER,Drink water,Reminder Drink water,0,16026.234,True,True
+175,audio/holdout_000175_group_synthetic_CREATE_REMINDER_DRINK_WATER_s10_v2_clean.wav,CREATE_REMINDER,Remind me to Drink water,Drink water,CREATE_REMINDER,Exercise,Reminder Exercise,1,6184.885,True,False
+176,audio/holdout_000176_real_voice_CREATE_REMINDER_V2_2_t2.wav,CREATE_REMINDER,Remind me to Study,Study,CREATE_REMINDER,Drink water,Reminder Drink water,0,16157.623,True,False
+177,audio/holdout_000177_group_synthetic_CREATE_REMINDER_STUDY_s10_v2_clean.wav,CREATE_REMINDER,Remind me to Study,Study,BRIGHTNESS,20 percent,Brightness 20 percent,1,4170.734,False,False
+178,audio/holdout_000178_real_voice_CREATE_REMINDER_V2_3_t2.wav,CREATE_REMINDER,Remind me to Exercise,Exercise,VOLUME_UP,,Volume up,0,16027.376,False,False
+179,audio/holdout_000179_group_synthetic_CREATE_REMINDER_EXERCISE_s10_v2_clean.wav,CREATE_REMINDER,Remind me to Exercise,Exercise,CREATE_REMINDER,Exercise,Reminder Exercise,1,6647.399,True,True
+180,audio/holdout_000180_real_voice_CREATE_REMINDER_V3_1_t2.wav,CREATE_REMINDER,Create a reminder to Drink water,Drink water,TEMPERATURE,18 degrees,Temperature 18 degrees,0,15476.262,False,False
+181,audio/holdout_000181_group_synthetic_CREATE_REMINDER_DRINK_WATER_s10_v3_clean.wav,CREATE_REMINDER,Create a reminder to Drink water,Drink water,CREATE_REMINDER,Exercise,Reminder Exercise,1,7338.904,True,False
+182,audio/holdout_000182_real_voice_CREATE_REMINDER_V3_2_t1.wav,CREATE_REMINDER,Create a reminder to Study,Study,CREATE_REMINDER,Drink water,Reminder Drink water,0,16553.155,True,False
+183,audio/holdout_000183_group_synthetic_CREATE_REMINDER_STUDY_s10_v3_clean.wav,CREATE_REMINDER,Create a reminder to Study,Study,CREATE_REMINDER,Study,Reminder Study,1,6881.718,True,True
+184,audio/holdout_000184_real_voice_CREATE_REMINDER_V3_3_t2.wav,CREATE_REMINDER,Create a reminder to Exercise,Exercise,CREATE_REMINDER,Exercise,Reminder Exercise,0,16618.91,True,True
+185,audio/holdout_000185_group_synthetic_CREATE_REMINDER_EXERCISE_s10_v3_clean.wav,CREATE_REMINDER,Create a reminder to Exercise,Exercise,CREATE_REMINDER,Exercise,Reminder Exercise,1,9284.601,True,True
+186,audio/holdout_000186_CommonVoice_en_common_voice_en_36827091.wav,OUT_OF_SCOPE,,,TEMPERATURE,26 degrees,Temperature 26 degrees,0,19188.798,False,False
+187,audio/holdout_000187_CommonVoice_en_common_voice_en_36827090.wav,OUT_OF_SCOPE,,,TEMPERATURE,26 degrees,Temperature 26 degrees,0,17683.368,False,False
+188,audio/holdout_000188_CommonVoice_en_common_voice_en_36827090.wav,OUT_OF_SCOPE,,,TEMPERATURE,26 degrees,Temperature 26 degrees,0,17996.16,False,False
+189,audio/holdout_000189_FluentSpeechCommands_2f3a53d0-4551-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,TIMER,10 seconds,Timer 10 seconds,0,7363.741,False,False
+190,audio/holdout_000190_FluentSpeechCommands_b47bcab0-4551-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,CREATE_REMINDER,Study,Reminder Study,0,7589.084,False,False
+191,audio/holdout_000191_FluentSpeechCommands_ed52eb60-4552-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,BRIGHTNESS,20 percent,Brightness 20 percent,0,9321.324,False,False
+192,audio/holdout_000192_FluentSpeechCommands_2d281d00-454e-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,TIMER,10 seconds,Timer 10 seconds,0,8747.054,False,False
+193,audio/holdout_000193_FluentSpeechCommands_ae8530f0-4552-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,MESSAGE,,Message,0,6898.289,False,False
+194,audio/holdout_000194_FluentSpeechCommands_26c856a0-454e-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,PLAY_MUSIC,,Play music,0,5690.085,False,False
+195,audio/holdout_000195_FluentSpeechCommands_27f33ee0-454a-11e9-aa52-bf2189a03a60.wav,OUT_OF_SCOPE,,,COLOR,Blue,Change color to Blue,0,6986.358,False,False
+196,audio/holdout_000196_group_synthetic_oos_OOS_s10_098_clean.wav,OUT_OF_SCOPE,,,OTHER:ALARM,,,1,4189.237,False,False
+197,audio/holdout_000197_group_synthetic_oos_OOS_s10_099_noisy.wav,OUT_OF_SCOPE,,,BRIGHTNESS,60 percent,Brightness 60 percent,1,7994.343,False,False
+198,audio/holdout_000198_group_synthetic_oos_OOS_s10_100_clean.wav,OUT_OF_SCOPE,,,CREATE_REMINDER,Exercise,Reminder Exercise,1,6343.56,False,False
+199,audio/holdout_000199_group_synthetic_oos_OOS_s100_101_noisy.wav,OUT_OF_SCOPE,,,BRIGHTNESS,100 percent,Brightness 100 percent,1,12823.786,False,False
+200,audio/holdout_000200_group_synthetic_oos_OOS_s100_102_clean.wav,OUT_OF_SCOPE,,,CREATE_REMINDER,Drink water,Reminder Drink water,1,8605.677,False,False
+201,audio/holdout_000201_group_synthetic_oos_OOS_s100_103_noisy.wav,OUT_OF_SCOPE,,,BRIGHTNESS,20 percent,Brightness 20 percent,1,17840.822,False,False

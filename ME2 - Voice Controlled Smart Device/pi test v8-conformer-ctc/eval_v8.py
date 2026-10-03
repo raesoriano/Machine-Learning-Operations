@@ -52,7 +52,7 @@ from hgm.spoken import tokenize_spoken           # noqa: E402  (vendored)
 from hgm.commands import (phrase_to_class, class_to_intent,  # noqa: E402
                           coarse_class)
 
-DEFAULT_DATA = "/home/ron.andrei.soriano/sandbox/data/external/me2-v6/dataset"
+DEFAULT_DATA = os.path.normpath(os.path.join(_HERE, "..", "data", "dataset"))
 MODELS = os.path.join(_HERE, "models")
 
 # coarse 19-command schema -> intent (same map as v6 eval)

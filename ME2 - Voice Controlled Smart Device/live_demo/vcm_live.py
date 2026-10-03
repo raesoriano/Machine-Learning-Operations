@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""pi test v3 -- ME2 smart-device voice command listener WITH spoken responses.
+"""live_demo -- ME2 smart-device voice command listener WITH spoken responses.
 
 The full loop the user asked for:
 
@@ -88,7 +88,8 @@ sys.path.insert(0, _HERE)          # so `import vcm` / `import vcm2` resolve loc
 # from there (no copy). Everything else (responses, wakeword, vcm2) is local.
 # --------------------------------------------------------------------------
 def _ps_paths(name: str) -> dict:
-    base = os.path.join(_ME2, "pi test v3" if name == "v3" else "pi test v7")
+    # v3/v7 were moved to archived/ (superseded by v8); still supported here.
+    base = os.path.join(_ME2, "archived/pi test v3" if name == "v3" else "archived/pi test v7")
     custom = os.path.join(base, "am", "custom")
     stock = os.path.join(base, "am", "stock")
     return {

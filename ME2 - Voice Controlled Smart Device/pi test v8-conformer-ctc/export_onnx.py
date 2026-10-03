@@ -174,8 +174,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--int8", action="store_true")
     ap.add_argument("--data",
-                    default="/home/ron.andrei.soriano/sandbox/data/external/"
-                            "me2-v6/dataset")
+                    default=os.path.normpath(os.path.join(_HERE, "..", "data", "dataset")))
     ap.add_argument("--verify-n", type=int, default=8)
     args = ap.parse_args()
 
