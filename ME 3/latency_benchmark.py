@@ -39,8 +39,8 @@ class LatencyBenchmark:
 
 async def run_benchmark_sim():
     bench = LatencyBenchmark()
-    
-    print("Simulating conversational turns...")
+
+    print("Simulating conversational turns... (SIMULATED — random sleep, not real pipeline)")
     for i in range(5):
         # Simulate VAD trigger
         start = time.time()

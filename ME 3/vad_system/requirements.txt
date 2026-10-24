@@ -1,3 +1,7 @@
+# VAD system dependencies (Raspberry Pi / Linux)
 torch
 numpy
 pyaudio
+# Silero VAD is pulled in via torch.hub (snakers4/silero-vad);
+# listed here for clarity and to pin the runtime.
+silero-vad

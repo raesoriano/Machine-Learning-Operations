@@ -14,10 +14,10 @@ source .venv/bin/activate
 ```
 
 ### 2. Installation
-Install the necessary dependencies. Note that we use a specific version of the `mcp` library for compatibility with `FastMCP`.
+Install the necessary dependencies. The MCP servers use the `fastmcp` package; the orchestrator uses the plain helper modules (`asr_server/transcribe.py`, `tts_server/synthesize.py`) directly and does **not** require MCP.
 
 ```bash
-pip install "mcp<2" openai requests fastmcp
+pip install fastmcp openai numpy
 # Install additional VAD requirements if using the VAD system
 pip install -r "mlo_repo/ME 3/vad_system/requirements.txt"
 ```
@@ -32,7 +32,15 @@ export OPENAI_API_KEY="your_openai_key_here"
 **Note:** The TTS server uses **local Piper TTS** — no ElevenLabs API key is required. Piper runs entirely on-device.
 
 ### 4. Piper TTS Setup (Local, No API Key)
-The TTS server relies on the Piper binary and a voice model. Download Piper and a model, then place them in `/home/raesoriano/piper/` (or update the paths in `tts_server/server.py`):
+The TTS server relies on the Piper binary and a voice model. Download Piper and a model, then place them in `/home/raesoriano/piper/` (the default) **or** override the locations with environment variables:
+
+```bash
+# Defaults (overridable):
+export PIPER_BINARY="/home/raesoriano/piper/piper"
+export PIPER_MODEL="/home/raesoriano/piper/en_US-lessac-medium.onnx"
+export PIPER_CONFIG="/home/raesoriano/piper/en_US-lessac-medium.onnx.json"
+export PIPER_LD_LIBRARY_PATH="/home/raesoriano/piper"
+```
 
 ```bash
 mkdir -p /home/raesoriano/piper
@@ -65,7 +73,7 @@ python "mlo_repo/ME 3/vad_system/vad_manager.py"
 ```
 
 ### D. Agent Orchestrator
-The main entry point that coordinates the ASR, TTS, and VAD components to create a full voice loop.
+The main entry point that coordinates the ASR, TTS, and VAD components to create a full voice loop. It calls the plain helper modules directly (no MCP), so it only needs `openai`, `numpy`, `torch`, and `pyaudio`.
 ```bash
 python "mlo_repo/ME 3/agent_orchestrator.py"
 ```
@@ -74,9 +82,10 @@ python "mlo_repo/ME 3/agent_orchestrator.py"
 
 ## ⚠️ Troubleshooting (Pi Specific)
 
-**1. "ModuleNotFoundError: No module named 'mcp.server.fastmcp'"**
-This happens if `mcp` v2.x is installed. Fix it by pinning the version:
-`pip install "mcp<2"`
+**1. "ModuleNotFoundError: No module named 'fastmcp'"**
+The MCP servers use the standalone `fastmcp` package. Install it:
+`pip install fastmcp`
+(The orchestrator does not need this — it uses the plain helper modules.)
 
 **2. Permission Denied (Audio Files)**
 If the server cannot save `.wav` or `.mp3` files, ensure the folder has the correct permissions:
@@ -90,7 +99,7 @@ If you are not using an active venv, call the python binary directly:
 `/home/raesoriano/onit/.venv/bin/python "mlo_repo/ME 3/tts_server/server.py"`
 
 **5. Piper Not Found**
-If TTS fails with "Piper binary not found", verify the `PIPER_BINARY`, `MODEL_PATH`, and `CONFIG_PATH` in `tts_server/server.py` point to valid files.
+If TTS fails with a synthesis error, verify the `PIPER_BINARY`, `PIPER_MODEL`, and `PIPER_CONFIG` environment variables (or their defaults in `tts_server/synthesize.py`) point to valid files.
 
 ## 📊 Project Structure
 - `asr_server/`: Whisper-based transcription (OpenAI API).

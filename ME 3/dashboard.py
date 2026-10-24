@@ -30,6 +30,12 @@ st.markdown("""
 st.title("🎙️ OnIt Full-Duplex Agent Monitor")
 st.markdown("Real-time telemetry for the Raspberry Pi Voice Orchestrator")
 
+# NOTE: All metrics on this dashboard are SIMULATED (random values).
+# To show real telemetry, wire this up to read from the orchestrator's
+# latency log / a socket / a shared file. See latency_benchmark.py for the
+# categories that should be measured.
+st.warning("⚠️ SIMULATED DATA — this is a UI mockup. Connect it to real telemetry to go live.")
+
 # --- SIDEBAR: System Status ---
 st.sidebar.header("System Status")
 asr_status = st.sidebar.toggle("ASR Server", value=True)
