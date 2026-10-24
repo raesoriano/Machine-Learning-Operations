@@ -1,17 +1,101 @@
-# MCP Voice Servers
-# Phase 1: ASR and TTS Implementation
+# 🎙️ MCP Voice System (ME 3) - Raspberry Pi Installation Guide
 
-## ASR Server
-- **Model**: OpenAI Whisper (via API)
-- **Function**: `transcribe_audio(audio_path)`
-- **Implementation**: Uses `FastMCP` to expose a tool that takes an audio file path and returns the transcription.
+This project implements a modular voice system using the Model Context Protocol (MCP), consisting of Automatic Speech Recognition (ASR), Text-to-Speech (TTS), and Voice Activity Detection (VAD).
 
-## TTS Server
-- **Model**: ElevenLabs
-- **Function**: `synthesize_speech(text, output_path)`
-- **Implementation**: Uses `FastMCP` to expose a tool that takes text and saves the resulting audio to a specified path.
+## 🚀 Quick Start
 
-## Setup
-1. Install dependencies: `pip install mcp openai requests`
-2. Set environment variables: `OPENAI_API_KEY`, `ELEVENLABS_API_KEY`
-3. Run servers: `python server.py`
+### 1. Prerequisites
+Ensure you have Python 3.10+ installed on your Raspberry Pi. It is highly recommended to use a virtual environment to avoid system package conflicts.
+
+```bash
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate
+```
+
+### 2. Installation
+Install the necessary dependencies. Note that we use a specific version of the `mcp` library for compatibility with `FastMCP`.
+
+```bash
+pip install "mcp<2" openai requests fastmcp
+# Install additional VAD requirements if using the VAD system
+pip install -r "mlo_repo/ME 3/vad_system/requirements.txt"
+```
+
+### 3. Environment Configuration
+The ASR server requires an OpenAI API key for Whisper transcription.
+
+```bash
+export OPENAI_API_KEY="your_openai_key_here"
+```
+
+**Note:** The TTS server uses **local Piper TTS** — no ElevenLabs API key is required. Piper runs entirely on-device.
+
+### 4. Piper TTS Setup (Local, No API Key)
+The TTS server relies on the Piper binary and a voice model. Download Piper and a model, then place them in `/home/raesoriano/piper/` (or update the paths in `tts_server/server.py`):
+
+```bash
+mkdir -p /home/raesoriano/piper
+# Download piper binary (Linux aarch64 for Pi)
+# Download a voice model, e.g. en_US-lessac-medium.onnx + .json
+```
+
+---
+
+## 🛠️ Running the Components
+
+The system is modular. You can run the servers independently or via the orchestrator.
+
+### A. TTS Server (Text-to-Speech)
+Converts text to audio using local Piper TTS (no API key needed).
+```bash
+python "mlo_repo/ME 3/tts_server/server.py"
+```
+
+### B. ASR Server (Speech-to-Text)
+Transcribes audio files using OpenAI Whisper (requires OPENAI_API_KEY).
+```bash
+python "mlo_repo/ME 3/asr_server/server.py"
+```
+
+### C. VAD System (Voice Activity Detection)
+Manages audio streaming and detects when a user is speaking.
+```bash
+python "mlo_repo/ME 3/vad_system/vad_manager.py"
+```
+
+### D. Agent Orchestrator
+The main entry point that coordinates the ASR, TTS, and VAD components to create a full voice loop.
+```bash
+python "mlo_repo/ME 3/agent_orchestrator.py"
+```
+
+---
+
+## ⚠️ Troubleshooting (Pi Specific)
+
+**1. "ModuleNotFoundError: No module named 'mcp.server.fastmcp'"**
+This happens if `mcp` v2.x is installed. Fix it by pinning the version:
+`pip install "mcp<2"`
+
+**2. Permission Denied (Audio Files)**
+If the server cannot save `.wav` or `.mp3` files, ensure the folder has the correct permissions:
+`chmod -R 755 /home/raesoriano/sandbox`
+
+**3. Path Issues**
+Always run the commands from the root of the sandbox directory (`/home/raesoriano/sandbox`) to ensure relative imports and file paths work correctly.
+
+**4. Virtual Environment**
+If you are not using an active venv, call the python binary directly:
+`/home/raesoriano/onit/.venv/bin/python "mlo_repo/ME 3/tts_server/server.py"`
+
+**5. Piper Not Found**
+If TTS fails with "Piper binary not found", verify the `PIPER_BINARY`, `MODEL_PATH`, and `CONFIG_PATH` in `tts_server/server.py` point to valid files.
+
+## 📊 Project Structure
+- `asr_server/`: Whisper-based transcription (OpenAI API).
+- `tts_server/`: Piper-based synthesis (local, no API key).
+- `vad_system/`: Real-time voice activity detection.
+- `agent_orchestrator.py`: The "brain" connecting all components.
+- `dashboard.py`: Monitoring interface.
+- `latency_benchmark.py`: Tool to measure system response time.
