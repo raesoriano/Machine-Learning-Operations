@@ -14,7 +14,7 @@ instead of a push-to-talk device. Design references: OpenAI Realtime API
 | TTS is blocking: synthesize full WAV → play → wait | Streaming TTS: Piper emits raw PCM, played as it arrives |
 | LLM is one blocking call | Streaming LLM: tokens arrive as generated, first sentence fed to TTS immediately |
 | Barge-in = hard stop: any VAD trigger kills TTS | Debounced barge-in: user must speak ≥300 ms before TTS stops |
-| Agent hears itself (no echo handling) | Echo gate: VAD muted while TTS is playing (+ tail) |
+| Agent hears itself (no echo handling) | **AEC**: the TTS signal is subtracted from the mic, so the VAD hears only the user |
 | One-shot pipeline: VAD → ASR → LLM → TTS → play | Overlapping pipeline: next ASR can start while TTS still plays |
 
 ## Pi storage budget (16 GB)
@@ -24,7 +24,7 @@ The Pi has only 16 GB, so **nothing new big is downloaded**:
 | Component | Decision | Why |
 |---|---|---|
 | ASR | Keep OpenAI Whisper **API** | Local Whisper small/base = 150 MB+ weights; API costs 0 storage |
-| Echo cancellation | **Echo gate** (VAD muted during TTS) instead of SpeexDSP AEC | `libspeexdsp-dev` + build toolchain; gate is 0 bytes and good enough for a single speaker + mic |
+| Echo cancellation | **AEC** — SpeexDSP if the system lib works, else a pure-NumPy NLMS fallback | `libspeexdsp-dev` (~10–20 MB) for the best suppression; the NumPy fallback needs no extra install |
 | TTS | Reuse the **existing Piper** install | No new model download. If `--output-raw` is missing (Piper < 1.2), fall back to WAV-per-sentence streaming |
 | VAD | Reuse existing Silero VAD (torch.hub, cached) | Already on the Pi from ME 3 |
 
@@ -33,9 +33,10 @@ Net new downloads: **zero**. Net new system packages: **zero**.
 ## The pipeline
 
 ```
- mic ──► VAD (always on) ──► echo gate ──┬─► utterance buffer ──► ASR (API)
-                                         │                              │
- speaker ◄── playback thread ◄── TTS (Piper, streaming) ◄── sentence splitter ◄── LLM (streaming)
+ mic ──▶ AEC ──▶ VAD (always on) ──┬──▶ utterance buffer ──▶ ASR (API)
+              ▲                    └──▶ (live while TTS plays)
+              └──────── reference (TTS frames) ────────┘
+ speaker ◀── playback thread ◀── TTS (Piper, streaming) ◀── sentence splitter ◀── LLM (streaming)
 ```
 
 State machine (one state at a time, transitions can overlap):
@@ -59,9 +60,10 @@ Key properties:
    the first TTS chunk starts the moment the first sentence boundary is
    detected in the token stream. No stage waits for the previous stage to
    fully finish.
-2. **Listen while speaking.** The mic never closes. The echo gate prevents
-   the agent from triggering on its own voice; the barge-in debounce
-   prevents a cough or a "hmm" from killing playback.
+2. **Listen while speaking.** The mic never closes. The AEC subtracts the
+   agent's own TTS from the mic, so the VAD hears only the user and stays
+   live the whole time; the barge-in debounce prevents a cough or a "hmm"
+   from killing playback.
 3. **Graceful barge-in.** If the user speaks for ≥300 ms while the agent is
    talking, TTS is stopped and the agent immediately starts transcribing the
    interruption.
@@ -69,28 +71,29 @@ Key properties:
    utterance is already being captured and can be transcribed the moment it
    ends — the ASR request is issued in parallel with the remaining playback.
 
-## Echo gate (instead of AEC)
+## Acoustic echo cancellation (AEC)
 
-True full-duplex on a phone uses acoustic echo cancellation (AEC) so the mic
-hears only the far end. AEC needs a reference signal and a DSP library
-(SpeexDSP / WebRTC AEC3) — a build dependency we don't want on a 16 GB Pi.
+True full-duplex needs the mic to hear only the user, not the agent's own
+voice. `aec.py` does this by feeding the exact TTS signal sent to the speaker
+into an adaptive filter, which subtracts it from the live mic stream before
+the VAD runs.
 
-The echo gate is the cheap, robust approximation:
+Two backends, chosen at runtime:
 
-- While TTS is playing (and for a 250 ms tail after it stops), the VAD's
-  speech probability is **clamped to 0**. The agent cannot hear itself.
-- The moment playback stops, the VAD is live again.
-- Cost: the agent is deaf for exactly as long as it is talking. For a
-  single-user, single-speaker setup this is the same trade-off a real
-  half-duplex phone makes, and it's what makes barge-in work without AEC:
-  if you interrupt, your voice is the *only* thing that can re-open the gate
-  (the gate re-arms on the 250 ms tail, and the debounce confirms you're
-  really talking).
+- **SpeexDSP** (preferred) — a real adaptive AEC via ctypes, using the system
+  `libspeexdsp` (apt: `libspeexdsp-dev`, ~10–20 MB). It is only used if a
+  self-test at init confirms the build actually produces output (some aarch64
+  builds export the symbols but are no-ops).
+- **Pure-NumPy NLMS** (fallback) — a sample-by-sample NLMS in NumPy, zero
+  system dependencies. It converges more slowly than SpeexDSP, so for the best
+  suppression on a Pi install `libspeexdsp` (setup.sh does this). The fallback
+  guarantees the agent still runs — and still listens while it talks — even
+  without the library.
 
-Limitation, stated plainly: if the user keeps talking *while* the agent is
-still talking, the gate stays closed until the agent finishes or the
-debounce fires. With the 300 ms debounce and 250 ms tail, an interruption is
-recognized within ~550 ms of the user starting to talk.
+The reference signal is kept at the native TTS rate (22050 Hz) and delayed by
+~40 ms (speaker→mic latency) so it lines up with the mic capture. The VAD runs
+on the cleaned signal, so it is never deafened while the agent speaks — which
+is what makes barge-in real.
 
 ## Streaming TTS
 
@@ -104,8 +107,9 @@ recognized within ~550 ms of the user starting to talk.
   still generating the rest.
 - A **playback thread** reads PCM from the Piper pipe and writes it to the
   PyAudio output stream in 30 ms frames.
-- The playback thread also drives the **echo gate** and reports
-  `is_playing()` to the orchestrator.
+- The playback thread feeds **every frame it writes** to the speaker into the
+  VAD's AEC (`vad.feed_reference`) and reports `is_playing()` to the
+  orchestrator.
 - **Fallback:** if the Piper binary doesn't support `--output-raw` (Piper
   < 1.2), each sentence is synthesized to a temp WAV and played whole.
   Streaming still works at sentence granularity — only intra-sentence
@@ -143,10 +147,11 @@ ME 3/
     ├── setup.sh               ← extends parent setup (no new big deps)
     ├── __init__.py
     ├── streaming_llm.py       ← streaming LLM + sentence splitter
-    ├── streaming_tts.py       ← streaming Piper + playback + echo gate
+    ├── streaming_tts.py       ← streaming Piper + playback + AEC reference feed
+    ├── aec.py                 ← acoustic echo cancellation (SpeexDSP / NumPy NLMS)
     ├── agent_orchestrator.py  ← state machine, overlapping pipeline
     └── vad_system/
-        └── vad_manager.py     ← ME 3 VAD + echo gate + barge-in debounce
+        └── vad_manager.py     ← ME 3 VAD + AEC + barge-in debounce
 ```
 
 Reused from the parent `ME 3/` (via `sys.path`): `asr_server/transcribe.py`
@@ -172,4 +177,6 @@ Same `telemetry.py` as ME 3, same categories, plus:
 | `PIPER_LD_LIBRARY_PATH` | LD_LIBRARY_PATH for Piper | `~/piper` |
 | `TELEMETRY_FILE` | JSONL telemetry log | `./telemetry.jsonl` |
 | `BARGEIN_DEBOUNCE_MS` | Barge-in debounce | `300` |
-| `ECHO_GATE_TAIL_MS` | Gate tail after TTS stops | `250` |
+| `AEC_DELAY_MS` | Speaker→mic latency applied to the AEC reference | `40` |
+| `AEC_FILTER_TAIL_S` | AEC adaptive-filter length (seconds) | `0.2` |
+| `AEC_MU` | NLMS step size (fallback backend) | `0.05` |

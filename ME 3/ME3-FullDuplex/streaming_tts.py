@@ -6,9 +6,11 @@ stdout as it is produced. A playback thread reads those bytes and writes
 them to the PyAudio output stream in 30 ms frames — the first sentence
 starts playing while the LLM is still generating the rest.
 
-The playback thread also drives the *echo gate* on the VAD: the gate is
-closed before the first frame and opened `tail_ms` after the last frame,
-so the agent is deaf to its own voice.
+The playback thread also feeds *every* frame it writes to the speaker into
+the VAD's acoustic echo canceller (`vad.feed_reference`). That lets the VAD
+subtract the agent's own voice from the mic and keep listening while TTS is
+playing — which is what makes barge-in real. (The old "echo gate", which
+muted the VAD during playback, is gone.)
 
 Fallback: if the Piper binary doesn't support `--output-raw` (Piper < 1.2),
 each sentence is synthesized to a temp WAV and played whole. Streaming
@@ -27,6 +29,7 @@ import time
 import wave
 from typing import Callable, Optional
 
+import numpy as np
 import pyaudio
 
 # --- Piper configuration (same env vars as ME 3) ------------------------ #
@@ -37,10 +40,9 @@ PIPER_CONFIG = os.environ.get(
 )
 PIPER_LD_LIBRARY_PATH = os.environ.get("PIPER_LD_LIBRARY_PATH", "/home/raesoriano/piper")
 
-# --- Playback / gate tuning --------------------------------------------- #
+# --- Playback tuning ---------------------------------------------------- #
 SAMPLE_RATE = 22050          # Piper's native output rate
 PLAYBACK_FRAME_MS = 30       # PyAudio write chunk (ms)
-ECHO_GATE_TAIL_MS = int(os.environ.get("ECHO_GATE_TAIL_MS", "250"))
 
 # Piper's output sample rate is model-dependent; the lessac models are
 # 22050 Hz. If the model differs, the config json carries "sample_rate".
@@ -81,7 +83,7 @@ class StreamingTTS:
     Synthesizes sentences with Piper and plays them as they arrive.
 
     Usage:
-        tts = StreamingTTS(vad)            # vad: VADManager (for echo gate)
+        tts = StreamingTTS(vad)            # vad: VADManager (for AEC reference)
         tts.start()
         tts.enqueue("First sentence.")     # from the LLM sentence generator
         tts.enqueue("Second sentence.")
@@ -108,6 +110,9 @@ class StreamingTTS:
         self.on_first_frame: Optional[Callable] = None
         self._sentence_idx = 0
         self._first_frame_done = False
+        # AEC reference feed: the TTS rate, so the VAD's AEC can resample the
+        # reference to the mic rate. (The AEC itself lives on the VAD.)
+        self._ref_rate = self.sample_rate
 
     # ------------------------------------------------------------------ #
     # Public API
@@ -157,6 +162,9 @@ class StreamingTTS:
         """
         Kill everything: stop Piper, drop queued sentences, stop playback.
         Used for barge-in.
+
+        No echo-gate cleanup is needed anymore — the VAD's AEC keeps running
+        continuously, so there is nothing to "re-open" after playback stops.
         """
         self._stop_event.set()
         # Drain the queue so the playback thread doesn't pick up leftovers.
@@ -167,8 +175,6 @@ class StreamingTTS:
                 break
         self._q.put(None)
         self._playing.clear()
-        if self.vad is not None:
-            self.vad.set_echo_gate(False)
 
     def close(self):
         """Release the audio device (call once at shutdown)."""
@@ -229,10 +235,10 @@ class StreamingTTS:
                     pcm_buf += self._synthesize_wav(item)
                     _close_piper()
 
-                # Play what we have.
+                # Play what we have. The VAD's AEC is fed the exact frames we
+                # write (in _write_frame), so it can cancel our own voice and
+                # keep listening while we speak. No gate to open/close.
                 self._playing.set()
-                if self.vad is not None:
-                    self.vad.set_echo_gate(True)
 
                 if self._raw:
                     self._play_raw_stream(piper_proc, frame_bytes)
@@ -245,11 +251,6 @@ class StreamingTTS:
             print(f"[TTS] playback loop error: {e}")
         finally:
             _close_piper()
-            # Echo gate tail: stay deaf a little longer so the speaker
-            # tail doesn't re-trigger the VAD.
-            if self.vad is not None:
-                time.sleep(ECHO_GATE_TAIL_MS / 1000.0)
-                self.vad.set_echo_gate(False)
             self._playing.clear()
 
     def _spawn_piper_raw(self, sentence: str) -> Optional[subprocess.Popen]:
@@ -343,6 +344,14 @@ class StreamingTTS:
         try:
             self._stream.write(chunk, exception_on_overflow=False)
             self._frames_played += len(chunk)
+            # Feed the exact audio we just sent to the speaker into the VAD's
+            # AEC, so it can subtract our own voice from the mic. This is the
+            # reference signal for echo cancellation.
+            if self.vad is not None:
+                try:
+                    self.vad.feed_reference(np.frombuffer(chunk, dtype=np.int16))
+                except Exception:
+                    pass
             if not self._first_frame_done:
                 self._first_frame_done = True
                 if self.on_first_frame is not None:

@@ -3,14 +3,20 @@ ME3-FullDuplex orchestrator.
 
 A state machine that runs the overlapping voice pipeline:
 
-    mic → VAD (always on, echo-gated) → ASR (Whisper API)
+    mic → AEC → VAD (always on) → ASR (Whisper API)
         → LLM (streaming) → TTS (streaming Piper) → speaker
+                    ↑________________ reference ______________|
+
+The TTS playback feeds every frame it writes to the speaker into the AEC,
+which subtracts the agent's own voice from the mic before the VAD runs. The
+VAD is therefore live the whole time — including while the agent is talking —
+so it genuinely listens while it speaks.
 
 States:
     IDLE        — waiting for the user to start speaking
     LISTENING   — user is speaking; capturing the utterance
     THINKING    — utterance captured; ASR + LLM running
-    SPEAKING    — TTS playing; VAD still live (echo-gated) for barge-in
+    SPEAKING    — TTS playing; VAD still live (AEC-cleaned) for barge-in
 
 The "no pause to think" property comes from streaming: the LLM call starts
 the moment the utterance ends, and the first sentence reaches the TTS the
@@ -37,7 +43,7 @@ from typing import Optional
 # telemetry, and Piper config without duplicating them.
 #
 # IMPORTANT: the parent goes LAST on sys.path. This package ships its own
-# vad_system/ (with the echo gate + barge-in debounce), and it must win
+# vad_system/ (with the AEC + barge-in debounce), and it must win
 # over the parent's plain vad_system/. The parent is only there to supply
 # asr_server/ and telemetry, which this package does not have.
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -220,7 +226,8 @@ class FullDuplexAgent:
         """Run the agent until Ctrl+C."""
         print("=" * 50)
         print(" ME3-FullDuplex — continuous voice agent")
-        print(" (listens while speaking; barge-in with ≥300 ms speech)")
+        print(f" (full-duplex: AEC backend = {self.vad.aec_backend};")
+        print("  barge-in with ≥300 ms speech)")
         print("=" * 50)
         try:
             await self.vad.listen_loop()

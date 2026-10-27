@@ -3,10 +3,15 @@ VAD Manager for ME3-FullDuplex.
 
 Based on the ME 3 VADManager (Silero VAD), with two additions:
 
-1. Echo gate — while the agent is speaking (and for a short tail after),
-   the speech probability is clamped to 0 so the agent cannot trigger on
-   its own voice. This replaces full AEC with a zero-dependency
-   approximation that is good enough for a single speaker + mic on a Pi.
+1. Acoustic echo cancellation (AEC) — the TTS audio that is sent to the
+   speaker is fed into an AEC filter (see `aec.py`), which subtracts it from
+   the live mic stream *before* the VAD runs. The VAD therefore sees only the
+   user's voice and can run continuously, even while the agent is talking.
+   This is what makes barge-in real: the mic is never muted, so the agent
+   genuinely listens while it speaks.
+
+   The AEC backend is SpeexDSP when the system library is present, and a
+   pure-NumPy NLMS filter otherwise — so there is no hard dependency.
 
 2. Barge-in debounce — a speech-start event is only reported after the
    user has been speaking for `debounce_ms` (default 300 ms). This
@@ -25,6 +30,15 @@ import numpy as np
 import torch
 import pyaudio
 
+# AEC lives in the ME3-FullDuplex package root (one level up from vad_system/).
+import os as _os
+import sys as _sys
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+_PARENT = _os.path.dirname(_HERE)
+if _PARENT not in _sys.path:
+    _sys.path.insert(0, _PARENT)
+from aec import AEC  # noqa: E402
+
 # Canonical Silero VAD source (was incorrectly 'snyprow/silero-vad' before).
 SILERO_REPO = "snakers4/silero-vad"
 SILERO_MODEL = "silero_vad"
@@ -35,7 +49,7 @@ SILERO_CACHE = "silero_vad"
 class VADManager:
     """
     VAD Manager using Silero VAD for high-accuracy voice detection on
-    Raspberry Pi, with an echo gate and barge-in debounce.
+    Raspberry Pi, with acoustic echo cancellation and barge-in debounce.
 
     Callbacks (`on_speech_start`, `on_speech_end`) may be either plain
     callables or async coroutines. Async callbacks are scheduled onto the
@@ -66,10 +80,12 @@ class VADManager:
         self.is_speaking = False
         self._utterance_chunks = []
 
-        # Echo gate state. set_echo_gate(True) is called by the TTS
-        # playback thread while the agent is speaking; the audio thread
-        # clamps speech probability to 0 while the gate is closed.
-        self._echo_gate = threading.Event()
+        # Acoustic echo cancellation. The TTS playback thread calls
+        # `feed_reference()` with the audio it writes to the speaker; the
+        # audio thread calls `process()` to strip that echo out of the mic
+        # before running the VAD. The VAD is therefore never deafened while
+        # the agent talks — it listens continuously (real full-duplex).
+        self.aec = AEC(sample_rate=sample_rate, block_size=chunk_size)
 
         # Barge-in debounce state (audio thread only — no lock needed).
         self._candidate_start_ts: Optional[float] = None
@@ -103,25 +119,21 @@ class VADManager:
         )
 
     # ------------------------------------------------------------------ #
-    # Echo gate
+    # Acoustic echo cancellation
     # ------------------------------------------------------------------ #
-    def set_echo_gate(self, closed: bool):
+    def feed_reference(self, tts_int16: np.ndarray):
         """
-        Close (True) or open (False) the echo gate.
+        Feed the TTS audio just written to the speaker into the AEC.
 
-        While closed, the VAD reports no speech regardless of what the mic
-        hears — this is how the agent is kept deaf to its own voice while
-        TTS is playing. The TTS playback thread closes the gate before the
-        first frame and opens it (after a short tail) when playback ends.
+        Called from the TTS playback thread. The AEC resamples this to the
+        mic rate and delays it so it lines up with the mic capture.
         """
-        if closed:
-            self._echo_gate.set()
-        else:
-            self._echo_gate.clear()
+        self.aec.reference(tts_int16)
 
     @property
-    def echo_gate_closed(self) -> bool:
-        return self._echo_gate.is_set()
+    def aec_backend(self) -> str:
+        """Which AEC backend is active: 'speexdsp' or 'nlms'."""
+        return self.aec.backend
 
     # ------------------------------------------------------------------ #
     # Callback dispatch (thread -> event loop)
@@ -148,23 +160,19 @@ class VADManager:
         return self.model(tensor_audio, self.sample_rate).item()
 
     def _audio_thread(self):
-        """Blocking audio capture + VAD inference, run in a worker thread."""
+        """Blocking audio capture + AEC + VAD inference, worker thread."""
         try:
             while True:
                 data = self.stream.read(self.chunk_size, exception_on_overflow=False)
                 audio_int16 = np.frombuffer(data, dtype=np.int16)
 
-                # Echo gate: while the agent is speaking, we are deaf.
-                if self._echo_gate.is_set():
-                    # Drop any in-progress candidate; nothing is speech.
-                    self._candidate_start_ts = None
-                    if self.is_speaking:
-                        # Speech was in progress when the gate closed
-                        # (e.g. TTS started mid-utterance). End it quietly.
-                        self.is_speaking = False
-                    continue
+                # Acoustic echo cancellation: subtract the agent's own voice
+                # (the TTS reference) from the mic. The VAD runs on the clean
+                # signal, so it stays live even while the agent is speaking —
+                # this is what makes barge-in possible.
+                clean_int16 = self.aec.process(audio_int16)
 
-                speech_prob = self._process_chunk(audio_int16)
+                speech_prob = self._process_chunk(clean_int16)
 
                 if speech_prob > 0.5 and not self.is_speaking:
                     # Candidate start — wait for the debounce to confirm.
@@ -192,10 +200,12 @@ class VADManager:
                         # elapsed — a cough, a click, a "hmm". Ignore.
                         self._candidate_start_ts = None
 
-                # Accumulate audio while speaking (or while a candidate is
-                # pending, so the pre-debounce audio isn't lost).
+                # Accumulate the *clean* (echo-cancelled) audio while speaking
+                # (or while a candidate is pending, so the pre-debounce audio
+                # isn't lost). The ASR gets the user's voice without the
+                # agent's own TTS bleeding in.
                 if self.is_speaking or self._candidate_start_ts is not None:
-                    self._utterance_chunks.append(audio_int16)
+                    self._utterance_chunks.append(clean_int16)
         except Exception as e:
             print(f"[VAD] audio loop stopped: {e}")
 

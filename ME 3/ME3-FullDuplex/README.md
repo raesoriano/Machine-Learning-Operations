@@ -13,16 +13,18 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
   moment it's complete.
 - **Streaming TTS** — Piper emits raw PCM (`--output-raw`); the first
   sentence plays while the LLM is still generating the rest.
-- **Continuous VAD** — the mic never closes; an echo gate keeps the agent
-  deaf to its own voice while it's speaking.
+- **Continuous VAD** — the mic never closes; AEC subtracts the agent's own
+  voice from the mic, so the VAD hears only you and stays live while it speaks.
 - **Debounced barge-in** — speak for ≥300 ms to interrupt; a cough won't
   kill playback.
 
 ## Pi storage note
 
-Nothing new is downloaded. ASR stays on the OpenAI Whisper API (no local
-Whisper weights), echo handling is a zero-dependency gate (no SpeexDSP),
-and TTS reuses your existing Piper install. If your Piper is < 1.2 (no
+Nothing big is downloaded. ASR stays on the OpenAI Whisper API (no local
+Whisper weights), and TTS reuses your existing Piper install. Echo
+cancellation uses SpeexDSP if `libspeexdsp` is present (setup.sh installs it,
+~10–20 MB), otherwise a pure-NumPy NLMS fallback — so there's no hard
+dependency. If your Piper is < 1.2 (no
 `--output-raw`), it falls back to sentence-granularity WAV streaming.
 
 ## Run
@@ -45,7 +47,8 @@ Optional tuning (env vars):
 | Var | Default | Meaning |
 |---|---|---|
 | `BARGEIN_DEBOUNCE_MS` | `300` | How long you must speak to interrupt |
-| `ECHO_GATE_TAIL_MS` | `250` | How long the agent stays deaf after it stops talking |
+| `AEC_DELAY_MS` | `40` | Speaker→mic latency applied to the AEC reference |
+| `AEC_FILTER_TAIL_S` | `0.2` | AEC adaptive-filter length (seconds) |
 | `TELEMETRY_FILE` | `./telemetry.jsonl` | Where latency/interaction data is logged |
 
 ## Telemetry
@@ -68,9 +71,10 @@ ME3-FullDuplex/
 ├── setup.sh               ← extends parent setup (no new big deps)
 ├── __init__.py
 ├── streaming_llm.py       ← streaming LLM + sentence splitter
-├── streaming_tts.py       ← streaming Piper + playback + echo gate
+├── streaming_tts.py       ← streaming Piper + playback + AEC reference feed
+├── aec.py                 ← acoustic echo cancellation (SpeexDSP / NumPy NLMS)
 ├── agent_orchestrator.py  ← state machine, overlapping pipeline
 └── vad_system/
     ├── __init__.py
-    └── vad_manager.py     ← ME 3 VAD + echo gate + barge-in debounce
+    └── vad_manager.py     ← ME 3 VAD + AEC + barge-in debounce
 ```
