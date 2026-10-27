@@ -37,6 +37,7 @@ CATEGORIES = (
     "asr_turnaround",
     "llm_ttfb",
     "tts_synthesis",
+    "tts_first_chunk",   # ME3-FullDuplex: first sentence text -> first PCM frame played
     "interruption",
 )
 
