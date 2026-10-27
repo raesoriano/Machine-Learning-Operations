@@ -78,6 +78,38 @@ The main entry point that coordinates the ASR, TTS, and VAD components to create
 python "mlo_repo/ME 3/agent_orchestrator.py"
 ```
 
+### E. Dashboard (Live Telemetry)
+A Streamlit monitor that reads the orchestrator's real telemetry log. It shows live
+latency metrics, the interaction stream, and trend charts. It auto-refreshes every
+5 seconds and falls back to clearly-labelled simulated data only when no real
+telemetry exists yet (i.e. before the agent completes a turn).
+```bash
+pip install streamlit pandas
+streamlit run "mlo_repo/ME 3/dashboard.py"
+```
+
+### F. Latency Benchmark (Real Data)
+Reports mean / P95 latency per category from the orchestrator's telemetry log.
+```bash
+python "mlo_repo/ME 3/latency_benchmark.py"            # real telemetry
+python "mlo_repo/ME 3/latency_benchmark.py" --simulate # simulated demo only
+```
+
+---
+
+## 📊 Telemetry
+The orchestrator instruments every turn and writes two kinds of records to a
+JSONL log (`telemetry.jsonl` next to the code, override with `TELEMETRY_FILE`):
+
+- **latency** — one sample per category per turn: `vad_trigger`,
+  `asr_turnaround`, `llm_ttfb`, `tts_synthesis`, `interruption`.
+- **interaction** — each User / OnIt line, with its associated latency.
+
+The dashboard and the latency benchmark both read this log (cross-process), so
+they show **real** numbers once the agent has processed at least one turn.
+`telemetry.py` is the shared module that defines the format and the read/write
+API.
+
 ---
 
 ## ⚠️ Troubleshooting (Pi Specific)
@@ -106,5 +138,6 @@ If TTS fails with a synthesis error, verify the `PIPER_BINARY`, `PIPER_MODEL`, a
 - `tts_server/`: Piper-based synthesis (local, no API key).
 - `vad_system/`: Real-time voice activity detection.
 - `agent_orchestrator.py`: The "brain" connecting all components.
-- `dashboard.py`: Monitoring interface.
-- `latency_benchmark.py`: Tool to measure system response time.
+- `telemetry.py`: Shared telemetry sink (JSONL log + in-memory buffer).
+- `dashboard.py`: Live monitoring interface (reads real telemetry).
+- `latency_benchmark.py`: Reports real mean / P95 latency per category.

@@ -9,6 +9,7 @@ import numpy as np
 from vad_system.vad_manager import VADManager
 from asr_server.transcribe import transcribe_bytes
 from tts_server.synthesize import synthesize_bytes
+from telemetry import default as telemetry
 
 
 def pcm_bytes_to_wav(pcm: bytes, sample_rate: int = 16000) -> bytes:
@@ -35,20 +36,43 @@ class FullDuplexAgent:
         self.is_speaking = False
         self.stop_tts = False
 
+        # Timing anchors for telemetry (monotonic seconds).
+        self._speech_start_ts = None   # when VAD fired speech-start
+        self._turn = 0
+
         # Callbacks for VAD (async — dispatched onto the event loop by VADManager)
         self.vad.on_speech_start = self.handle_speech_start
         self.vad.on_speech_end = self.handle_speech_end
 
     async def handle_speech_start(self):
         print("[Agent] User started speaking... Interrupting TTS.")
+        now = time.monotonic()
+        self._speech_start_ts = now
         self.stop_tts = True
         if self.is_speaking:
             # In a real implementation, this would kill the audio playback
             # process/stream immediately.
             self.is_speaking = False
+            # Interruption latency: from the moment the user started speaking
+            # to the moment we acted on it (stopped TTS). In this simulated
+            # playback the action is immediate, so it's ~0; with a real player
+            # this would capture the kill/stream-stop delay.
+            telemetry.record_latency("interruption", now - now, turn=self._turn)
 
     async def handle_speech_end(self):
         print("[Agent] User stopped speaking. Processing request...")
+        self._turn = telemetry.next_turn()
+        turn = self._turn
+
+        # VAD trigger latency: speech-start -> speech-end (utterance length as a
+        # proxy for detection-to-finalize; real VAD trigger is measured in the
+        # audio thread). Recorded here so every completed turn has a sample.
+        if self._speech_start_ts is not None:
+            telemetry.record_latency(
+                "vad_trigger", time.monotonic() - self._speech_start_ts, turn=turn
+            )
+        self._speech_start_ts = None
+
         # 1. Capture the audio buffer from VAD (raw int16 PCM)
         pcm = self.vad.get_last_utterance()
         if not pcm:
@@ -56,6 +80,7 @@ class FullDuplexAgent:
 
         # 2. ASR — wrap PCM in a WAV container, then transcribe the bytes
         wav = pcm_bytes_to_wav(pcm, self.vad.sample_rate)
+        asr_start = time.monotonic()
         try:
             text = await asyncio.get_running_loop().run_in_executor(
                 None, transcribe_bytes, wav
@@ -63,31 +88,46 @@ class FullDuplexAgent:
         except Exception as e:
             print(f"[Agent] ASR error: {e}")
             return
+        asr_ms = telemetry.record_latency(
+            "asr_turnaround", time.monotonic() - asr_start, turn=turn
+        )
         print(f"[User]: {text}")
+        telemetry.record_interaction("User", text, latency_ms=asr_ms, turn=turn)
         if not text.strip():
             return
 
         # 3. LLM Processing
+        llm_start = time.monotonic()
         response_text = await self.call_llm(text)
+        llm_ms = telemetry.record_latency(
+            "llm_ttfb", time.monotonic() - llm_start, turn=turn
+        )
         print(f"[AI]: {response_text}")
+        telemetry.record_interaction("OnIt", response_text,
+                                     latency_ms=llm_ms, turn=turn)
 
         # 4. TTS
-        await self.speak(response_text)
+        await self.speak(response_text, turn=turn)
 
     async def call_llm(self, text):
         # Simulated LLM call (swap for a real provider in production)
         await asyncio.sleep(0.5)
         return f"I heard you say '{text}'. I am your full-duplex agent."
 
-    async def speak(self, text):
+    async def speak(self, text, turn: int | None = None):
         self.stop_tts = False
         self.is_speaking = True
 
         # Synthesize with local Piper TTS (no API key). synthesize_bytes
         # returns (path, ok).
+        tts_start = time.monotonic()
         audio_path, ok = await asyncio.get_running_loop().run_in_executor(
             None, synthesize_bytes, text
         )
+        if ok:
+            telemetry.record_latency(
+                "tts_synthesis", time.monotonic() - tts_start, turn=turn
+            )
         if not ok:
             print("[Agent] TTS synthesis failed — check Piper setup.")
             self.is_speaking = False
