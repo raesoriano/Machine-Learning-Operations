@@ -23,6 +23,7 @@ The Pi has only 16 GB, so **nothing new big is downloaded**:
 
 | Component | Decision | Why |
 |---|---|---|
+| LLM | **Ollama cloud models** (default), pluggable via `LLM_BACKEND` | Cloud weights stream from Ollama — 0 MB on the Pi. `ollama-local` / `openai` backends available |
 | ASR | Keep OpenAI Whisper **API** | Local Whisper small/base = 150 MB+ weights; API costs 0 storage |
 | Echo cancellation | **AEC** — SpeexDSP if the system lib works, else a pure-NumPy NLMS fallback | `libspeexdsp-dev` (~10–20 MB) for the best suppression; the NumPy fallback needs no extra install |
 | TTS | Reuse the **existing Piper** install | No new model download. If `--output-raw` is missing (Piper < 1.2), fall back to WAV-per-sentence streaming |
@@ -119,7 +120,12 @@ is what makes barge-in real.
 
 `streaming_llm.py`:
 
-- `openai.chat.completions.create(stream=True)`.
+- `openai.chat.completions.create(stream=True)` against an **OpenAI-compatible
+  endpoint** chosen by `LLM_BACKEND`:
+  - `ollama-cloud` (default) → `https://ollama.com/v1`, key `OLLAMA_API_KEY`,
+    model `OLLAMA_MODEL` (default `gemma4:31b`). Cloud weights — nothing on the Pi.
+  - `ollama-local` → `http://localhost:11434/v1/`, key ignored, model `OLLAMA_MODEL`.
+  - `openai` → `https://api.openai.com/v1`, key `OPENAI_API_KEY`, model `LLM_MODEL`.
 - A generator yields **sentences**, not tokens: it accumulates tokens and
   splits on sentence boundaries (same splitter as the TTS side).
 - The first sentence is available ~1–2 tokens after the first token arrives,
@@ -170,7 +176,11 @@ Same `telemetry.py` as ME 3, same categories, plus:
 
 | Var | Meaning | Default |
 |---|---|---|
-| `OPENAI_API_KEY` | LLM + Whisper API | required |
+| `LLM_BACKEND` | `ollama-cloud` / `ollama-local` / `openai` | `ollama-cloud` |
+| `OLLAMA_API_KEY` | Ollama cloud API key (LLM) | — |
+| `OLLAMA_MODEL` | Model name (Ollama backends) | `gemma4:31b` |
+| `LLM_MODEL` | Model name (OpenAI backend) | `gpt-4o-mini` |
+| `OPENAI_API_KEY` | Whisper ASR key (and OpenAI LLM if `LLM_BACKEND=openai`) | required for ASR |
 | `PIPER_BINARY` | Piper executable | `~/piper/piper` |
 | `PIPER_MODEL` | Piper voice model (.onnx) | `~/piper/en_US-lessac-medium.onnx` |
 | `PIPER_CONFIG` | Piper model config (.json) | `~/piper/en_US-lessac-medium.onnx.json` |

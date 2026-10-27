@@ -20,12 +20,13 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 
 ## Pi storage note
 
-Nothing big is downloaded. ASR stays on the OpenAI Whisper API (no local
-Whisper weights), and TTS reuses your existing Piper install. Echo
-cancellation uses SpeexDSP if `libspeexdsp` is present (setup.sh installs it,
-~10–20 MB), otherwise a pure-NumPy NLMS fallback — so there's no hard
-dependency. If your Piper is < 1.2 (no
-`--output-raw`), it falls back to sentence-granularity WAV streaming.
+Nothing big is downloaded. The LLM runs on **Ollama cloud models** by default
+(weights stream from Ollama's cloud — nothing lands on the Pi), and ASR stays
+on the OpenAI Whisper API (no local Whisper weights). TTS reuses your existing
+Piper install. Echo cancellation uses SpeexDSP if `libspeexdsp` is present
+(setup.sh installs it, ~10–20 MB), otherwise a pure-NumPy NLMS fallback — so
+there's no hard dependency. If your Piper is < 1.2 (no `--output-raw`), it
+falls back to sentence-granularity WAV streaming.
 
 ## Run
 
@@ -33,7 +34,14 @@ From the `ME 3/` directory (parent of this folder):
 
 ```bash
 source .venv/bin/activate
+
+# LLM — Ollama cloud models (default; nothing is downloaded to the Pi)
+export OLLAMA_API_KEY=ollama_...        # create one at ollama.com
+export OLLAMA_MODEL=gemma4:31b          # any model from ollama.com/api/tags
+
+# ASR — still OpenAI Whisper (needs its own key)
 export OPENAI_API_KEY=sk-...
+
 export PIPER_BINARY=$HOME/piper/piper
 export PIPER_MODEL=$HOME/piper/en_US-lessac-medium.onnx
 export PIPER_CONFIG=$HOME/piper/en_US-lessac-medium.onnx.json
@@ -42,10 +50,29 @@ export PIPER_LD_LIBRARY_PATH=$HOME/piper
 python ME3-FullDuplex/agent_orchestrator.py
 ```
 
+### LLM backend
+
+The LLM is pluggable via `LLM_BACKEND` (defaults to `ollama-cloud`). All
+three backends are OpenAI-compatible, so the streaming code is identical:
+
+| `LLM_BACKEND` | `base_url` | key | model env | Notes |
+|---|---|---|---|---|
+| `ollama-cloud` *(default)* | `https://ollama.com/v1` | `OLLAMA_API_KEY` | `OLLAMA_MODEL` | Cloud models — **no weights on the Pi** |
+| `ollama-local` | `http://localhost:11434/v1/` | (ignored) | `OLLAMA_MODEL` | Local Ollama server; model uses Pi storage |
+| `openai` | `https://api.openai.com/v1` | `OPENAI_API_KEY` | `LLM_MODEL` | Original ME 3 default |
+
+> **Why two keys?** The LLM (Ollama cloud) and the ASR (OpenAI Whisper) are
+> separate services. `OLLAMA_API_KEY` authenticates the LLM; `OPENAI_API_KEY`
+> is still needed for Whisper. If you later move ASR to a local Whisper
+> model, you can drop `OPENAI_API_KEY` entirely.
+
 Optional tuning (env vars):
 
 | Var | Default | Meaning |
 |---|---|---|
+| `LLM_BACKEND` | `ollama-cloud` | `ollama-cloud` / `ollama-local` / `openai` |
+| `OLLAMA_MODEL` | `gemma4:31b` | Model name (Ollama backends) |
+| `LLM_MODEL` | `gpt-4o-mini` | Model name (OpenAI backend) |
 | `BARGEIN_DEBOUNCE_MS` | `300` | How long you must speak to interrupt |
 | `AEC_DELAY_MS` | `40` | Speaker→mic latency applied to the AEC reference |
 | `AEC_FILTER_TAIL_S` | `0.2` | AEC adaptive-filter length (seconds) |
